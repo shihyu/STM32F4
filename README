@@ -23,6 +23,19 @@ stm32_flash.ld
    $ . build.env   // 執行 gcc-arm-none-eabi-4_8-2013q4 環境
 
 
+3. STLINK安裝步驟（這個容易點，只針對V2）
+3.1 安裝依賴包，命令：sudo apt-get install libusb-1.0 pkg-config
+（後面一個包一般是不需要安裝的，默認的Ubuntu安裝就已經捆綁安裝好了）
+3.2 下載stlink , 命令：git clone https://github.com/texane/stlink
+3.3 進入stlink目錄，執行：sudo ./autogen.sh
+3.4 再執行：sudo ./configure
+3.5 接著執行：sudo make
+3.6 等待安裝結束。將stlink文件夾添加到PATH中去，同步驟2.6。
+3.7 插上STLINK，執行命令：sudo chmod -R a_rwx /dev/bus/usb。修改usb
+設備訪問權限，這樣就不需要使用sudo命令就能執行st-flash命令了。
+
+
+
 4. 開始第一個設計（基於stm32f4xx-discovery板）
 4.1 下載模板
 代碼:
