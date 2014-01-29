@@ -1,0 +1,94 @@
+build.env
+gcc-arm-none-eabi-4_8-2013q4
+inc
+lib
+main.bin
+main.elf
+main.hex
+Makefile
+src
+stm32_flash.ld
+
+
+1) Download and extract the GNU toolchain to the current directory (if you
+   download a different version, you need to adjust the build.env file
+   accordingly):
+   $ wget https://launchpad.net/gcc-arm-embedded/4.8/4.8-2013-q4-major/+download/gcc-arm-none-eabi-4_8-2013q4-20131204-linux.tar.bz2
+   $ tar xjvf gcc-arm-none-eabi-4_8-2013q4-20131204-linux.tar.bz2
+
+2) Install openocd. For Ubuntu/Debian, it's:
+   $ apt-get install openocd
+
+3) Source the build.env file:
+   $ . build.env   // 執行 gcc-arm-none-eabi-4_8-2013q4 環境
+
+
+4. 開始第一個設計（基於stm32f4xx-discovery板）
+4.1 下載模板
+代碼:
+git clone git://github.com/jeremyherbert/stm32-templates.git
+
+4.2 拷貝stm32-templates/stm32f4-discovery到一個新的文件夾下，比如~/blinky
+代碼:
+cp -r stm32-templates/stm32f4-discovery ~/blinky
+
+4.3 刪除掉inc/stm32f4xx_it.h，src/stm32f4xx_it.c，src/main.c。建立自己的main.c文件
+代碼:
+rm inc/stm32f4xx_it.h src/stm32f4xx_it.c src/main.c
+
+代碼:
+touch src/main.c
+
+4.4 修改Makefile文件，將SRCS = main.c stm32f4xx_it.c system_stm32f4xx.c改成SRCS = main.c system_stm32f4xx.c
+4.5 將如下代碼寫入main.c文件
+代碼:
+#include "stm32f4xx_conf.h"
+
+//定時器2中斷函數
+void TIM2_IRQHandler(void)
+{
+    if(TIM2->SR & TIM_SR_UIF)
+        GPIOD->ODR ^=(1 << 13);
+    TIM2->SR = 0x0;
+}
+
+int main(void)
+{
+    //使能GPIOD時鐘
+    RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;
+    //使能定時器2時鐘
+    RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
+    //設置PD13為通用IO輸出
+    GPIOD->MODER = (1 << 26);
+    //使能定時器2中斷
+    NVIC->ISER[0] |= 1 << (TIM2_IRQn);
+    //關閉預分頻器，定時器向上計數，和外設時鐘同步
+    TIM2->PSC = 0x0;
+    //使能更新事件
+    TIM2->DIER |= TIM_DIER_UIE;
+    //計數到1自動重裝
+    TIM2->ARR = 0x01;
+    //自動重裝開啟，計數使能
+    TIM2->CR1 |= TIM_CR1_ARPE | TIM_CR1_CEN;
+    //觸發更新事件，重裝計數器寄存器
+    TIM2->EGR = 1;
+
+    while(1);
+}
+
+4.6 進入blinky目錄下，執行make，等待編譯完成
+4.7 執行命令，將二進制代碼燒寫開發板上去。
+代碼:
+st-flash write main.bin 0x8000000
+
+如果是重新插上STLINK，請重新執行如下命令，修改USB設備訪問權限。然後再執行燒寫命令，否則會提示找不到STLINK。
+代碼:
+sudo chmod -R a+rwx /dev/bus/usb
+
+4.8 如果是stm32f4xx-discovery開發板，單片機旁的一個黃色LED會亮起來，使用示波器測量LED引腳，會有2.6M的方波出現。
+------------------------------------------------------------------------------------------------------------------------------------------------------
+5. 相關鏈接（咱也只是一個搬運工而已）
+summon-arm-toolchain
+https://github.com/esden/summon-arm-toolchain
+stlink
+https://github.com/texane/stlink
