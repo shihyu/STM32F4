@@ -1,0 +1,51 @@
+AR = arm-none-eabi-ar
+CC = arm-none-eabi-gcc
+LD = arm-none-eabi-ld
+OBJCOPY = arm-none-eabi-objcopy
+
+CFLAGS += -mthumb             \
+          -mcpu=cortex-m3     \
+          -Os                 \
+          -ffunction-sections \
+          -fdata-sections     \
+          -MD                 \
+          -std=c99            \
+          -Wall               \
+          -pedantic           \
+          -DPART_LM3S811      \
+          -Dgcc               \
+          -I$(ROOT)/include
+
+LDFLAGS += --gc-sections
+
+LIBGCC=$(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
+LIBC=$(shell $(CC) $(CFLAGS) -print-file-name=libc.a)
+
+ENTRY = ResetISR
+LD_SCRIPT = lm3s811.ld
+OPENOCD_CFG = /usr/share/openocd/scripts/board/ek-lm3s811.cfg
+
+OBJ = $(SRC:.c=.o)
+
+all: $(TARGET)
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c -o $(@) $(<)
+
+%.axf: $(OBJ)
+	$(LD) --script $(ROOT)/build/$(LD_SCRIPT) --entry $(ENTRY) $(LDFLAGS) \
+		$(OBJ) $(ROOT)/src/driverlib/libdriver.a -o $(@)
+
+%.bin: %.axf
+	$(OBJCOPY) -O binary $(<) $(@)
+
+%.a: $(OBJ)
+	$(AR) -cr $(@) $(^)
+
+flash: FILE=$(shell readlink -e $(TARGET))
+flash:
+	openocd -f $(OPENOCD_CFG) -f $(ROOT)/build/lm3s811_flash.cfg \
+		-c "lm3s811_flash $(FILE)"
+
+clean:
+	@rm -rf *.o *~ *.d *.axf *.bin *.a

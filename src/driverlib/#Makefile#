@@ -1,0 +1,40 @@
+ROOT = ../../
+
+SRC
+
+INCLUDES = -I../../include -I../../
+
+CC = arm-none-eabi-gcc
+CFLAGS = -mthumb             \
+         -mcpu=cortex-m3     \
+         -Os                 \
+         -ffunction-sections \
+         -fdata-sections     \
+         -MD                 \
+         -std=c99            \
+         -Wall               \
+         -pedantic           \
+         $(INCLUDES)
+
+#AFLAGS = -mthumb         \
+#         -mcpu=cortex-m3 \
+#         -MD
+
+LD = arm-none-eabi-ld
+LDFLAGS = --gc-sections
+
+LIBGCC=$(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
+LIBC=$(shell $(CC) $(CFLAGS) -print-file-name=libc.a)
+
+
+SRC = adc.c cpu.c flash.c i2c.c mpu.c ssi.c timer.c usb.c can.c epi.c gpio.c \
+      i2s.c pwm.c sysctl.c uart.c watchdog.c comp.c ethernet.c hibernate.c \
+       interrupt.c qei.c systick.c udma.c
+TARGET = libdriver.a
+
+OBJ = $(SRC:.c=.o)
+
+all: $(TARGET)
+
+%.a: $(OBJ)
+	echo "hello"

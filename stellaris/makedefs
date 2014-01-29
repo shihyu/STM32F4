@@ -1,0 +1,357 @@
+#******************************************************************************
+#
+# makedefs - Definitions common to all makefiles.
+#
+# Copyright (c) 2005-2009 Luminary Micro, Inc.  All rights reserved.
+# Software License Agreement
+# 
+# Luminary Micro, Inc. (LMI) is supplying this software for use solely and
+# exclusively on LMI's microcontroller products.
+# 
+# The software is owned by LMI and/or its suppliers, and is protected under
+# applicable copyright laws.  All rights are reserved.  You may not combine
+# this software with "viral" open-source software in order to form a larger
+# program.  Any use in violation of the foregoing restrictions may subject
+# the user to criminal sanctions under applicable laws, as well as to civil
+# liability for the breach of the terms and conditions of this license.
+# 
+# THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
+# OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
+# LMI SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR
+# CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
+# 
+# This is part of revision 5125 of the Stellaris Firmware Development Package.
+#
+#******************************************************************************
+
+#******************************************************************************
+#
+# Get the operating system name.  If this is Cygwin, the .d files will be
+# munged to convert c: into /cygdrive/c so that "make" will be happy with the
+# auto-generated dependencies.
+#
+#******************************************************************************
+os:=${shell uname -s}
+
+#******************************************************************************
+#
+# The compiler to be used.
+#
+#******************************************************************************
+ifndef COMPILER
+COMPILER=gcc
+#COMPILER=sourcerygxx
+endif
+
+#******************************************************************************
+#
+# The debugger to be used.
+#
+#******************************************************************************
+ifndef DEBUGGER
+ifeq (${COMPILER}, gcc)
+DEBUGGER=gdb
+else
+ifeq (${COMPILER}, sourcerygxx)
+DEBUGGER=gdb
+else
+DEBUGGER=gdb
+endif
+endif
+endif
+
+#******************************************************************************
+#
+# Definitions for using GCC.
+#
+#******************************************************************************
+ifeq (${COMPILER}, gcc)
+
+#
+# Get the prefix for the tools to use.  Use arm-stellaris-eabi if it exists,
+# otherwise fall back to arm-none-eabi.
+#
+PREFIX=${shell type arm-stellaris-eabi-gcc > /dev/null 2>&1 && \
+         echo arm-stellaris-eabi || echo arm-none-eabi}
+
+#
+# The command for calling the compiler.
+#
+CC=${PREFIX}-gcc
+
+#
+# The flags passed to the assembler.
+#
+AFLAGS=-mthumb         \
+       -mcpu=cortex-m3 \
+       -MD
+
+#
+# The flags passed to the compiler.
+#
+CFLAGS=-mthumb             \
+       -mcpu=cortex-m3     \
+       -Os                 \
+       -ffunction-sections \
+       -fdata-sections     \
+       -MD                 \
+       -std=c99            \
+       -Wall               \
+       -pedantic           \
+       -DPART_${PART}      \
+       -c
+
+#
+# The command for calling the library archiver.
+#
+AR=${PREFIX}-ar
+
+#
+# The command for calling the linker.
+#
+LD=${PREFIX}-ld
+
+#
+# The flags passed to the linker.
+#
+LDFLAGS=--gc-sections
+
+#
+# Get the location of libgcc.a from the GCC front-end.
+#
+LIBGCC=${shell ${CC} ${CFLAGS} -print-libgcc-file-name}
+
+#
+# Get the location of libc.a from the GCC front-end.
+#
+LIBC=${shell ${CC} ${CFLAGS} -print-file-name=libc.a}
+
+#
+# The command for extracting images from the linked executables.
+#
+OBJCOPY=${PREFIX}-objcopy
+
+#
+# Tell the compiler to include debugging information if the DEBUG environment
+# variable is set.
+#
+ifdef DEBUG
+CFLAGS+=-g -D DEBUG
+endif
+
+#
+# Add the tool specific CFLAGS.
+#
+CFLAGS+=${CFLAGSgcc}
+
+#
+# Add the include file paths to AFLAGS and CFLAGS.
+#
+AFLAGS+=${patsubst %,-I%,${subst :, ,${IPATH}}}
+CFLAGS+=${patsubst %,-I%,${subst :, ,${IPATH}}}
+
+#
+# The rule for building the object file from each C source file.
+#
+${COMPILER}/%.o: %.c
+	@if [ 'x${VERBOSE}' = x ];                            \
+	 then                                                 \
+	     echo "  CC    ${<}";                             \
+	 else                                                 \
+	     echo ${CC} ${CFLAGS} -D${COMPILER} -o ${@} ${<}; \
+	 fi
+	@${CC} ${CFLAGS} -D${COMPILER} -o ${@} ${<}
+ifneq ($(findstring CYGWIN, ${os}), )
+	@sed -i -r 's/ ([A-Za-z]):/ \/cygdrive\/\1/g' ${@:.o=.d}
+endif
+
+#
+# The rule for building the object file from each assembly source file.
+#
+${COMPILER}/%.o: %.S
+	@if [ 'x${VERBOSE}' = x ];                               \
+	 then                                                    \
+	     echo "  AS    ${<}";                                \
+	 else                                                    \
+	     echo ${CC} ${AFLAGS} -D${COMPILER} -o ${@} -c ${<}; \
+	 fi
+	@${CC} ${AFLAGS} -D${COMPILER} -o ${@} -c ${<}
+ifneq ($(findstring CYGWIN, ${os}), )
+	@sed -i -r 's/ ([A-Za-z]):/ \/cygdrive\/\1/g' ${@:.o=.d}
+endif
+
+#
+# The rule for creating an object library.
+#
+${COMPILER}/%.a:
+	@if [ 'x${VERBOSE}' = x ];     \
+	 then                          \
+	     echo "  AR    ${@}";      \
+	 else                          \
+	     echo ${AR} -cr ${@} ${^}; \
+	 fi
+	@${AR} -cr ${@} ${^}
+
+#
+# The rule for linking the application.
+#
+${COMPILER}/%.axf:
+	@if [ 'x${SCATTERgcc_${notdir ${@:.axf=}}}' = x ];                    \
+	 then                                                                 \
+	     ldname=${ROOT}/gcc/standalone.ld;                                \
+	 else                                                                 \
+	     ldname=${SCATTERgcc_${notdir ${@:.axf=}}};                       \
+	 fi;                                                                  \
+	 if [ 'x${VERBOSE}' = x ];                                            \
+	 then                                                                 \
+	     echo "  LD    ${@} ${LNK_SCP}";                                  \
+	 else                                                                 \
+	     echo ${LD} -T $${ldname}                                         \
+	          --entry ${ENTRY_${notdir ${@:.axf=}}}                       \
+	          ${LDFLAGSgcc_${notdir ${@:.axf=}}}                          \
+	          ${LDFLAGS} -o ${@} $(filter %.o %.a, ${^})                  \
+	          '${LIBC}' '${LIBGCC}';                                      \
+	 fi;                                                                  \
+	${LD} -T $${ldname}                                                   \
+	      --entry ${ENTRY_${notdir ${@:.axf=}}}                           \
+	      ${LDFLAGSgcc_${notdir ${@:.axf=}}}                              \
+	      ${LDFLAGS} -o ${@} $(filter %.o %.a, ${^})                      \
+	      '${LIBC}' '${LIBGCC}'
+	@${OBJCOPY} -O binary ${@} ${@:.axf=.bin}
+endif
+
+#******************************************************************************
+#
+# Definitions for using Sourcery G++.
+#
+#******************************************************************************
+ifeq (${COMPILER}, sourcerygxx)
+
+#
+# The command for calling the compiler.
+#
+CC=arm-stellaris-eabi-gcc
+
+#
+# The flags passed to the assembler.
+#
+AFLAGS=-mthumb         \
+       -mcpu=cortex-m3 \
+       -MD
+
+#
+# The flags passed to the compiler.
+#
+CFLAGS=-mthumb             \
+       -mcpu=cortex-m3     \
+       -Os                 \
+       -ffunction-sections \
+       -fdata-sections     \
+       -MD                 \
+       -std=c99            \
+       -Wall               \
+       -pedantic           \
+       -DPART_${PART}      \
+       -c
+
+#
+# The command for calling the library archiver.
+#
+AR=arm-stellaris-eabi-ar
+
+#
+# The command for calling the linker.
+#
+LD=arm-stellaris-eabi-gcc
+
+#
+# The flags passed to the linker.
+#
+LDFLAGS=-mthumb           \
+        -mcpu=cortex-m3   \
+        -Wl,--gc-sections
+
+#
+# The command for extracting images from the linked executables.
+#
+OBJCOPY=arm-stellaris-eabi-objcopy
+
+#
+# Tell the compiler to include debugging information if the DEBUG environment
+# variable is set.
+#
+ifdef DEBUG
+CFLAGS+=-g -D DEBUG
+endif
+
+#
+# Add the tool specific CFLAGS.
+#
+CFLAGS+=${CFLAGSsourcerygxx}
+
+#
+# Add the include file paths to AFLAGS and CFLAGS.
+#
+AFLAGS+=${patsubst %,-I%,${subst :, ,${IPATH}}}
+CFLAGS+=${patsubst %,-I%,${subst :, ,${IPATH}}}
+
+#
+# The rule for building the object file from each C source file.
+#
+${COMPILER}/%.o: %.c
+	@if [ 'x${VERBOSE}' = x ];                            \
+	 then                                                 \
+	     echo "  CC    ${<}";                             \
+	 else                                                 \
+	     echo ${CC} ${CFLAGS} -D${COMPILER} -o ${@} ${<}; \
+	 fi
+	@${CC} ${CFLAGS} -D${COMPILER} -o ${@} ${<}
+ifneq ($(findstring CYGWIN, ${os}), )
+	@sed -i -r 's/ ([A-Za-z]):/ \/cygdrive\/\1/g' ${@:.o=.d}
+endif
+
+#
+# The rule for building the object file from each assembly source file.
+#
+${COMPILER}/%.o: %.S
+	@if [ 'x${VERBOSE}' = x ];                               \
+	 then                                                    \
+	     echo "  AS    ${<}";                                \
+	 else                                                    \
+	     echo ${CC} ${AFLAGS} -D${COMPILER} -o ${@} -c ${<}; \
+	 fi
+	@${CC} ${AFLAGS} -D${COMPILER} -o ${@} -c ${<}
+ifneq ($(findstring CYGWIN, ${os}), )
+	@sed -i -r 's/ ([A-Za-z]):/ \/cygdrive\/\1/g' ${@:.o=.d}
+endif
+
+#
+# The rule for creating an object library.
+#
+${COMPILER}/%.a:
+	@if [ 'x${VERBOSE}' = x ];     \
+	 then                          \
+	     echo "  AR    ${@}";      \
+	 else                          \
+	     echo ${AR} -cr ${@} ${^}; \
+	 fi
+	@${AR} -cr ${@} ${^}
+
+#
+# The rule for linking the application.
+#
+${COMPILER}/%.axf:
+	@if [ 'x${VERBOSE}' = x ];                                              \
+	 then                                                                   \
+	     echo "  LD    ${@}";                                               \
+	 else                                                                   \
+	     echo ${LD} -T ${SCATTERsourcerygxx_${notdir ${@:.axf=}}}           \
+	          ${LDFLAGSsourcerygxx_${notdir ${@:.axf=}}} ${LDFLAGS} -o ${@} \
+	          $(filter %.o %.a, ${^});                                      \
+	 fi;                                                                    \
+	${LD} -T ${SCATTERsourcerygxx_${notdir ${@:.axf=}}}                     \
+	      ${LDFLAGSsourcerygxx_${notdir ${@:.axf=}}} ${LDFLAGS} -o ${@}     \
+	      $(filter %.o %.a, ${^})
+	@${OBJCOPY} -O binary ${@} ${@:.axf=.bin}
+endif
