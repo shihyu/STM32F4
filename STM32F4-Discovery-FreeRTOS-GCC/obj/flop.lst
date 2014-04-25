@@ -1,0 +1,1241 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.eabi_attribute 27, 3
+   4              		.fpu fpv4-sp-d16
+   5              		.eabi_attribute 20, 1
+   6              		.eabi_attribute 21, 1
+   7              		.eabi_attribute 23, 3
+   8              		.eabi_attribute 24, 1
+   9              		.eabi_attribute 25, 1
+  10              		.eabi_attribute 26, 1
+  11              		.eabi_attribute 30, 6
+  12              		.eabi_attribute 34, 1
+  13              		.eabi_attribute 18, 4
+  14              		.thumb
+  15              		.file	"flop.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.bss.usTaskCheck,"aw",%nobits
+  20              		.align	2
+  23              	usTaskCheck:
+  24 0000 00000000 		.space	8
+  24      00000000 
+  25              		.section	.rodata
+  26              		.align	2
+  27              	.LC0:
+  28 0000 4D617468 		.ascii	"Math1\000"
+  28      3100
+  29 0006 0000     		.align	2
+  30              	.LC1:
+  31 0008 4D617468 		.ascii	"Math2\000"
+  31      3200
+  32 000e 0000     		.align	2
+  33              	.LC2:
+  34 0010 4D617468 		.ascii	"Math3\000"
+  34      3300
+  35 0016 0000     		.align	2
+  36              	.LC3:
+  37 0018 4D617468 		.ascii	"Math4\000"
+  37      3400
+  38 001e 0000     		.section	.text.vStartMathTasks,"ax",%progbits
+  39              		.align	2
+  40              		.global	vStartMathTasks
+  41              		.thumb
+  42              		.thumb_func
+  44              	vStartMathTasks:
+  45              	.LFB110:
+  46              		.file 1 "App/Common/Minimal/flop.c"
+   1:App/Common/Minimal/flop.c **** /*
+   2:App/Common/Minimal/flop.c ****     FreeRTOS V7.5.3 - Copyright (C) 2013 Real Time Engineers Ltd. 
+   3:App/Common/Minimal/flop.c ****     All rights reserved
+   4:App/Common/Minimal/flop.c **** 
+   5:App/Common/Minimal/flop.c ****     VISIT http://www.FreeRTOS.org TO ENSURE YOU ARE USING THE LATEST VERSION.
+   6:App/Common/Minimal/flop.c **** 
+   7:App/Common/Minimal/flop.c ****     ***************************************************************************
+   8:App/Common/Minimal/flop.c ****      *                                                                       *
+   9:App/Common/Minimal/flop.c ****      *    FreeRTOS provides completely free yet professionally developed,    *
+  10:App/Common/Minimal/flop.c ****      *    robust, strictly quality controlled, supported, and cross          *
+  11:App/Common/Minimal/flop.c ****      *    platform software that has become a de facto standard.             *
+  12:App/Common/Minimal/flop.c ****      *                                                                       *
+  13:App/Common/Minimal/flop.c ****      *    Help yourself get started quickly and support the FreeRTOS         *
+  14:App/Common/Minimal/flop.c ****      *    project by purchasing a FreeRTOS tutorial book, reference          *
+  15:App/Common/Minimal/flop.c ****      *    manual, or both from: http://www.FreeRTOS.org/Documentation        *
+  16:App/Common/Minimal/flop.c ****      *                                                                       *
+  17:App/Common/Minimal/flop.c ****      *    Thank you!                                                         *
+  18:App/Common/Minimal/flop.c ****      *                                                                       *
+  19:App/Common/Minimal/flop.c ****     ***************************************************************************
+  20:App/Common/Minimal/flop.c **** 
+  21:App/Common/Minimal/flop.c ****     This file is part of the FreeRTOS distribution.
+  22:App/Common/Minimal/flop.c **** 
+  23:App/Common/Minimal/flop.c ****     FreeRTOS is free software; you can redistribute it and/or modify it under
+  24:App/Common/Minimal/flop.c ****     the terms of the GNU General Public License (version 2) as published by the
+  25:App/Common/Minimal/flop.c ****     Free Software Foundation >>!AND MODIFIED BY!<< the FreeRTOS exception.
+  26:App/Common/Minimal/flop.c **** 
+  27:App/Common/Minimal/flop.c ****     >>! NOTE: The modification to the GPL is included to allow you to distribute
+  28:App/Common/Minimal/flop.c ****     >>! a combined work that includes FreeRTOS without being obliged to provide
+  29:App/Common/Minimal/flop.c ****     >>! the source code for proprietary components outside of the FreeRTOS
+  30:App/Common/Minimal/flop.c ****     >>! kernel.
+  31:App/Common/Minimal/flop.c **** 
+  32:App/Common/Minimal/flop.c ****     FreeRTOS is distributed in the hope that it will be useful, but WITHOUT ANY
+  33:App/Common/Minimal/flop.c ****     WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  34:App/Common/Minimal/flop.c ****     FOR A PARTICULAR PURPOSE.  Full license text is available from the following
+  35:App/Common/Minimal/flop.c ****     link: http://www.freertos.org/a00114.html
+  36:App/Common/Minimal/flop.c **** 
+  37:App/Common/Minimal/flop.c ****     1 tab == 4 spaces!
+  38:App/Common/Minimal/flop.c **** 
+  39:App/Common/Minimal/flop.c ****     ***************************************************************************
+  40:App/Common/Minimal/flop.c ****      *                                                                       *
+  41:App/Common/Minimal/flop.c ****      *    Having a problem?  Start by reading the FAQ "My application does   *
+  42:App/Common/Minimal/flop.c ****      *    not run, what could be wrong?"                                     *
+  43:App/Common/Minimal/flop.c ****      *                                                                       *
+  44:App/Common/Minimal/flop.c ****      *    http://www.FreeRTOS.org/FAQHelp.html                               *
+  45:App/Common/Minimal/flop.c ****      *                                                                       *
+  46:App/Common/Minimal/flop.c ****     ***************************************************************************
+  47:App/Common/Minimal/flop.c **** 
+  48:App/Common/Minimal/flop.c ****     http://www.FreeRTOS.org - Documentation, books, training, latest versions,
+  49:App/Common/Minimal/flop.c ****     license and Real Time Engineers Ltd. contact details.
+  50:App/Common/Minimal/flop.c **** 
+  51:App/Common/Minimal/flop.c ****     http://www.FreeRTOS.org/plus - A selection of FreeRTOS ecosystem products,
+  52:App/Common/Minimal/flop.c ****     including FreeRTOS+Trace - an indispensable productivity tool, a DOS
+  53:App/Common/Minimal/flop.c ****     compatible FAT file system, and our tiny thread aware UDP/IP stack.
+  54:App/Common/Minimal/flop.c **** 
+  55:App/Common/Minimal/flop.c ****     http://www.OpenRTOS.com - Real Time Engineers ltd license FreeRTOS to High
+  56:App/Common/Minimal/flop.c ****     Integrity Systems to sell under the OpenRTOS brand.  Low cost OpenRTOS
+  57:App/Common/Minimal/flop.c ****     licenses offer ticketed support, indemnification and middleware.
+  58:App/Common/Minimal/flop.c **** 
+  59:App/Common/Minimal/flop.c ****     http://www.SafeRTOS.com - High Integrity Systems also provide a safety
+  60:App/Common/Minimal/flop.c ****     engineered and independently SIL3 certified version for use in safety and
+  61:App/Common/Minimal/flop.c ****     mission critical applications that require provable dependability.
+  62:App/Common/Minimal/flop.c **** 
+  63:App/Common/Minimal/flop.c ****     1 tab == 4 spaces!
+  64:App/Common/Minimal/flop.c **** */
+  65:App/Common/Minimal/flop.c **** 
+  66:App/Common/Minimal/flop.c **** /*
+  67:App/Common/Minimal/flop.c ****  * Creates eight tasks, each of which loops continuously performing a floating 
+  68:App/Common/Minimal/flop.c ****  * point calculation.
+  69:App/Common/Minimal/flop.c ****  *
+  70:App/Common/Minimal/flop.c ****  * All the tasks run at the idle priority and never block or yield.  This causes
+  71:App/Common/Minimal/flop.c ****  * all eight tasks to time slice with the idle task.  Running at the idle 
+  72:App/Common/Minimal/flop.c ****  * priority means that these tasks will get pre-empted any time another task is 
+  73:App/Common/Minimal/flop.c ****  * ready to run or a time slice occurs.  More often than not the pre-emption 
+  74:App/Common/Minimal/flop.c ****  * will occur mid calculation, creating a good test of the schedulers context 
+  75:App/Common/Minimal/flop.c ****  * switch mechanism - a calculation producing an unexpected result could be a 
+  76:App/Common/Minimal/flop.c ****  * symptom of a corruption in the context of a task.
+  77:App/Common/Minimal/flop.c ****  */
+  78:App/Common/Minimal/flop.c **** 
+  79:App/Common/Minimal/flop.c **** #include <stdlib.h>
+  80:App/Common/Minimal/flop.c **** #include <math.h>
+  81:App/Common/Minimal/flop.c **** 
+  82:App/Common/Minimal/flop.c **** /* Scheduler include files. */
+  83:App/Common/Minimal/flop.c **** #include "FreeRTOS.h"
+  84:App/Common/Minimal/flop.c **** #include "task.h"
+  85:App/Common/Minimal/flop.c **** 
+  86:App/Common/Minimal/flop.c **** /* Demo program include files. */
+  87:App/Common/Minimal/flop.c **** #include "flop.h"
+  88:App/Common/Minimal/flop.c **** 
+  89:App/Common/Minimal/flop.c **** #define mathSTACK_SIZE		configMINIMAL_STACK_SIZE
+  90:App/Common/Minimal/flop.c **** #define mathNUMBER_OF_TASKS  ( 4 )
+  91:App/Common/Minimal/flop.c **** 
+  92:App/Common/Minimal/flop.c **** /* Four tasks, each of which performs a different floating point calculation.
+  93:App/Common/Minimal/flop.c **** Each of the four is created twice. */
+  94:App/Common/Minimal/flop.c **** static portTASK_FUNCTION_PROTO( vCompetingMathTask1, pvParameters );
+  95:App/Common/Minimal/flop.c **** static portTASK_FUNCTION_PROTO( vCompetingMathTask2, pvParameters );
+  96:App/Common/Minimal/flop.c **** static portTASK_FUNCTION_PROTO( vCompetingMathTask3, pvParameters );
+  97:App/Common/Minimal/flop.c **** static portTASK_FUNCTION_PROTO( vCompetingMathTask4, pvParameters );
+  98:App/Common/Minimal/flop.c **** 
+  99:App/Common/Minimal/flop.c **** /* These variables are used to check that all the tasks are still running.  If a
+ 100:App/Common/Minimal/flop.c **** task gets a calculation wrong it will stop setting its check variable. */
+ 101:App/Common/Minimal/flop.c **** static volatile unsigned short usTaskCheck[ mathNUMBER_OF_TASKS ] = { ( unsigned short ) 0 };
+ 102:App/Common/Minimal/flop.c **** 
+ 103:App/Common/Minimal/flop.c **** /*-----------------------------------------------------------*/
+ 104:App/Common/Minimal/flop.c **** 
+ 105:App/Common/Minimal/flop.c **** void vStartMathTasks( unsigned portBASE_TYPE uxPriority )
+ 106:App/Common/Minimal/flop.c **** {
+  47              		.loc 1 106 0
+  48              		.cfi_startproc
+  49              		@ args = 0, pretend = 0, frame = 8
+  50              		@ frame_needed = 1, uses_anonymous_args = 0
+  51 0000 80B5     		push	{r7, lr}
+  52              	.LCFI0:
+  53              		.cfi_def_cfa_offset 8
+  54              		.cfi_offset 7, -8
+  55              		.cfi_offset 14, -4
+  56 0002 86B0     		sub	sp, sp, #24
+  57              	.LCFI1:
+  58              		.cfi_def_cfa_offset 32
+  59 0004 04AF     		add	r7, sp, #16
+  60              	.LCFI2:
+  61              		.cfi_def_cfa 7, 16
+  62 0006 7860     		str	r0, [r7, #4]
+ 107:App/Common/Minimal/flop.c **** 	xTaskCreate( vCompetingMathTask1, ( signed char * ) "Math1", mathSTACK_SIZE, ( void * ) &( usTaskC
+  63              		.loc 1 107 0
+  64 0008 7B68     		ldr	r3, [r7, #4]
+  65 000a 0093     		str	r3, [sp]
+  66 000c 0023     		movs	r3, #0
+  67 000e 0193     		str	r3, [sp, #4]
+  68 0010 0023     		movs	r3, #0
+  69 0012 0293     		str	r3, [sp, #8]
+  70 0014 0023     		movs	r3, #0
+  71 0016 0393     		str	r3, [sp, #12]
+  72 0018 1948     		ldr	r0, .L2
+  73 001a 1A49     		ldr	r1, .L2+4
+  74 001c 8222     		movs	r2, #130
+  75 001e 1A4B     		ldr	r3, .L2+8
+  76 0020 FFF7FEFF 		bl	xTaskGenericCreate
+ 108:App/Common/Minimal/flop.c **** 	xTaskCreate( vCompetingMathTask2, ( signed char * ) "Math2", mathSTACK_SIZE, ( void * ) &( usTaskC
+  77              		.loc 1 108 0
+  78 0024 7B68     		ldr	r3, [r7, #4]
+  79 0026 0093     		str	r3, [sp]
+  80 0028 0023     		movs	r3, #0
+  81 002a 0193     		str	r3, [sp, #4]
+  82 002c 0023     		movs	r3, #0
+  83 002e 0293     		str	r3, [sp, #8]
+  84 0030 0023     		movs	r3, #0
+  85 0032 0393     		str	r3, [sp, #12]
+  86 0034 1548     		ldr	r0, .L2+12
+  87 0036 1649     		ldr	r1, .L2+16
+  88 0038 8222     		movs	r2, #130
+  89 003a 164B     		ldr	r3, .L2+20
+  90 003c FFF7FEFF 		bl	xTaskGenericCreate
+ 109:App/Common/Minimal/flop.c **** 	xTaskCreate( vCompetingMathTask3, ( signed char * ) "Math3", mathSTACK_SIZE, ( void * ) &( usTaskC
+  91              		.loc 1 109 0
+  92 0040 7B68     		ldr	r3, [r7, #4]
+  93 0042 0093     		str	r3, [sp]
+  94 0044 0023     		movs	r3, #0
+  95 0046 0193     		str	r3, [sp, #4]
+  96 0048 0023     		movs	r3, #0
+  97 004a 0293     		str	r3, [sp, #8]
+  98 004c 0023     		movs	r3, #0
+  99 004e 0393     		str	r3, [sp, #12]
+ 100 0050 1148     		ldr	r0, .L2+24
+ 101 0052 1249     		ldr	r1, .L2+28
+ 102 0054 8222     		movs	r2, #130
+ 103 0056 124B     		ldr	r3, .L2+32
+ 104 0058 FFF7FEFF 		bl	xTaskGenericCreate
+ 110:App/Common/Minimal/flop.c **** 	xTaskCreate( vCompetingMathTask4, ( signed char * ) "Math4", mathSTACK_SIZE, ( void * ) &( usTaskC
+ 105              		.loc 1 110 0
+ 106 005c 7B68     		ldr	r3, [r7, #4]
+ 107 005e 0093     		str	r3, [sp]
+ 108 0060 0023     		movs	r3, #0
+ 109 0062 0193     		str	r3, [sp, #4]
+ 110 0064 0023     		movs	r3, #0
+ 111 0066 0293     		str	r3, [sp, #8]
+ 112 0068 0023     		movs	r3, #0
+ 113 006a 0393     		str	r3, [sp, #12]
+ 114 006c 0D48     		ldr	r0, .L2+36
+ 115 006e 0E49     		ldr	r1, .L2+40
+ 116 0070 8222     		movs	r2, #130
+ 117 0072 0E4B     		ldr	r3, .L2+44
+ 118 0074 FFF7FEFF 		bl	xTaskGenericCreate
+ 111:App/Common/Minimal/flop.c **** }
+ 119              		.loc 1 111 0
+ 120 0078 0837     		adds	r7, r7, #8
+ 121 007a BD46     		mov	sp, r7
+ 122              		@ sp needed
+ 123 007c 80BD     		pop	{r7, pc}
+ 124              	.L3:
+ 125 007e 00BF     		.align	2
+ 126              	.L2:
+ 127 0080 00000000 		.word	vCompetingMathTask1
+ 128 0084 00000000 		.word	.LC0
+ 129 0088 00000000 		.word	usTaskCheck
+ 130 008c 00000000 		.word	vCompetingMathTask2
+ 131 0090 08000000 		.word	.LC1
+ 132 0094 02000000 		.word	usTaskCheck+2
+ 133 0098 00000000 		.word	vCompetingMathTask3
+ 134 009c 10000000 		.word	.LC2
+ 135 00a0 04000000 		.word	usTaskCheck+4
+ 136 00a4 00000000 		.word	vCompetingMathTask4
+ 137 00a8 18000000 		.word	.LC3
+ 138 00ac 06000000 		.word	usTaskCheck+6
+ 139              		.cfi_endproc
+ 140              	.LFE110:
+ 142              		.global	__aeabi_dadd
+ 143              		.global	__aeabi_dmul
+ 144              		.global	__aeabi_dsub
+ 145              		.global	__aeabi_dcmpgt
+ 146              		.section	.text.vCompetingMathTask1,"ax",%progbits
+ 147              		.align	2
+ 148              		.thumb
+ 149              		.thumb_func
+ 151              	vCompetingMathTask1:
+ 152              	.LFB111:
+ 112:App/Common/Minimal/flop.c **** /*-----------------------------------------------------------*/
+ 113:App/Common/Minimal/flop.c **** 
+ 114:App/Common/Minimal/flop.c **** static portTASK_FUNCTION( vCompetingMathTask1, pvParameters )
+ 115:App/Common/Minimal/flop.c **** {
+ 153              		.loc 1 115 0
+ 154              		.cfi_startproc
+ 155              		@ args = 0, pretend = 0, frame = 56
+ 156              		@ frame_needed = 1, uses_anonymous_args = 0
+ 157 0000 B0B5     		push	{r4, r5, r7, lr}
+ 158              	.LCFI3:
+ 159              		.cfi_def_cfa_offset 16
+ 160              		.cfi_offset 4, -16
+ 161              		.cfi_offset 5, -12
+ 162              		.cfi_offset 7, -8
+ 163              		.cfi_offset 14, -4
+ 164 0002 8EB0     		sub	sp, sp, #56
+ 165              	.LCFI4:
+ 166              		.cfi_def_cfa_offset 72
+ 167 0004 00AF     		add	r7, sp, #0
+ 168              	.LCFI5:
+ 169              		.cfi_def_cfa_register 7
+ 170 0006 7860     		str	r0, [r7, #4]
+ 116:App/Common/Minimal/flop.c **** volatile portDOUBLE d1, d2, d3, d4;
+ 117:App/Common/Minimal/flop.c **** volatile unsigned short *pusTaskCheckVariable;
+ 118:App/Common/Minimal/flop.c **** volatile portDOUBLE dAnswer;
+ 119:App/Common/Minimal/flop.c **** short sError = pdFALSE;
+ 171              		.loc 1 119 0
+ 172 0008 0023     		movs	r3, #0
+ 173 000a FB86     		strh	r3, [r7, #54]	@ movhi
+ 120:App/Common/Minimal/flop.c **** 
+ 121:App/Common/Minimal/flop.c **** 	/* Some ports require that tasks that use a hardware floating point unit
+ 122:App/Common/Minimal/flop.c **** 	tell the kernel that they require a floating point context before any
+ 123:App/Common/Minimal/flop.c **** 	floating point instructions are executed. */
+ 124:App/Common/Minimal/flop.c **** 	portTASK_USES_FLOATING_POINT();
+ 125:App/Common/Minimal/flop.c **** 
+ 126:App/Common/Minimal/flop.c **** 	d1 = 123.4567;
+ 174              		.loc 1 126 0
+ 175 000c 32A3     		adr	r3, .L10
+ 176 000e D3E90023 		ldrd	r2, [r3]
+ 177 0012 C7E90A23 		strd	r2, [r7, #40]
+ 127:App/Common/Minimal/flop.c **** 	d2 = 2345.6789;
+ 178              		.loc 1 127 0
+ 179 0016 32A3     		adr	r3, .L10+8
+ 180 0018 D3E90023 		ldrd	r2, [r3]
+ 181 001c C7E90823 		strd	r2, [r7, #32]
+ 128:App/Common/Minimal/flop.c **** 	d3 = -918.222;
+ 182              		.loc 1 128 0
+ 183 0020 31A3     		adr	r3, .L10+16
+ 184 0022 D3E90023 		ldrd	r2, [r3]
+ 185 0026 C7E90623 		strd	r2, [r7, #24]
+ 129:App/Common/Minimal/flop.c **** 
+ 130:App/Common/Minimal/flop.c **** 	dAnswer = ( d1 + d2 ) * d3;
+ 186              		.loc 1 130 0
+ 187 002a D7E90A01 		ldrd	r0, [r7, #40]
+ 188 002e D7E90823 		ldrd	r2, [r7, #32]
+ 189 0032 FFF7FEFF 		bl	__aeabi_dadd
+ 190 0036 0246     		mov	r2, r0
+ 191 0038 0B46     		mov	r3, r1
+ 192 003a 1046     		mov	r0, r2
+ 193 003c 1946     		mov	r1, r3
+ 194 003e D7E90623 		ldrd	r2, [r7, #24]
+ 195 0042 FFF7FEFF 		bl	__aeabi_dmul
+ 196 0046 0246     		mov	r2, r0
+ 197 0048 0B46     		mov	r3, r1
+ 198 004a C7E90223 		strd	r2, [r7, #8]
+ 131:App/Common/Minimal/flop.c **** 
+ 132:App/Common/Minimal/flop.c **** 	/* The variable this task increments to show it is still running is passed in
+ 133:App/Common/Minimal/flop.c **** 	as the parameter. */
+ 134:App/Common/Minimal/flop.c **** 	pusTaskCheckVariable = ( unsigned short * ) pvParameters;
+ 199              		.loc 1 134 0
+ 200 004e 7B68     		ldr	r3, [r7, #4]
+ 201 0050 3B63     		str	r3, [r7, #48]
+ 202              	.L8:
+ 135:App/Common/Minimal/flop.c **** 
+ 136:App/Common/Minimal/flop.c **** 	/* Keep performing a calculation and checking the result against a constant. */
+ 137:App/Common/Minimal/flop.c **** 	for(;;)
+ 138:App/Common/Minimal/flop.c **** 	{
+ 139:App/Common/Minimal/flop.c **** 		d1 = 123.4567;
+ 203              		.loc 1 139 0
+ 204 0052 21A3     		adr	r3, .L10
+ 205 0054 D3E90023 		ldrd	r2, [r3]
+ 206 0058 C7E90A23 		strd	r2, [r7, #40]
+ 140:App/Common/Minimal/flop.c **** 		d2 = 2345.6789;
+ 207              		.loc 1 140 0
+ 208 005c 20A3     		adr	r3, .L10+8
+ 209 005e D3E90023 		ldrd	r2, [r3]
+ 210 0062 C7E90823 		strd	r2, [r7, #32]
+ 141:App/Common/Minimal/flop.c **** 		d3 = -918.222;
+ 211              		.loc 1 141 0
+ 212 0066 20A3     		adr	r3, .L10+16
+ 213 0068 D3E90023 		ldrd	r2, [r3]
+ 214 006c C7E90623 		strd	r2, [r7, #24]
+ 142:App/Common/Minimal/flop.c **** 
+ 143:App/Common/Minimal/flop.c **** 		d4 = ( d1 + d2 ) * d3;
+ 215              		.loc 1 143 0
+ 216 0070 D7E90A01 		ldrd	r0, [r7, #40]
+ 217 0074 D7E90823 		ldrd	r2, [r7, #32]
+ 218 0078 FFF7FEFF 		bl	__aeabi_dadd
+ 219 007c 0246     		mov	r2, r0
+ 220 007e 0B46     		mov	r3, r1
+ 221 0080 1046     		mov	r0, r2
+ 222 0082 1946     		mov	r1, r3
+ 223 0084 D7E90623 		ldrd	r2, [r7, #24]
+ 224 0088 FFF7FEFF 		bl	__aeabi_dmul
+ 225 008c 0246     		mov	r2, r0
+ 226 008e 0B46     		mov	r3, r1
+ 227 0090 C7E90423 		strd	r2, [r7, #16]
+ 144:App/Common/Minimal/flop.c **** 
+ 145:App/Common/Minimal/flop.c **** 		#if configUSE_PREEMPTION == 0
+ 146:App/Common/Minimal/flop.c **** 			taskYIELD();
+ 147:App/Common/Minimal/flop.c **** 		#endif
+ 148:App/Common/Minimal/flop.c **** 
+ 149:App/Common/Minimal/flop.c **** 		/* If the calculation does not match the expected constant, stop the
+ 150:App/Common/Minimal/flop.c **** 		increment of the check variable. */
+ 151:App/Common/Minimal/flop.c **** 		if( fabs( d4 - dAnswer ) > 0.001 )
+ 228              		.loc 1 151 0
+ 229 0094 D7E90401 		ldrd	r0, [r7, #16]
+ 230 0098 D7E90223 		ldrd	r2, [r7, #8]
+ 231 009c FFF7FEFF 		bl	__aeabi_dsub
+ 232 00a0 0246     		mov	r2, r0
+ 233 00a2 0B46     		mov	r3, r1
+ 234 00a4 1446     		mov	r4, r2
+ 235 00a6 23F00045 		bic	r5, r3, #-2147483648
+ 236 00aa 2046     		mov	r0, r4
+ 237 00ac 2946     		mov	r1, r5
+ 238 00ae 10A3     		adr	r3, .L10+24
+ 239 00b0 D3E90023 		ldrd	r2, [r3]
+ 240 00b4 FFF7FEFF 		bl	__aeabi_dcmpgt
+ 241 00b8 0346     		mov	r3, r0
+ 242 00ba 002B     		cmp	r3, #0
+ 243 00bc 01D0     		beq	.L5
+ 152:App/Common/Minimal/flop.c **** 		{
+ 153:App/Common/Minimal/flop.c **** 			sError = pdTRUE;
+ 244              		.loc 1 153 0
+ 245 00be 0123     		movs	r3, #1
+ 246 00c0 FB86     		strh	r3, [r7, #54]	@ movhi
+ 247              	.L5:
+ 154:App/Common/Minimal/flop.c **** 		}
+ 155:App/Common/Minimal/flop.c **** 
+ 156:App/Common/Minimal/flop.c **** 		if( sError == pdFALSE )
+ 248              		.loc 1 156 0
+ 249 00c2 B7F93630 		ldrsh	r3, [r7, #54]
+ 250 00c6 002B     		cmp	r3, #0
+ 251 00c8 03D1     		bne	.L7
+ 157:App/Common/Minimal/flop.c **** 		{
+ 158:App/Common/Minimal/flop.c **** 			/* If the calculation has always been correct then set set the check
+ 159:App/Common/Minimal/flop.c **** 			variable.  The check variable will get set to pdFALSE each time
+ 160:App/Common/Minimal/flop.c **** 			xAreMathsTaskStillRunning() is executed. */
+ 161:App/Common/Minimal/flop.c **** 			( *pusTaskCheckVariable ) = pdTRUE;
+ 252              		.loc 1 161 0
+ 253 00ca 3B6B     		ldr	r3, [r7, #48]
+ 254 00cc 0122     		movs	r2, #1
+ 255 00ce 1A80     		strh	r2, [r3]	@ movhi
+ 162:App/Common/Minimal/flop.c **** 		}
+ 163:App/Common/Minimal/flop.c **** 
+ 164:App/Common/Minimal/flop.c **** 		#if configUSE_PREEMPTION == 0
+ 165:App/Common/Minimal/flop.c **** 			taskYIELD();
+ 166:App/Common/Minimal/flop.c **** 		#endif
+ 167:App/Common/Minimal/flop.c **** 
+ 168:App/Common/Minimal/flop.c **** 	}
+ 256              		.loc 1 168 0
+ 257 00d0 BFE7     		b	.L8
+ 258              	.L7:
+ 259 00d2 BEE7     		b	.L8
+ 260              	.L11:
+ 261 00d4 AFF30080 		.align	3
+ 262              	.L10:
+ 263 00d8 000000A0 		.word	-1610612736
+ 264 00dc 3ADD5E40 		.word	1079958842
+ 265 00e0 000000A0 		.word	-1610612736
+ 266 00e4 5B53A240 		.word	1084379995
+ 267 00e8 000000A0 		.word	-1610612736
+ 268 00ec C6B18CC0 		.word	-1064521274
+ 269 00f0 000000E0 		.word	-536870912
+ 270 00f4 4D62503F 		.word	1062232653
+ 271              		.cfi_endproc
+ 272              	.LFE111:
+ 274              		.global	__aeabi_ddiv
+ 275              		.section	.text.vCompetingMathTask2,"ax",%progbits
+ 276              		.align	2
+ 277              		.thumb
+ 278              		.thumb_func
+ 280              	vCompetingMathTask2:
+ 281              	.LFB112:
+ 169:App/Common/Minimal/flop.c **** }
+ 170:App/Common/Minimal/flop.c **** /*-----------------------------------------------------------*/
+ 171:App/Common/Minimal/flop.c **** 
+ 172:App/Common/Minimal/flop.c **** static portTASK_FUNCTION( vCompetingMathTask2, pvParameters )
+ 173:App/Common/Minimal/flop.c **** {
+ 282              		.loc 1 173 0
+ 283              		.cfi_startproc
+ 284              		@ args = 0, pretend = 0, frame = 56
+ 285              		@ frame_needed = 1, uses_anonymous_args = 0
+ 286 0000 B0B5     		push	{r4, r5, r7, lr}
+ 287              	.LCFI6:
+ 288              		.cfi_def_cfa_offset 16
+ 289              		.cfi_offset 4, -16
+ 290              		.cfi_offset 5, -12
+ 291              		.cfi_offset 7, -8
+ 292              		.cfi_offset 14, -4
+ 293 0002 8EB0     		sub	sp, sp, #56
+ 294              	.LCFI7:
+ 295              		.cfi_def_cfa_offset 72
+ 296 0004 00AF     		add	r7, sp, #0
+ 297              	.LCFI8:
+ 298              		.cfi_def_cfa_register 7
+ 299 0006 7860     		str	r0, [r7, #4]
+ 174:App/Common/Minimal/flop.c **** volatile portDOUBLE d1, d2, d3, d4;
+ 175:App/Common/Minimal/flop.c **** volatile unsigned short *pusTaskCheckVariable;
+ 176:App/Common/Minimal/flop.c **** volatile portDOUBLE dAnswer;
+ 177:App/Common/Minimal/flop.c **** short sError = pdFALSE;
+ 300              		.loc 1 177 0
+ 301 0008 0023     		movs	r3, #0
+ 302 000a FB86     		strh	r3, [r7, #54]	@ movhi
+ 178:App/Common/Minimal/flop.c **** 
+ 179:App/Common/Minimal/flop.c **** 	/* Some ports require that tasks that use a hardware floating point unit
+ 180:App/Common/Minimal/flop.c **** 	tell the kernel that they require a floating point context before any
+ 181:App/Common/Minimal/flop.c **** 	floating point instructions are executed. */
+ 182:App/Common/Minimal/flop.c **** 	portTASK_USES_FLOATING_POINT();
+ 183:App/Common/Minimal/flop.c **** 
+ 184:App/Common/Minimal/flop.c **** 	d1 = -389.38;
+ 303              		.loc 1 184 0
+ 304 000c 32A3     		adr	r3, .L18
+ 305 000e D3E90023 		ldrd	r2, [r3]
+ 306 0012 C7E90A23 		strd	r2, [r7, #40]
+ 185:App/Common/Minimal/flop.c **** 	d2 = 32498.2;
+ 307              		.loc 1 185 0
+ 308 0016 32A3     		adr	r3, .L18+8
+ 309 0018 D3E90023 		ldrd	r2, [r3]
+ 310 001c C7E90823 		strd	r2, [r7, #32]
+ 186:App/Common/Minimal/flop.c **** 	d3 = -2.0001;
+ 311              		.loc 1 186 0
+ 312 0020 4FF0C042 		mov	r2, #1610612736
+ 313 0024 324B     		ldr	r3, .L18+24
+ 314 0026 C7E90623 		strd	r2, [r7, #24]
+ 187:App/Common/Minimal/flop.c **** 
+ 188:App/Common/Minimal/flop.c **** 	dAnswer = ( d1 / d2 ) * d3;
+ 315              		.loc 1 188 0
+ 316 002a D7E90A01 		ldrd	r0, [r7, #40]
+ 317 002e D7E90823 		ldrd	r2, [r7, #32]
+ 318 0032 FFF7FEFF 		bl	__aeabi_ddiv
+ 319 0036 0246     		mov	r2, r0
+ 320 0038 0B46     		mov	r3, r1
+ 321 003a 1046     		mov	r0, r2
+ 322 003c 1946     		mov	r1, r3
+ 323 003e D7E90623 		ldrd	r2, [r7, #24]
+ 324 0042 FFF7FEFF 		bl	__aeabi_dmul
+ 325 0046 0246     		mov	r2, r0
+ 326 0048 0B46     		mov	r3, r1
+ 327 004a C7E90223 		strd	r2, [r7, #8]
+ 189:App/Common/Minimal/flop.c **** 
+ 190:App/Common/Minimal/flop.c **** 
+ 191:App/Common/Minimal/flop.c **** 	/* The variable this task increments to show it is still running is passed in
+ 192:App/Common/Minimal/flop.c **** 	as the parameter. */
+ 193:App/Common/Minimal/flop.c **** 	pusTaskCheckVariable = ( unsigned short * ) pvParameters;
+ 328              		.loc 1 193 0
+ 329 004e 7B68     		ldr	r3, [r7, #4]
+ 330 0050 3B63     		str	r3, [r7, #48]
+ 331              	.L16:
+ 194:App/Common/Minimal/flop.c **** 
+ 195:App/Common/Minimal/flop.c **** 	/* Keep performing a calculation and checking the result against a constant. */
+ 196:App/Common/Minimal/flop.c **** 	for( ;; )
+ 197:App/Common/Minimal/flop.c **** 	{
+ 198:App/Common/Minimal/flop.c **** 		d1 = -389.38;
+ 332              		.loc 1 198 0
+ 333 0052 21A3     		adr	r3, .L18
+ 334 0054 D3E90023 		ldrd	r2, [r3]
+ 335 0058 C7E90A23 		strd	r2, [r7, #40]
+ 199:App/Common/Minimal/flop.c **** 		d2 = 32498.2;
+ 336              		.loc 1 199 0
+ 337 005c 20A3     		adr	r3, .L18+8
+ 338 005e D3E90023 		ldrd	r2, [r3]
+ 339 0062 C7E90823 		strd	r2, [r7, #32]
+ 200:App/Common/Minimal/flop.c **** 		d3 = -2.0001;
+ 340              		.loc 1 200 0
+ 341 0066 4FF0C042 		mov	r2, #1610612736
+ 342 006a 214B     		ldr	r3, .L18+24
+ 343 006c C7E90623 		strd	r2, [r7, #24]
+ 201:App/Common/Minimal/flop.c **** 
+ 202:App/Common/Minimal/flop.c **** 		d4 = ( d1 / d2 ) * d3;
+ 344              		.loc 1 202 0
+ 345 0070 D7E90A01 		ldrd	r0, [r7, #40]
+ 346 0074 D7E90823 		ldrd	r2, [r7, #32]
+ 347 0078 FFF7FEFF 		bl	__aeabi_ddiv
+ 348 007c 0246     		mov	r2, r0
+ 349 007e 0B46     		mov	r3, r1
+ 350 0080 1046     		mov	r0, r2
+ 351 0082 1946     		mov	r1, r3
+ 352 0084 D7E90623 		ldrd	r2, [r7, #24]
+ 353 0088 FFF7FEFF 		bl	__aeabi_dmul
+ 354 008c 0246     		mov	r2, r0
+ 355 008e 0B46     		mov	r3, r1
+ 356 0090 C7E90423 		strd	r2, [r7, #16]
+ 203:App/Common/Minimal/flop.c **** 
+ 204:App/Common/Minimal/flop.c **** 		#if configUSE_PREEMPTION == 0
+ 205:App/Common/Minimal/flop.c **** 			taskYIELD();
+ 206:App/Common/Minimal/flop.c **** 		#endif
+ 207:App/Common/Minimal/flop.c **** 
+ 208:App/Common/Minimal/flop.c **** 		/* If the calculation does not match the expected constant, stop the
+ 209:App/Common/Minimal/flop.c **** 		increment of the check variable. */
+ 210:App/Common/Minimal/flop.c **** 		if( fabs( d4 - dAnswer ) > 0.001 )
+ 357              		.loc 1 210 0
+ 358 0094 D7E90401 		ldrd	r0, [r7, #16]
+ 359 0098 D7E90223 		ldrd	r2, [r7, #8]
+ 360 009c FFF7FEFF 		bl	__aeabi_dsub
+ 361 00a0 0246     		mov	r2, r0
+ 362 00a2 0B46     		mov	r3, r1
+ 363 00a4 1446     		mov	r4, r2
+ 364 00a6 23F00045 		bic	r5, r3, #-2147483648
+ 365 00aa 2046     		mov	r0, r4
+ 366 00ac 2946     		mov	r1, r5
+ 367 00ae 0EA3     		adr	r3, .L18+16
+ 368 00b0 D3E90023 		ldrd	r2, [r3]
+ 369 00b4 FFF7FEFF 		bl	__aeabi_dcmpgt
+ 370 00b8 0346     		mov	r3, r0
+ 371 00ba 002B     		cmp	r3, #0
+ 372 00bc 01D0     		beq	.L13
+ 211:App/Common/Minimal/flop.c **** 		{
+ 212:App/Common/Minimal/flop.c **** 			sError = pdTRUE;
+ 373              		.loc 1 212 0
+ 374 00be 0123     		movs	r3, #1
+ 375 00c0 FB86     		strh	r3, [r7, #54]	@ movhi
+ 376              	.L13:
+ 213:App/Common/Minimal/flop.c **** 		}
+ 214:App/Common/Minimal/flop.c **** 
+ 215:App/Common/Minimal/flop.c **** 		if( sError == pdFALSE )
+ 377              		.loc 1 215 0
+ 378 00c2 B7F93630 		ldrsh	r3, [r7, #54]
+ 379 00c6 002B     		cmp	r3, #0
+ 380 00c8 03D1     		bne	.L15
+ 216:App/Common/Minimal/flop.c **** 		{
+ 217:App/Common/Minimal/flop.c **** 			/* If the calculation has always been correct then set set the check
+ 218:App/Common/Minimal/flop.c **** 			variable.  The check variable will get set to pdFALSE each time
+ 219:App/Common/Minimal/flop.c **** 			xAreMathsTaskStillRunning() is executed. */
+ 220:App/Common/Minimal/flop.c **** 			( *pusTaskCheckVariable ) = pdTRUE;
+ 381              		.loc 1 220 0
+ 382 00ca 3B6B     		ldr	r3, [r7, #48]
+ 383 00cc 0122     		movs	r2, #1
+ 384 00ce 1A80     		strh	r2, [r3]	@ movhi
+ 221:App/Common/Minimal/flop.c **** 		}
+ 222:App/Common/Minimal/flop.c **** 
+ 223:App/Common/Minimal/flop.c **** 		#if configUSE_PREEMPTION == 0
+ 224:App/Common/Minimal/flop.c **** 			taskYIELD();
+ 225:App/Common/Minimal/flop.c **** 		#endif
+ 226:App/Common/Minimal/flop.c **** 	}
+ 385              		.loc 1 226 0
+ 386 00d0 BFE7     		b	.L16
+ 387              	.L15:
+ 388 00d2 BEE7     		b	.L16
+ 389              	.L19:
+ 390 00d4 AFF30080 		.align	3
+ 391              	.L18:
+ 392 00d8 00000080 		.word	-2147483648
+ 393 00dc 145678C0 		.word	-1065855468
+ 394 00e0 000000C0 		.word	-1073741824
+ 395 00e4 8CBCDF40 		.word	1088404620
+ 396 00e8 000000E0 		.word	-536870912
+ 397 00ec 4D62503F 		.word	1062232653
+ 398 00f0 340000C0 		.word	-1073741772
+ 399              		.cfi_endproc
+ 400              	.LFE112:
+ 402              		.global	__aeabi_ui2d
+ 403 00f4 AFF30080 		.section	.text.vCompetingMathTask3,"ax",%progbits
+ 404              		.align	2
+ 405              		.thumb
+ 406              		.thumb_func
+ 408              	vCompetingMathTask3:
+ 409              	.LFB113:
+ 227:App/Common/Minimal/flop.c **** }
+ 228:App/Common/Minimal/flop.c **** /*-----------------------------------------------------------*/
+ 229:App/Common/Minimal/flop.c **** 
+ 230:App/Common/Minimal/flop.c **** static portTASK_FUNCTION( vCompetingMathTask3, pvParameters )
+ 231:App/Common/Minimal/flop.c **** {
+ 410              		.loc 1 231 0
+ 411              		.cfi_startproc
+ 412              		@ args = 0, pretend = 0, frame = 56
+ 413              		@ frame_needed = 1, uses_anonymous_args = 0
+ 414 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 415              	.LCFI9:
+ 416              		.cfi_def_cfa_offset 20
+ 417              		.cfi_offset 4, -20
+ 418              		.cfi_offset 5, -16
+ 419              		.cfi_offset 6, -12
+ 420              		.cfi_offset 7, -8
+ 421              		.cfi_offset 14, -4
+ 422 0002 8FB0     		sub	sp, sp, #60
+ 423              	.LCFI10:
+ 424              		.cfi_def_cfa_offset 80
+ 425 0004 00AF     		add	r7, sp, #0
+ 426              	.LCFI11:
+ 427              		.cfi_def_cfa_register 7
+ 428 0006 7860     		str	r0, [r7, #4]
+ 232:App/Common/Minimal/flop.c **** volatile portDOUBLE *pdArray, dTotal1, dTotal2, dDifference;
+ 233:App/Common/Minimal/flop.c **** volatile unsigned short *pusTaskCheckVariable;
+ 234:App/Common/Minimal/flop.c **** const size_t xArraySize = 10;
+ 429              		.loc 1 234 0
+ 430 0008 0A23     		movs	r3, #10
+ 431 000a FB62     		str	r3, [r7, #44]
+ 235:App/Common/Minimal/flop.c **** size_t xPosition;
+ 236:App/Common/Minimal/flop.c **** short sError = pdFALSE;
+ 432              		.loc 1 236 0
+ 433 000c 0023     		movs	r3, #0
+ 434 000e 7B86     		strh	r3, [r7, #50]	@ movhi
+ 237:App/Common/Minimal/flop.c **** 
+ 238:App/Common/Minimal/flop.c **** 	/* Some ports require that tasks that use a hardware floating point unit
+ 239:App/Common/Minimal/flop.c **** 	tell the kernel that they require a floating point context before any
+ 240:App/Common/Minimal/flop.c **** 	floating point instructions are executed. */
+ 241:App/Common/Minimal/flop.c **** 	portTASK_USES_FLOATING_POINT();
+ 242:App/Common/Minimal/flop.c **** 
+ 243:App/Common/Minimal/flop.c **** 	/* The variable this task increments to show it is still running is passed in
+ 244:App/Common/Minimal/flop.c **** 	as the parameter. */
+ 245:App/Common/Minimal/flop.c **** 	pusTaskCheckVariable = ( unsigned short * ) pvParameters;
+ 435              		.loc 1 245 0
+ 436 0010 7B68     		ldr	r3, [r7, #4]
+ 437 0012 BB62     		str	r3, [r7, #40]
+ 246:App/Common/Minimal/flop.c **** 
+ 247:App/Common/Minimal/flop.c **** 	pdArray = ( portDOUBLE * ) pvPortMalloc( xArraySize * sizeof( portDOUBLE ) );
+ 438              		.loc 1 247 0
+ 439 0014 FB6A     		ldr	r3, [r7, #44]
+ 440 0016 DB00     		lsls	r3, r3, #3
+ 441 0018 1846     		mov	r0, r3
+ 442 001a FFF7FEFF 		bl	pvPortMalloc
+ 443 001e 7862     		str	r0, [r7, #36]
+ 444              	.L28:
+ 248:App/Common/Minimal/flop.c **** 
+ 249:App/Common/Minimal/flop.c **** 	/* Keep filling an array, keeping a running total of the values placed in the
+ 250:App/Common/Minimal/flop.c **** 	array.  Then run through the array adding up all the values.  If the two totals
+ 251:App/Common/Minimal/flop.c **** 	do not match, stop the check variable from incrementing. */
+ 252:App/Common/Minimal/flop.c **** 	for( ;; )
+ 253:App/Common/Minimal/flop.c **** 	{
+ 254:App/Common/Minimal/flop.c **** 		dTotal1 = 0.0;
+ 445              		.loc 1 254 0
+ 446 0020 4FF00002 		mov	r2, #0
+ 447 0024 4FF00003 		mov	r3, #0
+ 448 0028 C7E90623 		strd	r2, [r7, #24]
+ 255:App/Common/Minimal/flop.c **** 		dTotal2 = 0.0;
+ 449              		.loc 1 255 0
+ 450 002c 4FF00002 		mov	r2, #0
+ 451 0030 4FF00003 		mov	r3, #0
+ 452 0034 C7E90423 		strd	r2, [r7, #16]
+ 256:App/Common/Minimal/flop.c **** 
+ 257:App/Common/Minimal/flop.c **** 		for( xPosition = 0; xPosition < xArraySize; xPosition++ )
+ 453              		.loc 1 257 0
+ 454 0038 0023     		movs	r3, #0
+ 455 003a 7B63     		str	r3, [r7, #52]
+ 456 003c 2EE0     		b	.L21
+ 457              	.L22:
+ 258:App/Common/Minimal/flop.c **** 		{
+ 259:App/Common/Minimal/flop.c **** 			pdArray[ xPosition ] = ( portDOUBLE ) xPosition + 5.5;
+ 458              		.loc 1 259 0 discriminator 2
+ 459 003e 7B6B     		ldr	r3, [r7, #52]
+ 460 0040 DB00     		lsls	r3, r3, #3
+ 461 0042 7A6A     		ldr	r2, [r7, #36]
+ 462 0044 D618     		adds	r6, r2, r3
+ 463 0046 786B     		ldr	r0, [r7, #52]
+ 464 0048 FFF7FEFF 		bl	__aeabi_ui2d
+ 465 004c 0246     		mov	r2, r0
+ 466 004e 0B46     		mov	r3, r1
+ 467 0050 1046     		mov	r0, r2
+ 468 0052 1946     		mov	r1, r3
+ 469 0054 4FF00002 		mov	r2, #0
+ 470 0058 334B     		ldr	r3, .L30+8
+ 471 005a FFF7FEFF 		bl	__aeabi_dadd
+ 472 005e 0246     		mov	r2, r0
+ 473 0060 0B46     		mov	r3, r1
+ 474 0062 C6E90023 		strd	r2, [r6]
+ 260:App/Common/Minimal/flop.c **** 			dTotal1 += ( portDOUBLE ) xPosition + 5.5;
+ 475              		.loc 1 260 0 discriminator 2
+ 476 0066 786B     		ldr	r0, [r7, #52]
+ 477 0068 FFF7FEFF 		bl	__aeabi_ui2d
+ 478 006c 0246     		mov	r2, r0
+ 479 006e 0B46     		mov	r3, r1
+ 480 0070 1046     		mov	r0, r2
+ 481 0072 1946     		mov	r1, r3
+ 482 0074 4FF00002 		mov	r2, #0
+ 483 0078 2B4B     		ldr	r3, .L30+8
+ 484 007a FFF7FEFF 		bl	__aeabi_dadd
+ 485 007e 0246     		mov	r2, r0
+ 486 0080 0B46     		mov	r3, r1
+ 487 0082 1046     		mov	r0, r2
+ 488 0084 1946     		mov	r1, r3
+ 489 0086 D7E90623 		ldrd	r2, [r7, #24]
+ 490 008a FFF7FEFF 		bl	__aeabi_dadd
+ 491 008e 0246     		mov	r2, r0
+ 492 0090 0B46     		mov	r3, r1
+ 493 0092 C7E90623 		strd	r2, [r7, #24]
+ 257:App/Common/Minimal/flop.c **** 		for( xPosition = 0; xPosition < xArraySize; xPosition++ )
+ 494              		.loc 1 257 0 discriminator 2
+ 495 0096 7B6B     		ldr	r3, [r7, #52]
+ 496 0098 0133     		adds	r3, r3, #1
+ 497 009a 7B63     		str	r3, [r7, #52]
+ 498              	.L21:
+ 257:App/Common/Minimal/flop.c **** 		for( xPosition = 0; xPosition < xArraySize; xPosition++ )
+ 499              		.loc 1 257 0 is_stmt 0 discriminator 1
+ 500 009c 7A6B     		ldr	r2, [r7, #52]
+ 501 009e FB6A     		ldr	r3, [r7, #44]
+ 502 00a0 9A42     		cmp	r2, r3
+ 503 00a2 CCD3     		bcc	.L22
+ 261:App/Common/Minimal/flop.c **** 		}
+ 262:App/Common/Minimal/flop.c **** 
+ 263:App/Common/Minimal/flop.c **** 		#if configUSE_PREEMPTION == 0
+ 264:App/Common/Minimal/flop.c **** 			taskYIELD();
+ 265:App/Common/Minimal/flop.c **** 		#endif
+ 266:App/Common/Minimal/flop.c **** 
+ 267:App/Common/Minimal/flop.c **** 		for( xPosition = 0; xPosition < xArraySize; xPosition++ )
+ 504              		.loc 1 267 0 is_stmt 1
+ 505 00a4 0023     		movs	r3, #0
+ 506 00a6 7B63     		str	r3, [r7, #52]
+ 507 00a8 10E0     		b	.L23
+ 508              	.L24:
+ 268:App/Common/Minimal/flop.c **** 		{
+ 269:App/Common/Minimal/flop.c **** 			dTotal2 += pdArray[ xPosition ];
+ 509              		.loc 1 269 0 discriminator 2
+ 510 00aa 7B6B     		ldr	r3, [r7, #52]
+ 511 00ac DB00     		lsls	r3, r3, #3
+ 512 00ae 7A6A     		ldr	r2, [r7, #36]
+ 513 00b0 1344     		add	r3, r3, r2
+ 514 00b2 D3E90001 		ldrd	r0, [r3]
+ 515 00b6 D7E90423 		ldrd	r2, [r7, #16]
+ 516 00ba FFF7FEFF 		bl	__aeabi_dadd
+ 517 00be 0246     		mov	r2, r0
+ 518 00c0 0B46     		mov	r3, r1
+ 519 00c2 C7E90423 		strd	r2, [r7, #16]
+ 267:App/Common/Minimal/flop.c **** 		for( xPosition = 0; xPosition < xArraySize; xPosition++ )
+ 520              		.loc 1 267 0 discriminator 2
+ 521 00c6 7B6B     		ldr	r3, [r7, #52]
+ 522 00c8 0133     		adds	r3, r3, #1
+ 523 00ca 7B63     		str	r3, [r7, #52]
+ 524              	.L23:
+ 267:App/Common/Minimal/flop.c **** 		for( xPosition = 0; xPosition < xArraySize; xPosition++ )
+ 525              		.loc 1 267 0 is_stmt 0 discriminator 1
+ 526 00cc 7A6B     		ldr	r2, [r7, #52]
+ 527 00ce FB6A     		ldr	r3, [r7, #44]
+ 528 00d0 9A42     		cmp	r2, r3
+ 529 00d2 EAD3     		bcc	.L24
+ 270:App/Common/Minimal/flop.c **** 		}
+ 271:App/Common/Minimal/flop.c **** 
+ 272:App/Common/Minimal/flop.c **** 		dDifference = dTotal1 - dTotal2;
+ 530              		.loc 1 272 0 is_stmt 1
+ 531 00d4 D7E90601 		ldrd	r0, [r7, #24]
+ 532 00d8 D7E90423 		ldrd	r2, [r7, #16]
+ 533 00dc FFF7FEFF 		bl	__aeabi_dsub
+ 534 00e0 0246     		mov	r2, r0
+ 535 00e2 0B46     		mov	r3, r1
+ 536 00e4 C7E90223 		strd	r2, [r7, #8]
+ 273:App/Common/Minimal/flop.c **** 		if( fabs( dDifference ) > 0.001 )
+ 537              		.loc 1 273 0
+ 538 00e8 D7E90223 		ldrd	r2, [r7, #8]
+ 539 00ec 1446     		mov	r4, r2
+ 540 00ee 23F00045 		bic	r5, r3, #-2147483648
+ 541 00f2 2046     		mov	r0, r4
+ 542 00f4 2946     		mov	r1, r5
+ 543 00f6 0AA3     		adr	r3, .L30
+ 544 00f8 D3E90023 		ldrd	r2, [r3]
+ 545 00fc FFF7FEFF 		bl	__aeabi_dcmpgt
+ 546 0100 0346     		mov	r3, r0
+ 547 0102 002B     		cmp	r3, #0
+ 548 0104 01D0     		beq	.L25
+ 274:App/Common/Minimal/flop.c **** 		{
+ 275:App/Common/Minimal/flop.c **** 			sError = pdTRUE;
+ 549              		.loc 1 275 0
+ 550 0106 0123     		movs	r3, #1
+ 551 0108 7B86     		strh	r3, [r7, #50]	@ movhi
+ 552              	.L25:
+ 276:App/Common/Minimal/flop.c **** 		}
+ 277:App/Common/Minimal/flop.c **** 
+ 278:App/Common/Minimal/flop.c **** 		#if configUSE_PREEMPTION == 0
+ 279:App/Common/Minimal/flop.c **** 			taskYIELD();
+ 280:App/Common/Minimal/flop.c **** 		#endif
+ 281:App/Common/Minimal/flop.c **** 
+ 282:App/Common/Minimal/flop.c **** 		if( sError == pdFALSE )
+ 553              		.loc 1 282 0
+ 554 010a B7F93230 		ldrsh	r3, [r7, #50]
+ 555 010e 002B     		cmp	r3, #0
+ 556 0110 03D1     		bne	.L27
+ 283:App/Common/Minimal/flop.c **** 		{
+ 284:App/Common/Minimal/flop.c **** 			/* If the calculation has always been correct then set set the check
+ 285:App/Common/Minimal/flop.c **** 			variable.  The check variable will get set to pdFALSE each time
+ 286:App/Common/Minimal/flop.c **** 			xAreMathsTaskStillRunning() is executed. */
+ 287:App/Common/Minimal/flop.c **** 			( *pusTaskCheckVariable ) = pdTRUE;
+ 557              		.loc 1 287 0
+ 558 0112 BB6A     		ldr	r3, [r7, #40]
+ 559 0114 0122     		movs	r2, #1
+ 560 0116 1A80     		strh	r2, [r3]	@ movhi
+ 288:App/Common/Minimal/flop.c **** 		}
+ 289:App/Common/Minimal/flop.c **** 	}
+ 561              		.loc 1 289 0
+ 562 0118 82E7     		b	.L28
+ 563              	.L27:
+ 564 011a 81E7     		b	.L28
+ 565              	.L31:
+ 566 011c AFF30080 		.align	3
+ 567              	.L30:
+ 568 0120 000000E0 		.word	-536870912
+ 569 0124 4D62503F 		.word	1062232653
+ 570 0128 00001640 		.word	1075183616
+ 571              		.cfi_endproc
+ 572              	.LFE113:
+ 574 012c AFF30080 		.section	.text.vCompetingMathTask4,"ax",%progbits
+ 575              		.align	2
+ 576              		.thumb
+ 577              		.thumb_func
+ 579              	vCompetingMathTask4:
+ 580              	.LFB114:
+ 290:App/Common/Minimal/flop.c **** }
+ 291:App/Common/Minimal/flop.c **** /*-----------------------------------------------------------*/
+ 292:App/Common/Minimal/flop.c **** 
+ 293:App/Common/Minimal/flop.c **** static portTASK_FUNCTION( vCompetingMathTask4, pvParameters )
+ 294:App/Common/Minimal/flop.c **** {
+ 581              		.loc 1 294 0
+ 582              		.cfi_startproc
+ 583              		@ args = 0, pretend = 0, frame = 56
+ 584              		@ frame_needed = 1, uses_anonymous_args = 0
+ 585 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 586              	.LCFI12:
+ 587              		.cfi_def_cfa_offset 20
+ 588              		.cfi_offset 4, -20
+ 589              		.cfi_offset 5, -16
+ 590              		.cfi_offset 6, -12
+ 591              		.cfi_offset 7, -8
+ 592              		.cfi_offset 14, -4
+ 593 0002 8FB0     		sub	sp, sp, #60
+ 594              	.LCFI13:
+ 595              		.cfi_def_cfa_offset 80
+ 596 0004 00AF     		add	r7, sp, #0
+ 597              	.LCFI14:
+ 598              		.cfi_def_cfa_register 7
+ 599 0006 7860     		str	r0, [r7, #4]
+ 295:App/Common/Minimal/flop.c **** volatile portDOUBLE *pdArray, dTotal1, dTotal2, dDifference;
+ 296:App/Common/Minimal/flop.c **** volatile unsigned short *pusTaskCheckVariable;
+ 297:App/Common/Minimal/flop.c **** const size_t xArraySize = 10;
+ 600              		.loc 1 297 0
+ 601 0008 0A23     		movs	r3, #10
+ 602 000a FB62     		str	r3, [r7, #44]
+ 298:App/Common/Minimal/flop.c **** size_t xPosition;
+ 299:App/Common/Minimal/flop.c **** short sError = pdFALSE;
+ 603              		.loc 1 299 0
+ 604 000c 0023     		movs	r3, #0
+ 605 000e 7B86     		strh	r3, [r7, #50]	@ movhi
+ 300:App/Common/Minimal/flop.c **** 
+ 301:App/Common/Minimal/flop.c **** 	/* Some ports require that tasks that use a hardware floating point unit
+ 302:App/Common/Minimal/flop.c **** 	tell the kernel that they require a floating point context before any
+ 303:App/Common/Minimal/flop.c **** 	floating point instructions are executed. */
+ 304:App/Common/Minimal/flop.c **** 	portTASK_USES_FLOATING_POINT();
+ 305:App/Common/Minimal/flop.c **** 
+ 306:App/Common/Minimal/flop.c **** 	/* The variable this task increments to show it is still running is passed in
+ 307:App/Common/Minimal/flop.c **** 	as the parameter. */
+ 308:App/Common/Minimal/flop.c **** 	pusTaskCheckVariable = ( unsigned short * ) pvParameters;
+ 606              		.loc 1 308 0
+ 607 0010 7B68     		ldr	r3, [r7, #4]
+ 608 0012 BB62     		str	r3, [r7, #40]
+ 309:App/Common/Minimal/flop.c **** 
+ 310:App/Common/Minimal/flop.c **** 	pdArray = ( portDOUBLE * ) pvPortMalloc( xArraySize * sizeof( portDOUBLE ) );
+ 609              		.loc 1 310 0
+ 610 0014 FB6A     		ldr	r3, [r7, #44]
+ 611 0016 DB00     		lsls	r3, r3, #3
+ 612 0018 1846     		mov	r0, r3
+ 613 001a FFF7FEFF 		bl	pvPortMalloc
+ 614 001e 7862     		str	r0, [r7, #36]
+ 615              	.L40:
+ 311:App/Common/Minimal/flop.c **** 
+ 312:App/Common/Minimal/flop.c **** 	/* Keep filling an array, keeping a running total of the values placed in the
+ 313:App/Common/Minimal/flop.c **** 	array.  Then run through the array adding up all the values.  If the two totals
+ 314:App/Common/Minimal/flop.c **** 	do not match, stop the check variable from incrementing. */
+ 315:App/Common/Minimal/flop.c **** 	for( ;; )
+ 316:App/Common/Minimal/flop.c **** 	{
+ 317:App/Common/Minimal/flop.c **** 		dTotal1 = 0.0;
+ 616              		.loc 1 317 0
+ 617 0020 4FF00002 		mov	r2, #0
+ 618 0024 4FF00003 		mov	r3, #0
+ 619 0028 C7E90623 		strd	r2, [r7, #24]
+ 318:App/Common/Minimal/flop.c **** 		dTotal2 = 0.0;
+ 620              		.loc 1 318 0
+ 621 002c 4FF00002 		mov	r2, #0
+ 622 0030 4FF00003 		mov	r3, #0
+ 623 0034 C7E90423 		strd	r2, [r7, #16]
+ 319:App/Common/Minimal/flop.c **** 
+ 320:App/Common/Minimal/flop.c **** 		for( xPosition = 0; xPosition < xArraySize; xPosition++ )
+ 624              		.loc 1 320 0
+ 625 0038 0023     		movs	r3, #0
+ 626 003a 7B63     		str	r3, [r7, #52]
+ 627 003c 2EE0     		b	.L33
+ 628              	.L34:
+ 321:App/Common/Minimal/flop.c **** 		{
+ 322:App/Common/Minimal/flop.c **** 			pdArray[ xPosition ] = ( portDOUBLE ) xPosition * 12.123;
+ 629              		.loc 1 322 0 discriminator 2
+ 630 003e 7B6B     		ldr	r3, [r7, #52]
+ 631 0040 DB00     		lsls	r3, r3, #3
+ 632 0042 7A6A     		ldr	r2, [r7, #36]
+ 633 0044 D618     		adds	r6, r2, r3
+ 634 0046 786B     		ldr	r0, [r7, #52]
+ 635 0048 FFF7FEFF 		bl	__aeabi_ui2d
+ 636 004c 0246     		mov	r2, r0
+ 637 004e 0B46     		mov	r3, r1
+ 638 0050 1046     		mov	r0, r2
+ 639 0052 1946     		mov	r1, r3
+ 640 0054 32A3     		adr	r3, .L42
+ 641 0056 D3E90023 		ldrd	r2, [r3]
+ 642 005a FFF7FEFF 		bl	__aeabi_dmul
+ 643 005e 0246     		mov	r2, r0
+ 644 0060 0B46     		mov	r3, r1
+ 645 0062 C6E90023 		strd	r2, [r6]
+ 323:App/Common/Minimal/flop.c **** 			dTotal1 += ( portDOUBLE ) xPosition * 12.123;
+ 646              		.loc 1 323 0 discriminator 2
+ 647 0066 786B     		ldr	r0, [r7, #52]
+ 648 0068 FFF7FEFF 		bl	__aeabi_ui2d
+ 649 006c 0246     		mov	r2, r0
+ 650 006e 0B46     		mov	r3, r1
+ 651 0070 1046     		mov	r0, r2
+ 652 0072 1946     		mov	r1, r3
+ 653 0074 2AA3     		adr	r3, .L42
+ 654 0076 D3E90023 		ldrd	r2, [r3]
+ 655 007a FFF7FEFF 		bl	__aeabi_dmul
+ 656 007e 0246     		mov	r2, r0
+ 657 0080 0B46     		mov	r3, r1
+ 658 0082 1046     		mov	r0, r2
+ 659 0084 1946     		mov	r1, r3
+ 660 0086 D7E90623 		ldrd	r2, [r7, #24]
+ 661 008a FFF7FEFF 		bl	__aeabi_dadd
+ 662 008e 0246     		mov	r2, r0
+ 663 0090 0B46     		mov	r3, r1
+ 664 0092 C7E90623 		strd	r2, [r7, #24]
+ 320:App/Common/Minimal/flop.c **** 		for( xPosition = 0; xPosition < xArraySize; xPosition++ )
+ 665              		.loc 1 320 0 discriminator 2
+ 666 0096 7B6B     		ldr	r3, [r7, #52]
+ 667 0098 0133     		adds	r3, r3, #1
+ 668 009a 7B63     		str	r3, [r7, #52]
+ 669              	.L33:
+ 320:App/Common/Minimal/flop.c **** 		for( xPosition = 0; xPosition < xArraySize; xPosition++ )
+ 670              		.loc 1 320 0 is_stmt 0 discriminator 1
+ 671 009c 7A6B     		ldr	r2, [r7, #52]
+ 672 009e FB6A     		ldr	r3, [r7, #44]
+ 673 00a0 9A42     		cmp	r2, r3
+ 674 00a2 CCD3     		bcc	.L34
+ 324:App/Common/Minimal/flop.c **** 		}
+ 325:App/Common/Minimal/flop.c **** 
+ 326:App/Common/Minimal/flop.c **** 		#if configUSE_PREEMPTION == 0
+ 327:App/Common/Minimal/flop.c **** 			taskYIELD();
+ 328:App/Common/Minimal/flop.c **** 		#endif
+ 329:App/Common/Minimal/flop.c **** 
+ 330:App/Common/Minimal/flop.c **** 		for( xPosition = 0; xPosition < xArraySize; xPosition++ )
+ 675              		.loc 1 330 0 is_stmt 1
+ 676 00a4 0023     		movs	r3, #0
+ 677 00a6 7B63     		str	r3, [r7, #52]
+ 678 00a8 10E0     		b	.L35
+ 679              	.L36:
+ 331:App/Common/Minimal/flop.c **** 		{
+ 332:App/Common/Minimal/flop.c **** 			dTotal2 += pdArray[ xPosition ];
+ 680              		.loc 1 332 0 discriminator 2
+ 681 00aa 7B6B     		ldr	r3, [r7, #52]
+ 682 00ac DB00     		lsls	r3, r3, #3
+ 683 00ae 7A6A     		ldr	r2, [r7, #36]
+ 684 00b0 1344     		add	r3, r3, r2
+ 685 00b2 D3E90001 		ldrd	r0, [r3]
+ 686 00b6 D7E90423 		ldrd	r2, [r7, #16]
+ 687 00ba FFF7FEFF 		bl	__aeabi_dadd
+ 688 00be 0246     		mov	r2, r0
+ 689 00c0 0B46     		mov	r3, r1
+ 690 00c2 C7E90423 		strd	r2, [r7, #16]
+ 330:App/Common/Minimal/flop.c **** 		for( xPosition = 0; xPosition < xArraySize; xPosition++ )
+ 691              		.loc 1 330 0 discriminator 2
+ 692 00c6 7B6B     		ldr	r3, [r7, #52]
+ 693 00c8 0133     		adds	r3, r3, #1
+ 694 00ca 7B63     		str	r3, [r7, #52]
+ 695              	.L35:
+ 330:App/Common/Minimal/flop.c **** 		for( xPosition = 0; xPosition < xArraySize; xPosition++ )
+ 696              		.loc 1 330 0 is_stmt 0 discriminator 1
+ 697 00cc 7A6B     		ldr	r2, [r7, #52]
+ 698 00ce FB6A     		ldr	r3, [r7, #44]
+ 699 00d0 9A42     		cmp	r2, r3
+ 700 00d2 EAD3     		bcc	.L36
+ 333:App/Common/Minimal/flop.c **** 		}
+ 334:App/Common/Minimal/flop.c **** 
+ 335:App/Common/Minimal/flop.c **** 		dDifference = dTotal1 - dTotal2;
+ 701              		.loc 1 335 0 is_stmt 1
+ 702 00d4 D7E90601 		ldrd	r0, [r7, #24]
+ 703 00d8 D7E90423 		ldrd	r2, [r7, #16]
+ 704 00dc FFF7FEFF 		bl	__aeabi_dsub
+ 705 00e0 0246     		mov	r2, r0
+ 706 00e2 0B46     		mov	r3, r1
+ 707 00e4 C7E90223 		strd	r2, [r7, #8]
+ 336:App/Common/Minimal/flop.c **** 		if( fabs( dDifference ) > 0.001 )
+ 708              		.loc 1 336 0
+ 709 00e8 D7E90223 		ldrd	r2, [r7, #8]
+ 710 00ec 1446     		mov	r4, r2
+ 711 00ee 23F00045 		bic	r5, r3, #-2147483648
+ 712 00f2 2046     		mov	r0, r4
+ 713 00f4 2946     		mov	r1, r5
+ 714 00f6 0CA3     		adr	r3, .L42+8
+ 715 00f8 D3E90023 		ldrd	r2, [r3]
+ 716 00fc FFF7FEFF 		bl	__aeabi_dcmpgt
+ 717 0100 0346     		mov	r3, r0
+ 718 0102 002B     		cmp	r3, #0
+ 719 0104 01D0     		beq	.L37
+ 337:App/Common/Minimal/flop.c **** 		{
+ 338:App/Common/Minimal/flop.c **** 			sError = pdTRUE;
+ 720              		.loc 1 338 0
+ 721 0106 0123     		movs	r3, #1
+ 722 0108 7B86     		strh	r3, [r7, #50]	@ movhi
+ 723              	.L37:
+ 339:App/Common/Minimal/flop.c **** 		}
+ 340:App/Common/Minimal/flop.c **** 
+ 341:App/Common/Minimal/flop.c **** 		#if configUSE_PREEMPTION == 0
+ 342:App/Common/Minimal/flop.c **** 			taskYIELD();
+ 343:App/Common/Minimal/flop.c **** 		#endif
+ 344:App/Common/Minimal/flop.c **** 
+ 345:App/Common/Minimal/flop.c **** 		if( sError == pdFALSE )
+ 724              		.loc 1 345 0
+ 725 010a B7F93230 		ldrsh	r3, [r7, #50]
+ 726 010e 002B     		cmp	r3, #0
+ 727 0110 03D1     		bne	.L39
+ 346:App/Common/Minimal/flop.c **** 		{
+ 347:App/Common/Minimal/flop.c **** 			/* If the calculation has always been correct then set set the check
+ 348:App/Common/Minimal/flop.c **** 			variable.  The check variable will get set to pdFALSE each time
+ 349:App/Common/Minimal/flop.c **** 			xAreMathsTaskStillRunning() is executed. */
+ 350:App/Common/Minimal/flop.c **** 			( *pusTaskCheckVariable ) = pdTRUE;
+ 728              		.loc 1 350 0
+ 729 0112 BB6A     		ldr	r3, [r7, #40]
+ 730 0114 0122     		movs	r2, #1
+ 731 0116 1A80     		strh	r2, [r3]	@ movhi
+ 351:App/Common/Minimal/flop.c **** 		}
+ 352:App/Common/Minimal/flop.c **** 	}
+ 732              		.loc 1 352 0
+ 733 0118 82E7     		b	.L40
+ 734              	.L39:
+ 735 011a 81E7     		b	.L40
+ 736              	.L43:
+ 737 011c AFF30080 		.align	3
+ 738              	.L42:
+ 739 0120 000000E0 		.word	-536870912
+ 740 0124 F93E2840 		.word	1076379385
+ 741 0128 000000E0 		.word	-536870912
+ 742 012c 4D62503F 		.word	1062232653
+ 743              		.cfi_endproc
+ 744              	.LFE114:
+ 746              		.section	.text.xAreMathsTaskStillRunning,"ax",%progbits
+ 747              		.align	2
+ 748              		.global	xAreMathsTaskStillRunning
+ 749              		.thumb
+ 750              		.thumb_func
+ 752              	xAreMathsTaskStillRunning:
+ 753              	.LFB115:
+ 353:App/Common/Minimal/flop.c **** }
+ 354:App/Common/Minimal/flop.c **** /*-----------------------------------------------------------*/
+ 355:App/Common/Minimal/flop.c **** 
+ 356:App/Common/Minimal/flop.c **** /* This is called to check that all the created tasks are still running. */
+ 357:App/Common/Minimal/flop.c **** portBASE_TYPE xAreMathsTaskStillRunning( void )
+ 358:App/Common/Minimal/flop.c **** {
+ 754              		.loc 1 358 0
+ 755              		.cfi_startproc
+ 756              		@ args = 0, pretend = 0, frame = 8
+ 757              		@ frame_needed = 1, uses_anonymous_args = 0
+ 758              		@ link register save eliminated.
+ 759 0000 80B4     		push	{r7}
+ 760              	.LCFI15:
+ 761              		.cfi_def_cfa_offset 4
+ 762              		.cfi_offset 7, -4
+ 763 0002 83B0     		sub	sp, sp, #12
+ 764              	.LCFI16:
+ 765              		.cfi_def_cfa_offset 16
+ 766 0004 00AF     		add	r7, sp, #0
+ 767              	.LCFI17:
+ 768              		.cfi_def_cfa_register 7
+ 359:App/Common/Minimal/flop.c **** portBASE_TYPE xReturn = pdPASS, xTask;
+ 769              		.loc 1 359 0
+ 770 0006 0123     		movs	r3, #1
+ 771 0008 7B60     		str	r3, [r7, #4]
+ 360:App/Common/Minimal/flop.c **** 
+ 361:App/Common/Minimal/flop.c **** 	/* Check the maths tasks are still running by ensuring their check variables
+ 362:App/Common/Minimal/flop.c **** 	have been set to pdPASS. */
+ 363:App/Common/Minimal/flop.c **** 	for( xTask = 0; xTask < mathNUMBER_OF_TASKS; xTask++ )
+ 772              		.loc 1 363 0
+ 773 000a 0023     		movs	r3, #0
+ 774 000c 3B60     		str	r3, [r7]
+ 775 000e 11E0     		b	.L45
+ 776              	.L48:
+ 364:App/Common/Minimal/flop.c **** 	{
+ 365:App/Common/Minimal/flop.c **** 		if( usTaskCheck[ xTask ] != pdTRUE )
+ 777              		.loc 1 365 0
+ 778 0010 0D4B     		ldr	r3, .L50
+ 779 0012 3A68     		ldr	r2, [r7]
+ 780 0014 33F81230 		ldrh	r3, [r3, r2, lsl #1]	@ movhi
+ 781 0018 9BB2     		uxth	r3, r3
+ 782 001a 012B     		cmp	r3, #1
+ 783 001c 02D0     		beq	.L46
+ 366:App/Common/Minimal/flop.c **** 		{
+ 367:App/Common/Minimal/flop.c **** 			/* The check has not been set so the associated task has either
+ 368:App/Common/Minimal/flop.c **** 			stalled or detected an error. */
+ 369:App/Common/Minimal/flop.c **** 			xReturn = pdFAIL;
+ 784              		.loc 1 369 0
+ 785 001e 0023     		movs	r3, #0
+ 786 0020 7B60     		str	r3, [r7, #4]
+ 787 0022 04E0     		b	.L47
+ 788              	.L46:
+ 370:App/Common/Minimal/flop.c **** 		}
+ 371:App/Common/Minimal/flop.c **** 		else
+ 372:App/Common/Minimal/flop.c **** 		{
+ 373:App/Common/Minimal/flop.c **** 			/* Reset the variable so it can be checked again the next time this
+ 374:App/Common/Minimal/flop.c **** 			function is executed. */
+ 375:App/Common/Minimal/flop.c **** 			usTaskCheck[ xTask ] = pdFALSE;
+ 789              		.loc 1 375 0
+ 790 0024 084B     		ldr	r3, .L50
+ 791 0026 3A68     		ldr	r2, [r7]
+ 792 0028 0021     		movs	r1, #0
+ 793 002a 23F81210 		strh	r1, [r3, r2, lsl #1]	@ movhi
+ 794              	.L47:
+ 363:App/Common/Minimal/flop.c **** 	for( xTask = 0; xTask < mathNUMBER_OF_TASKS; xTask++ )
+ 795              		.loc 1 363 0
+ 796 002e 3B68     		ldr	r3, [r7]
+ 797 0030 0133     		adds	r3, r3, #1
+ 798 0032 3B60     		str	r3, [r7]
+ 799              	.L45:
+ 363:App/Common/Minimal/flop.c **** 	for( xTask = 0; xTask < mathNUMBER_OF_TASKS; xTask++ )
+ 800              		.loc 1 363 0 is_stmt 0 discriminator 1
+ 801 0034 3B68     		ldr	r3, [r7]
+ 802 0036 032B     		cmp	r3, #3
+ 803 0038 EADD     		ble	.L48
+ 376:App/Common/Minimal/flop.c **** 		}
+ 377:App/Common/Minimal/flop.c **** 	}
+ 378:App/Common/Minimal/flop.c **** 		
+ 379:App/Common/Minimal/flop.c **** 	return xReturn;
+ 804              		.loc 1 379 0 is_stmt 1
+ 805 003a 7B68     		ldr	r3, [r7, #4]
+ 380:App/Common/Minimal/flop.c **** }
+ 806              		.loc 1 380 0
+ 807 003c 1846     		mov	r0, r3
+ 808 003e 0C37     		adds	r7, r7, #12
+ 809 0040 BD46     		mov	sp, r7
+ 810              		@ sp needed
+ 811 0042 5DF8047B 		ldr	r7, [sp], #4
+ 812 0046 7047     		bx	lr
+ 813              	.L51:
+ 814              		.align	2
+ 815              	.L50:
+ 816 0048 00000000 		.word	usTaskCheck
+ 817              		.cfi_endproc
+ 818              	.LFE115:
+ 820              		.text
+ 821              	.Letext0:
+ 822              		.file 2 "/home/shihyu/data/STM32F4/gcc-arm-none-eabi-4_8-2013q4/lib/gcc/arm-none-eabi/4.8.3/includ
+ 823              		.file 3 "/home/shihyu/data/STM32F4/gcc-arm-none-eabi-4_8-2013q4/arm-none-eabi/include/stdint.h"
+ 824              		.file 4 "App/STM32F4-Discovery/Libraries/CMSIS/Include/core_cm4.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 flop.c
+     /tmp/cczrE0IZ.s:20     .bss.usTaskCheck:00000000 $d
+     /tmp/cczrE0IZ.s:23     .bss.usTaskCheck:00000000 usTaskCheck
+     /tmp/cczrE0IZ.s:26     .rodata:00000000 $d
+     /tmp/cczrE0IZ.s:39     .text.vStartMathTasks:00000000 $t
+     /tmp/cczrE0IZ.s:44     .text.vStartMathTasks:00000000 vStartMathTasks
+     /tmp/cczrE0IZ.s:127    .text.vStartMathTasks:00000080 $d
+     /tmp/cczrE0IZ.s:151    .text.vCompetingMathTask1:00000000 vCompetingMathTask1
+     /tmp/cczrE0IZ.s:280    .text.vCompetingMathTask2:00000000 vCompetingMathTask2
+     /tmp/cczrE0IZ.s:408    .text.vCompetingMathTask3:00000000 vCompetingMathTask3
+     /tmp/cczrE0IZ.s:579    .text.vCompetingMathTask4:00000000 vCompetingMathTask4
+     /tmp/cczrE0IZ.s:147    .text.vCompetingMathTask1:00000000 $t
+     /tmp/cczrE0IZ.s:263    .text.vCompetingMathTask1:000000d8 $d
+     /tmp/cczrE0IZ.s:276    .text.vCompetingMathTask2:00000000 $t
+     /tmp/cczrE0IZ.s:392    .text.vCompetingMathTask2:000000d8 $d
+     /tmp/cczrE0IZ.s:404    .text.vCompetingMathTask3:00000000 $t
+     /tmp/cczrE0IZ.s:568    .text.vCompetingMathTask3:00000120 $d
+     /tmp/cczrE0IZ.s:575    .text.vCompetingMathTask4:00000000 $t
+     /tmp/cczrE0IZ.s:739    .text.vCompetingMathTask4:00000120 $d
+     /tmp/cczrE0IZ.s:747    .text.xAreMathsTaskStillRunning:00000000 $t
+     /tmp/cczrE0IZ.s:752    .text.xAreMathsTaskStillRunning:00000000 xAreMathsTaskStillRunning
+     /tmp/cczrE0IZ.s:816    .text.xAreMathsTaskStillRunning:00000048 $d
+                     .debug_frame:00000010 $d
+     /tmp/cczrE0IZ.s:403    .text.vCompetingMathTask2:000000f4 $t
+     /tmp/cczrE0IZ.s:574    .text.vCompetingMathTask3:0000012c $t
+
+UNDEFINED SYMBOLS
+xTaskGenericCreate
+__aeabi_dadd
+__aeabi_dmul
+__aeabi_dsub
+__aeabi_dcmpgt
+__aeabi_ddiv
+__aeabi_ui2d
+pvPortMalloc

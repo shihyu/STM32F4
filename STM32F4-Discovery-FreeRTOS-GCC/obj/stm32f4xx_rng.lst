@@ -1,0 +1,901 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.eabi_attribute 27, 3
+   4              		.fpu fpv4-sp-d16
+   5              		.eabi_attribute 20, 1
+   6              		.eabi_attribute 21, 1
+   7              		.eabi_attribute 23, 3
+   8              		.eabi_attribute 24, 1
+   9              		.eabi_attribute 25, 1
+  10              		.eabi_attribute 26, 1
+  11              		.eabi_attribute 30, 6
+  12              		.eabi_attribute 34, 1
+  13              		.eabi_attribute 18, 4
+  14              		.thumb
+  15              		.file	"stm32f4xx_rng.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.RNG_DeInit,"ax",%progbits
+  20              		.align	2
+  21              		.global	RNG_DeInit
+  22              		.thumb
+  23              		.thumb_func
+  25              	RNG_DeInit:
+  26              	.LFB110:
+  27              		.file 1 "App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c"
+   1:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** /**
+   2:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   ******************************************************************************
+   3:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @file    stm32f4xx_rng.c
+   4:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @author  MCD Application Team
+   5:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @version V1.0.0
+   6:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @date    30-September-2011
+   7:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****     * @brief This file provides firmware functions to manage the following 
+   8:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *          functionalities of the Random Number Generator (RNG) peripheral:           
+   9:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *           - Initialization and Configuration 
+  10:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *           - Get 32 bit Random number      
+  11:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *           - Interrupts and flags management       
+  12:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *         
+  13:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *  @verbatim
+  14:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *                               
+  15:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *          ===================================================================      
+  16:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *                                   How to use this driver
+  17:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *          ===================================================================          
+  18:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *          1. Enable The RNG controller clock using 
+  19:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *            RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_RNG, ENABLE) function.
+  20:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *              
+  21:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *          2. Activate the RNG peripheral using RNG_Cmd() function.
+  22:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *          
+  23:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *          3. Wait until the 32 bit Random number Generator contains a valid 
+  24:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *            random data (using polling/interrupt mode). For more details, 
+  25:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *            refer to "Interrupts and flags management functions" module 
+  26:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *            description.
+  27:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *           
+  28:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *          4. Get the 32 bit Random number using RNG_GetRandomNumber() function
+  29:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *          
+  30:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *          5. To get another 32 bit Random number, go to step 3.       
+  31:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *
+  32:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *         
+  33:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *              
+  34:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *  @endverbatim
+  35:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *         
+  36:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   ******************************************************************************
+  37:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @attention
+  38:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *
+  39:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+  40:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+  41:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+  42:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+  43:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+  44:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  45:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *
+  46:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * <h2><center>&copy; COPYRIGHT 2011 STMicroelectronics</center></h2>
+  47:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   ******************************************************************************  
+  48:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   */
+  49:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+  50:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** /* Includes ------------------------------------------------------------------*/
+  51:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** #include "stm32f4xx_rng.h"
+  52:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** #include "stm32f4xx_rcc.h"
+  53:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+  54:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** /** @addtogroup STM32F4xx_StdPeriph_Driver
+  55:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @{
+  56:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   */
+  57:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+  58:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** /** @defgroup RNG 
+  59:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @brief RNG driver modules
+  60:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @{
+  61:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   */ 
+  62:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+  63:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** /* Private typedef -----------------------------------------------------------*/
+  64:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** /* Private define ------------------------------------------------------------*/
+  65:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** /* Private macro -------------------------------------------------------------*/
+  66:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** /* Private variables ---------------------------------------------------------*/
+  67:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** /* Private function prototypes -----------------------------------------------*/
+  68:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** /* Private functions ---------------------------------------------------------*/
+  69:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+  70:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** /** @defgroup RNG_Private_Functions
+  71:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @{
+  72:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   */ 
+  73:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+  74:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** /** @defgroup RNG_Group1 Initialization and Configuration functions
+  75:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****  *  @brief    Initialization and Configuration functions 
+  76:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****  *
+  77:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** @verbatim    
+  78:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****  ===============================================================================
+  79:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****                       Initialization and Configuration functions
+  80:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****  ===============================================================================  
+  81:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   This section provides functions allowing to 
+  82:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****    - Initialize the RNG peripheral
+  83:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****    - Enable or disable the RNG peripheral
+  84:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****    
+  85:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** @endverbatim
+  86:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @{
+  87:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   */
+  88:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+  89:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** /**
+  90:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @brief  Deinitializes the RNG peripheral registers to their default reset values.
+  91:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @param  None
+  92:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @retval None
+  93:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   */
+  94:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** void RNG_DeInit(void)
+  95:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** {
+  28              		.loc 1 95 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 1, uses_anonymous_args = 0
+  32 0000 80B5     		push	{r7, lr}
+  33              	.LCFI0:
+  34              		.cfi_def_cfa_offset 8
+  35              		.cfi_offset 7, -8
+  36              		.cfi_offset 14, -4
+  37 0002 00AF     		add	r7, sp, #0
+  38              	.LCFI1:
+  39              		.cfi_def_cfa_register 7
+  96:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   /* Enable RNG reset state */
+  97:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   RCC_AHB2PeriphResetCmd(RCC_AHB2Periph_RNG, ENABLE);
+  40              		.loc 1 97 0
+  41 0004 4020     		movs	r0, #64
+  42 0006 0121     		movs	r1, #1
+  43 0008 FFF7FEFF 		bl	RCC_AHB2PeriphResetCmd
+  98:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+  99:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   /* Release RNG from reset state */
+ 100:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   RCC_AHB2PeriphResetCmd(RCC_AHB2Periph_RNG, DISABLE);
+  44              		.loc 1 100 0
+  45 000c 4020     		movs	r0, #64
+  46 000e 0021     		movs	r1, #0
+  47 0010 FFF7FEFF 		bl	RCC_AHB2PeriphResetCmd
+ 101:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** }
+  48              		.loc 1 101 0
+  49 0014 80BD     		pop	{r7, pc}
+  50              		.cfi_endproc
+  51              	.LFE110:
+  53 0016 00BF     		.section	.rodata
+  54              		.align	2
+  55              	.LC0:
+  56 0000 4170702F 		.ascii	"App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph"
+  56      53544D33 
+  56      3246342D 
+  56      44697363 
+  56      6F766572 
+  57 0033 5F447269 		.ascii	"_Driver/src/stm32f4xx_rng.c\000"
+  57      7665722F 
+  57      7372632F 
+  57      73746D33 
+  57      32663478 
+  58 004f 00       		.section	.text.RNG_Cmd,"ax",%progbits
+  59              		.align	2
+  60              		.global	RNG_Cmd
+  61              		.thumb
+  62              		.thumb_func
+  64              	RNG_Cmd:
+  65              	.LFB111:
+ 102:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+ 103:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** /**
+ 104:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @brief  Enables or disables the RNG peripheral.
+ 105:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @param  NewState: new state of the RNG peripheral.
+ 106:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *          This parameter can be: ENABLE or DISABLE.
+ 107:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @retval None
+ 108:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   */
+ 109:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** void RNG_Cmd(FunctionalState NewState)
+ 110:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** {
+  66              		.loc 1 110 0
+  67              		.cfi_startproc
+  68              		@ args = 0, pretend = 0, frame = 8
+  69              		@ frame_needed = 1, uses_anonymous_args = 0
+  70 0000 80B5     		push	{r7, lr}
+  71              	.LCFI2:
+  72              		.cfi_def_cfa_offset 8
+  73              		.cfi_offset 7, -8
+  74              		.cfi_offset 14, -4
+  75 0002 82B0     		sub	sp, sp, #8
+  76              	.LCFI3:
+  77              		.cfi_def_cfa_offset 16
+  78 0004 00AF     		add	r7, sp, #0
+  79              	.LCFI4:
+  80              		.cfi_def_cfa_register 7
+  81 0006 0346     		mov	r3, r0
+  82 0008 FB71     		strb	r3, [r7, #7]
+ 111:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   /* Check the parameters */
+ 112:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
+  83              		.loc 1 112 0
+  84 000a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+  85 000c 002B     		cmp	r3, #0
+  86 000e 06D0     		beq	.L3
+  87              		.loc 1 112 0 is_stmt 0 discriminator 1
+  88 0010 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+  89 0012 012B     		cmp	r3, #1
+  90 0014 03D0     		beq	.L3
+  91 0016 0B48     		ldr	r0, .L6
+  92 0018 7021     		movs	r1, #112
+  93 001a FFF7FEFF 		bl	assert_failed
+  94              	.L3:
+ 113:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+ 114:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   if (NewState != DISABLE)
+  95              		.loc 1 114 0 is_stmt 1
+  96 001e FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+  97 0020 002B     		cmp	r3, #0
+  98 0022 06D0     		beq	.L4
+ 115:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   {
+ 116:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****     /* Enable the RNG */
+ 117:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****     RNG->CR |= RNG_CR_RNGEN;
+  99              		.loc 1 117 0
+ 100 0024 084B     		ldr	r3, .L6+4
+ 101 0026 084A     		ldr	r2, .L6+4
+ 102 0028 1268     		ldr	r2, [r2]
+ 103 002a 42F00402 		orr	r2, r2, #4
+ 104 002e 1A60     		str	r2, [r3]
+ 105 0030 05E0     		b	.L2
+ 106              	.L4:
+ 118:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   }
+ 119:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   else
+ 120:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   {
+ 121:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****     /* Disable the RNG */
+ 122:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****     RNG->CR &= ~RNG_CR_RNGEN;
+ 107              		.loc 1 122 0
+ 108 0032 054B     		ldr	r3, .L6+4
+ 109 0034 044A     		ldr	r2, .L6+4
+ 110 0036 1268     		ldr	r2, [r2]
+ 111 0038 22F00402 		bic	r2, r2, #4
+ 112 003c 1A60     		str	r2, [r3]
+ 113              	.L2:
+ 123:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   }
+ 124:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** }
+ 114              		.loc 1 124 0
+ 115 003e 0837     		adds	r7, r7, #8
+ 116 0040 BD46     		mov	sp, r7
+ 117              		@ sp needed
+ 118 0042 80BD     		pop	{r7, pc}
+ 119              	.L7:
+ 120              		.align	2
+ 121              	.L6:
+ 122 0044 00000000 		.word	.LC0
+ 123 0048 00080650 		.word	1342572544
+ 124              		.cfi_endproc
+ 125              	.LFE111:
+ 127              		.section	.text.RNG_GetRandomNumber,"ax",%progbits
+ 128              		.align	2
+ 129              		.global	RNG_GetRandomNumber
+ 130              		.thumb
+ 131              		.thumb_func
+ 133              	RNG_GetRandomNumber:
+ 134              	.LFB112:
+ 125:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** /**
+ 126:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @}
+ 127:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   */
+ 128:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+ 129:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** /** @defgroup RNG_Group2 Get 32 bit Random number function
+ 130:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****  *  @brief    Get 32 bit Random number function 
+ 131:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****  *
+ 132:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+ 133:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** @verbatim    
+ 134:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****  ===============================================================================
+ 135:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****                       Get 32 bit Random number function
+ 136:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****  ===============================================================================  
+ 137:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   This section provides a function allowing to get the 32 bit Random number  
+ 138:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   
+ 139:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   @note  Before to call this function you have to wait till DRDY flag is set,
+ 140:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****          using RNG_GetFlagStatus(RNG_FLAG_DRDY) function. 
+ 141:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****    
+ 142:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** @endverbatim
+ 143:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @{
+ 144:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   */
+ 145:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+ 146:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+ 147:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** /**
+ 148:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @brief  Returns a 32-bit random number.
+ 149:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *   
+ 150:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @note   Before to call this function you have to wait till DRDY (data ready)
+ 151:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *         flag is set, using RNG_GetFlagStatus(RNG_FLAG_DRDY) function.
+ 152:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @note   Each time the the Random number data is read (using RNG_GetRandomNumber()
+ 153:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *         function), the RNG_FLAG_DRDY flag is automatically cleared.
+ 154:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @note   In the case of a seed error, the generation of random numbers is 
+ 155:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *         interrupted for as long as the SECS bit is '1'. If a number is 
+ 156:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *         available in the RNG_DR register, it must not be used because it may 
+ 157:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *         not have enough entropy. In this case, it is recommended to clear the 
+ 158:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *         SEIS bit(using RNG_ClearFlag(RNG_FLAG_SECS) function), then disable 
+ 159:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *         and enable the RNG peripheral (using RNG_Cmd() function) to 
+ 160:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *         reinitialize and restart the RNG.
+ 161:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @note   In the case of a clock error, the RNG is no more able to generate 
+ 162:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *         random numbers because the PLL48CLK clock is not correct. User have 
+ 163:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *         to check that the clock controller is correctly configured to provide
+ 164:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *         the RNG clock and clear the CEIS bit (using RNG_ClearFlag(RNG_FLAG_CECS) 
+ 165:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *         function) . The clock error has no impact on the previously generated 
+ 166:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *         random numbers, and the RNG_DR register contents can be used.
+ 167:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *         
+ 168:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @param  None
+ 169:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @retval 32-bit random number.
+ 170:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   */
+ 171:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** uint32_t RNG_GetRandomNumber(void)
+ 172:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** {
+ 135              		.loc 1 172 0
+ 136              		.cfi_startproc
+ 137              		@ args = 0, pretend = 0, frame = 0
+ 138              		@ frame_needed = 1, uses_anonymous_args = 0
+ 139              		@ link register save eliminated.
+ 140 0000 80B4     		push	{r7}
+ 141              	.LCFI5:
+ 142              		.cfi_def_cfa_offset 4
+ 143              		.cfi_offset 7, -4
+ 144 0002 00AF     		add	r7, sp, #0
+ 145              	.LCFI6:
+ 146              		.cfi_def_cfa_register 7
+ 173:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   /* Return the 32 bit random number from the DR register */
+ 174:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   return RNG->DR;
+ 147              		.loc 1 174 0
+ 148 0004 034B     		ldr	r3, .L10
+ 149 0006 9B68     		ldr	r3, [r3, #8]
+ 175:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** }
+ 150              		.loc 1 175 0
+ 151 0008 1846     		mov	r0, r3
+ 152 000a BD46     		mov	sp, r7
+ 153              		@ sp needed
+ 154 000c 5DF8047B 		ldr	r7, [sp], #4
+ 155 0010 7047     		bx	lr
+ 156              	.L11:
+ 157 0012 00BF     		.align	2
+ 158              	.L10:
+ 159 0014 00080650 		.word	1342572544
+ 160              		.cfi_endproc
+ 161              	.LFE112:
+ 163              		.section	.text.RNG_ITConfig,"ax",%progbits
+ 164              		.align	2
+ 165              		.global	RNG_ITConfig
+ 166              		.thumb
+ 167              		.thumb_func
+ 169              	RNG_ITConfig:
+ 170              	.LFB113:
+ 176:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+ 177:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+ 178:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** /**
+ 179:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @}
+ 180:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   */
+ 181:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+ 182:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** /** @defgroup RNG_Group3 Interrupts and flags management functions
+ 183:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****  *  @brief   Interrupts and flags management functions
+ 184:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****  *
+ 185:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** @verbatim   
+ 186:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****  ===============================================================================
+ 187:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****                    Interrupts and flags management functions
+ 188:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****  ===============================================================================  
+ 189:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+ 190:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   This section provides functions allowing to configure the RNG Interrupts and 
+ 191:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   to get the status and clear flags and Interrupts pending bits.
+ 192:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   
+ 193:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   The RNG provides 3 Interrupts sources and 3 Flags:
+ 194:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   
+ 195:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   Flags :
+ 196:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   ---------- 
+ 197:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****      1. RNG_FLAG_DRDY :  In the case of the RNG_DR register contains valid 
+ 198:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****                          random data. it is cleared by reading the valid data 
+ 199:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****                          (using RNG_GetRandomNumber() function).
+ 200:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+ 201:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****      2. RNG_FLAG_CECS : In the case of a seed error detection. 
+ 202:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****       
+ 203:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****      3. RNG_FLAG_SECS : In the case of a clock error detection.
+ 204:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****               
+ 205:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+ 206:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   Interrupts :
+ 207:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   ------------
+ 208:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****    if enabled, an RNG interrupt is pending :
+ 209:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****     
+ 210:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****    1.  In the case of the RNG_DR register contains valid random data. 
+ 211:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****        This interrupt source is cleared once the RNG_DR register has been read 
+ 212:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****        (using RNG_GetRandomNumber() function) until a new valid value is 
+ 213:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****        computed. 
+ 214:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****    
+ 215:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****    or 
+ 216:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****    2. In the case of a seed error : One of the following faulty sequences has 
+ 217:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****       been detected:
+ 218:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****       - More than 64 consecutive bits at the same value (0 or 1)
+ 219:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****       - More than 32 consecutive alternance of 0 and 1 (0101010101...01)
+ 220:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****       This interrupt source is cleared using RNG_ClearITPendingBit(RNG_IT_SEI)
+ 221:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****       function.
+ 222:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****    
+ 223:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****    or
+ 224:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****    3. In the case of a clock error : the PLL48CLK (RNG peripheral clock source) 
+ 225:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****       was not correctly detected (fPLL48CLK< fHCLK/16).
+ 226:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****       This interrupt source is cleared using RNG_ClearITPendingBit(RNG_IT_CEI)
+ 227:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****       function.
+ 228:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****       @note In this case, User have to check that the clock controller is 
+ 229:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****             correctly configured to provide the RNG clock. 
+ 230:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+ 231:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   Managing the RNG controller events :
+ 232:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   ------------------------------------ 
+ 233:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   The user should identify which mode will be used in his application to manage 
+ 234:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   the RNG controller events: Polling mode or Interrupt mode.
+ 235:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   
+ 236:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   1.  In the Polling Mode it is advised to use the following functions:
+ 237:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****       - RNG_GetFlagStatus() : to check if flags events occur. 
+ 238:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****       - RNG_ClearFlag()     : to clear the flags events.
+ 239:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   
+ 240:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   @note RNG_FLAG_DRDY can not be cleared by RNG_ClearFlag(). it is cleared only 
+ 241:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****         by reading the Random number data.      
+ 242:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   
+ 243:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   2.  In the Interrupt Mode it is advised to use the following functions:
+ 244:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****       - RNG_ITConfig()       : to enable or disable the interrupt source.
+ 245:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****       - RNG_GetITStatus()    : to check if Interrupt occurs.
+ 246:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****       - RNG_ClearITPendingBit() : to clear the Interrupt pending Bit 
+ 247:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****                                 (corresponding Flag). 
+ 248:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   
+ 249:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+ 250:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** @endverbatim
+ 251:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @{
+ 252:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   */ 
+ 253:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+ 254:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** /**
+ 255:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @brief  Enables or disables the RNG interrupt.
+ 256:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @note   The RNG provides 3 interrupt sources,
+ 257:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *           - Computed data is ready event (DRDY), and           
+ 258:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *           - Seed error Interrupt (SEI) and 
+ 259:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *           - Clock error Interrupt (CEI), 
+ 260:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *         all these interrupts sources are enabled by setting the IE bit in 
+ 261:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *         CR register. However, each interrupt have its specific status bit
+ 262:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *         (see RNG_GetITStatus() function) and clear bit except the DRDY event
+ 263:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *         (see RNG_ClearITPendingBit() function).
+ 264:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @param  NewState: new state of the RNG interrupt.
+ 265:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *          This parameter can be: ENABLE or DISABLE.
+ 266:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @retval None
+ 267:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   */
+ 268:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** void RNG_ITConfig(FunctionalState NewState)
+ 269:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** {
+ 171              		.loc 1 269 0
+ 172              		.cfi_startproc
+ 173              		@ args = 0, pretend = 0, frame = 8
+ 174              		@ frame_needed = 1, uses_anonymous_args = 0
+ 175 0000 80B5     		push	{r7, lr}
+ 176              	.LCFI7:
+ 177              		.cfi_def_cfa_offset 8
+ 178              		.cfi_offset 7, -8
+ 179              		.cfi_offset 14, -4
+ 180 0002 82B0     		sub	sp, sp, #8
+ 181              	.LCFI8:
+ 182              		.cfi_def_cfa_offset 16
+ 183 0004 00AF     		add	r7, sp, #0
+ 184              	.LCFI9:
+ 185              		.cfi_def_cfa_register 7
+ 186 0006 0346     		mov	r3, r0
+ 187 0008 FB71     		strb	r3, [r7, #7]
+ 270:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   /* Check the parameters */
+ 271:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
+ 188              		.loc 1 271 0
+ 189 000a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 190 000c 002B     		cmp	r3, #0
+ 191 000e 07D0     		beq	.L13
+ 192              		.loc 1 271 0 is_stmt 0 discriminator 1
+ 193 0010 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 194 0012 012B     		cmp	r3, #1
+ 195 0014 04D0     		beq	.L13
+ 196 0016 0C48     		ldr	r0, .L16
+ 197 0018 40F20F11 		movw	r1, #271
+ 198 001c FFF7FEFF 		bl	assert_failed
+ 199              	.L13:
+ 272:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+ 273:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   if (NewState != DISABLE)
+ 200              		.loc 1 273 0 is_stmt 1
+ 201 0020 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 202 0022 002B     		cmp	r3, #0
+ 203 0024 06D0     		beq	.L14
+ 274:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   {
+ 275:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****     /* Enable the RNG interrupt */
+ 276:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****     RNG->CR |= RNG_CR_IE;
+ 204              		.loc 1 276 0
+ 205 0026 094B     		ldr	r3, .L16+4
+ 206 0028 084A     		ldr	r2, .L16+4
+ 207 002a 1268     		ldr	r2, [r2]
+ 208 002c 42F00802 		orr	r2, r2, #8
+ 209 0030 1A60     		str	r2, [r3]
+ 210 0032 05E0     		b	.L12
+ 211              	.L14:
+ 277:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   }
+ 278:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   else
+ 279:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   {
+ 280:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****     /* Disable the RNG interrupt */
+ 281:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****     RNG->CR &= ~RNG_CR_IE;
+ 212              		.loc 1 281 0
+ 213 0034 054B     		ldr	r3, .L16+4
+ 214 0036 054A     		ldr	r2, .L16+4
+ 215 0038 1268     		ldr	r2, [r2]
+ 216 003a 22F00802 		bic	r2, r2, #8
+ 217 003e 1A60     		str	r2, [r3]
+ 218              	.L12:
+ 282:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   }
+ 283:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** }
+ 219              		.loc 1 283 0
+ 220 0040 0837     		adds	r7, r7, #8
+ 221 0042 BD46     		mov	sp, r7
+ 222              		@ sp needed
+ 223 0044 80BD     		pop	{r7, pc}
+ 224              	.L17:
+ 225 0046 00BF     		.align	2
+ 226              	.L16:
+ 227 0048 00000000 		.word	.LC0
+ 228 004c 00080650 		.word	1342572544
+ 229              		.cfi_endproc
+ 230              	.LFE113:
+ 232              		.section	.text.RNG_GetFlagStatus,"ax",%progbits
+ 233              		.align	2
+ 234              		.global	RNG_GetFlagStatus
+ 235              		.thumb
+ 236              		.thumb_func
+ 238              	RNG_GetFlagStatus:
+ 239              	.LFB114:
+ 284:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+ 285:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** /**
+ 286:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @brief  Checks whether the specified RNG flag is set or not.
+ 287:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @param  RNG_FLAG: specifies the RNG flag to check.
+ 288:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *          This parameter can be one of the following values:
+ 289:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *            @arg RNG_FLAG_DRDY: Data Ready flag.
+ 290:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *            @arg RNG_FLAG_CECS: Clock Error Current flag.
+ 291:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *            @arg RNG_FLAG_SECS: Seed Error Current flag.
+ 292:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @retval The new state of RNG_FLAG (SET or RESET).
+ 293:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   */
+ 294:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** FlagStatus RNG_GetFlagStatus(uint8_t RNG_FLAG)
+ 295:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** {
+ 240              		.loc 1 295 0
+ 241              		.cfi_startproc
+ 242              		@ args = 0, pretend = 0, frame = 16
+ 243              		@ frame_needed = 1, uses_anonymous_args = 0
+ 244 0000 80B5     		push	{r7, lr}
+ 245              	.LCFI10:
+ 246              		.cfi_def_cfa_offset 8
+ 247              		.cfi_offset 7, -8
+ 248              		.cfi_offset 14, -4
+ 249 0002 84B0     		sub	sp, sp, #16
+ 250              	.LCFI11:
+ 251              		.cfi_def_cfa_offset 24
+ 252 0004 00AF     		add	r7, sp, #0
+ 253              	.LCFI12:
+ 254              		.cfi_def_cfa_register 7
+ 255 0006 0346     		mov	r3, r0
+ 256 0008 FB71     		strb	r3, [r7, #7]
+ 296:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   FlagStatus bitstatus = RESET;
+ 257              		.loc 1 296 0
+ 258 000a 0023     		movs	r3, #0
+ 259 000c FB73     		strb	r3, [r7, #15]
+ 297:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   /* Check the parameters */
+ 298:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   assert_param(IS_RNG_GET_FLAG(RNG_FLAG));
+ 260              		.loc 1 298 0
+ 261 000e FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 262 0010 012B     		cmp	r3, #1
+ 263 0012 0AD0     		beq	.L19
+ 264              		.loc 1 298 0 is_stmt 0 discriminator 1
+ 265 0014 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 266 0016 022B     		cmp	r3, #2
+ 267 0018 07D0     		beq	.L19
+ 268 001a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 269 001c 042B     		cmp	r3, #4
+ 270 001e 04D0     		beq	.L19
+ 271 0020 0A48     		ldr	r0, .L23
+ 272 0022 4FF49571 		mov	r1, #298
+ 273 0026 FFF7FEFF 		bl	assert_failed
+ 274              	.L19:
+ 299:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+ 300:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   /* Check the status of the specified RNG flag */
+ 301:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   if ((RNG->SR & RNG_FLAG) != (uint8_t)RESET)
+ 275              		.loc 1 301 0 is_stmt 1
+ 276 002a 094B     		ldr	r3, .L23+4
+ 277 002c 5A68     		ldr	r2, [r3, #4]
+ 278 002e FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 279 0030 1340     		ands	r3, r3, r2
+ 280 0032 002B     		cmp	r3, #0
+ 281 0034 02D0     		beq	.L20
+ 302:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   {
+ 303:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****     /* RNG_FLAG is set */
+ 304:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****     bitstatus = SET;
+ 282              		.loc 1 304 0
+ 283 0036 0123     		movs	r3, #1
+ 284 0038 FB73     		strb	r3, [r7, #15]
+ 285 003a 01E0     		b	.L21
+ 286              	.L20:
+ 305:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   }
+ 306:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   else
+ 307:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   {
+ 308:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****     /* RNG_FLAG is reset */
+ 309:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****     bitstatus = RESET;
+ 287              		.loc 1 309 0
+ 288 003c 0023     		movs	r3, #0
+ 289 003e FB73     		strb	r3, [r7, #15]
+ 290              	.L21:
+ 310:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   }
+ 311:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   /* Return the RNG_FLAG status */
+ 312:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   return  bitstatus;
+ 291              		.loc 1 312 0
+ 292 0040 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 313:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** }
+ 293              		.loc 1 313 0
+ 294 0042 1846     		mov	r0, r3
+ 295 0044 1037     		adds	r7, r7, #16
+ 296 0046 BD46     		mov	sp, r7
+ 297              		@ sp needed
+ 298 0048 80BD     		pop	{r7, pc}
+ 299              	.L24:
+ 300 004a 00BF     		.align	2
+ 301              	.L23:
+ 302 004c 00000000 		.word	.LC0
+ 303 0050 00080650 		.word	1342572544
+ 304              		.cfi_endproc
+ 305              	.LFE114:
+ 307              		.section	.text.RNG_ClearFlag,"ax",%progbits
+ 308              		.align	2
+ 309              		.global	RNG_ClearFlag
+ 310              		.thumb
+ 311              		.thumb_func
+ 313              	RNG_ClearFlag:
+ 314              	.LFB115:
+ 314:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+ 315:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+ 316:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** /**
+ 317:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @brief  Clears the RNG flags.
+ 318:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @param  RNG_FLAG: specifies the flag to clear. 
+ 319:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *          This parameter can be any combination of the following values:
+ 320:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *            @arg RNG_FLAG_CECS: Clock Error Current flag.
+ 321:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *            @arg RNG_FLAG_SECS: Seed Error Current flag.
+ 322:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @note   RNG_FLAG_DRDY can not be cleared by RNG_ClearFlag() function. 
+ 323:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *         This flag is cleared only by reading the Random number data (using 
+ 324:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *         RNG_GetRandomNumber() function).                           
+ 325:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @retval None
+ 326:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   */
+ 327:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** void RNG_ClearFlag(uint8_t RNG_FLAG)
+ 328:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** {
+ 315              		.loc 1 328 0
+ 316              		.cfi_startproc
+ 317              		@ args = 0, pretend = 0, frame = 8
+ 318              		@ frame_needed = 1, uses_anonymous_args = 0
+ 319 0000 80B5     		push	{r7, lr}
+ 320              	.LCFI13:
+ 321              		.cfi_def_cfa_offset 8
+ 322              		.cfi_offset 7, -8
+ 323              		.cfi_offset 14, -4
+ 324 0002 82B0     		sub	sp, sp, #8
+ 325              	.LCFI14:
+ 326              		.cfi_def_cfa_offset 16
+ 327 0004 00AF     		add	r7, sp, #0
+ 328              	.LCFI15:
+ 329              		.cfi_def_cfa_register 7
+ 330 0006 0346     		mov	r3, r0
+ 331 0008 FB71     		strb	r3, [r7, #7]
+ 329:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   /* Check the parameters */
+ 330:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   assert_param(IS_RNG_CLEAR_FLAG(RNG_FLAG));
+ 332              		.loc 1 330 0
+ 333 000a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 334 000c 022B     		cmp	r3, #2
+ 335 000e 07D0     		beq	.L26
+ 336              		.loc 1 330 0 is_stmt 0 discriminator 1
+ 337 0010 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 338 0012 042B     		cmp	r3, #4
+ 339 0014 04D0     		beq	.L26
+ 340 0016 0648     		ldr	r0, .L27
+ 341 0018 4FF4A571 		mov	r1, #330
+ 342 001c FFF7FEFF 		bl	assert_failed
+ 343              	.L26:
+ 331:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   /* Clear the selected RNG flags */
+ 332:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   RNG->SR = ~(uint32_t)(((uint32_t)RNG_FLAG) << 4);
+ 344              		.loc 1 332 0 is_stmt 1
+ 345 0020 044B     		ldr	r3, .L27+4
+ 346 0022 FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
+ 347 0024 1201     		lsls	r2, r2, #4
+ 348 0026 D243     		mvns	r2, r2
+ 349 0028 5A60     		str	r2, [r3, #4]
+ 333:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** }
+ 350              		.loc 1 333 0
+ 351 002a 0837     		adds	r7, r7, #8
+ 352 002c BD46     		mov	sp, r7
+ 353              		@ sp needed
+ 354 002e 80BD     		pop	{r7, pc}
+ 355              	.L28:
+ 356              		.align	2
+ 357              	.L27:
+ 358 0030 00000000 		.word	.LC0
+ 359 0034 00080650 		.word	1342572544
+ 360              		.cfi_endproc
+ 361              	.LFE115:
+ 363              		.section	.text.RNG_GetITStatus,"ax",%progbits
+ 364              		.align	2
+ 365              		.global	RNG_GetITStatus
+ 366              		.thumb
+ 367              		.thumb_func
+ 369              	RNG_GetITStatus:
+ 370              	.LFB116:
+ 334:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+ 335:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** /**
+ 336:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @brief  Checks whether the specified RNG interrupt has occurred or not.
+ 337:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @param  RNG_IT: specifies the RNG interrupt source to check.
+ 338:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *          This parameter can be one of the following values:
+ 339:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *            @arg RNG_IT_CEI: Clock Error Interrupt.
+ 340:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *            @arg RNG_IT_SEI: Seed Error Interrupt.                   
+ 341:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @retval The new state of RNG_IT (SET or RESET).
+ 342:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   */
+ 343:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** ITStatus RNG_GetITStatus(uint8_t RNG_IT)
+ 344:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** {
+ 371              		.loc 1 344 0
+ 372              		.cfi_startproc
+ 373              		@ args = 0, pretend = 0, frame = 16
+ 374              		@ frame_needed = 1, uses_anonymous_args = 0
+ 375 0000 80B5     		push	{r7, lr}
+ 376              	.LCFI16:
+ 377              		.cfi_def_cfa_offset 8
+ 378              		.cfi_offset 7, -8
+ 379              		.cfi_offset 14, -4
+ 380 0002 84B0     		sub	sp, sp, #16
+ 381              	.LCFI17:
+ 382              		.cfi_def_cfa_offset 24
+ 383 0004 00AF     		add	r7, sp, #0
+ 384              	.LCFI18:
+ 385              		.cfi_def_cfa_register 7
+ 386 0006 0346     		mov	r3, r0
+ 387 0008 FB71     		strb	r3, [r7, #7]
+ 345:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   ITStatus bitstatus = RESET;
+ 388              		.loc 1 345 0
+ 389 000a 0023     		movs	r3, #0
+ 390 000c FB73     		strb	r3, [r7, #15]
+ 346:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   /* Check the parameters */
+ 347:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   assert_param(IS_RNG_GET_IT(RNG_IT));
+ 391              		.loc 1 347 0
+ 392 000e FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 393 0010 202B     		cmp	r3, #32
+ 394 0012 07D0     		beq	.L30
+ 395              		.loc 1 347 0 is_stmt 0 discriminator 1
+ 396 0014 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 397 0016 402B     		cmp	r3, #64
+ 398 0018 04D0     		beq	.L30
+ 399 001a 0A48     		ldr	r0, .L34
+ 400 001c 40F25B11 		movw	r1, #347
+ 401 0020 FFF7FEFF 		bl	assert_failed
+ 402              	.L30:
+ 348:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+ 349:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   /* Check the status of the specified RNG interrupt */
+ 350:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   if ((RNG->SR & RNG_IT) != (uint8_t)RESET)
+ 403              		.loc 1 350 0 is_stmt 1
+ 404 0024 084B     		ldr	r3, .L34+4
+ 405 0026 5A68     		ldr	r2, [r3, #4]
+ 406 0028 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 407 002a 1340     		ands	r3, r3, r2
+ 408 002c 002B     		cmp	r3, #0
+ 409 002e 02D0     		beq	.L31
+ 351:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   {
+ 352:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****     /* RNG_IT is set */
+ 353:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****     bitstatus = SET;
+ 410              		.loc 1 353 0
+ 411 0030 0123     		movs	r3, #1
+ 412 0032 FB73     		strb	r3, [r7, #15]
+ 413 0034 01E0     		b	.L32
+ 414              	.L31:
+ 354:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   }
+ 355:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   else
+ 356:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   {
+ 357:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****     /* RNG_IT is reset */
+ 358:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****     bitstatus = RESET;
+ 415              		.loc 1 358 0
+ 416 0036 0023     		movs	r3, #0
+ 417 0038 FB73     		strb	r3, [r7, #15]
+ 418              	.L32:
+ 359:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   }
+ 360:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   /* Return the RNG_IT status */
+ 361:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   return bitstatus;
+ 419              		.loc 1 361 0
+ 420 003a FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 362:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** }
+ 421              		.loc 1 362 0
+ 422 003c 1846     		mov	r0, r3
+ 423 003e 1037     		adds	r7, r7, #16
+ 424 0040 BD46     		mov	sp, r7
+ 425              		@ sp needed
+ 426 0042 80BD     		pop	{r7, pc}
+ 427              	.L35:
+ 428              		.align	2
+ 429              	.L34:
+ 430 0044 00000000 		.word	.LC0
+ 431 0048 00080650 		.word	1342572544
+ 432              		.cfi_endproc
+ 433              	.LFE116:
+ 435              		.section	.text.RNG_ClearITPendingBit,"ax",%progbits
+ 436              		.align	2
+ 437              		.global	RNG_ClearITPendingBit
+ 438              		.thumb
+ 439              		.thumb_func
+ 441              	RNG_ClearITPendingBit:
+ 442              	.LFB117:
+ 363:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+ 364:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+ 365:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** /**
+ 366:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @brief  Clears the RNG interrupt pending bit(s).
+ 367:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @param  RNG_IT: specifies the RNG interrupt pending bit(s) to clear.
+ 368:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *          This parameter can be any combination of the following values:
+ 369:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *            @arg RNG_IT_CEI: Clock Error Interrupt.
+ 370:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   *            @arg RNG_IT_SEI: Seed Error Interrupt.
+ 371:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   * @retval None
+ 372:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   */
+ 373:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** void RNG_ClearITPendingBit(uint8_t RNG_IT)
+ 374:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** {
+ 443              		.loc 1 374 0
+ 444              		.cfi_startproc
+ 445              		@ args = 0, pretend = 0, frame = 8
+ 446              		@ frame_needed = 1, uses_anonymous_args = 0
+ 447 0000 80B5     		push	{r7, lr}
+ 448              	.LCFI19:
+ 449              		.cfi_def_cfa_offset 8
+ 450              		.cfi_offset 7, -8
+ 451              		.cfi_offset 14, -4
+ 452 0002 82B0     		sub	sp, sp, #8
+ 453              	.LCFI20:
+ 454              		.cfi_def_cfa_offset 16
+ 455 0004 00AF     		add	r7, sp, #0
+ 456              	.LCFI21:
+ 457              		.cfi_def_cfa_register 7
+ 458 0006 0346     		mov	r3, r0
+ 459 0008 FB71     		strb	r3, [r7, #7]
+ 375:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   /* Check the parameters */
+ 376:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   assert_param(IS_RNG_IT(RNG_IT));
+ 460              		.loc 1 376 0
+ 461 000a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 462 000c 03F09F03 		and	r3, r3, #159
+ 463 0010 002B     		cmp	r3, #0
+ 464 0012 02D1     		bne	.L37
+ 465              		.loc 1 376 0 is_stmt 0 discriminator 2
+ 466 0014 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 467 0016 002B     		cmp	r3, #0
+ 468 0018 04D1     		bne	.L38
+ 469              	.L37:
+ 470              		.loc 1 376 0 discriminator 1
+ 471 001a 0648     		ldr	r0, .L39
+ 472 001c 4FF4BC71 		mov	r1, #376
+ 473 0020 FFF7FEFF 		bl	assert_failed
+ 474              	.L38:
+ 377:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** 
+ 378:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   /* Clear the selected RNG interrupt pending bit */
+ 379:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c ****   RNG->SR = (uint8_t)~RNG_IT;
+ 475              		.loc 1 379 0 is_stmt 1
+ 476 0024 044B     		ldr	r3, .L39+4
+ 477 0026 FA79     		ldrb	r2, [r7, #7]
+ 478 0028 D243     		mvns	r2, r2
+ 479 002a D2B2     		uxtb	r2, r2
+ 480 002c 5A60     		str	r2, [r3, #4]
+ 380:App/STM32F4-Discovery/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c **** }
+ 481              		.loc 1 380 0
+ 482 002e 0837     		adds	r7, r7, #8
+ 483 0030 BD46     		mov	sp, r7
+ 484              		@ sp needed
+ 485 0032 80BD     		pop	{r7, pc}
+ 486              	.L40:
+ 487              		.align	2
+ 488              	.L39:
+ 489 0034 00000000 		.word	.LC0
+ 490 0038 00080650 		.word	1342572544
+ 491              		.cfi_endproc
+ 492              	.LFE117:
+ 494              		.text
+ 495              	.Letext0:
+ 496              		.file 2 "/home/shihyu/data/STM32F4/gcc-arm-none-eabi-4_8-2013q4/arm-none-eabi/include/stdint.h"
+ 497              		.file 3 "App/STM32F4-Discovery/Libraries/CMSIS/ST/STM32F4xx/Include/stm32f4xx.h"
+ 498              		.file 4 "App/STM32F4-Discovery/Libraries/CMSIS/Include/core_cm4.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 stm32f4xx_rng.c
+     /tmp/ccEN923a.s:20     .text.RNG_DeInit:00000000 $t
+     /tmp/ccEN923a.s:25     .text.RNG_DeInit:00000000 RNG_DeInit
+     /tmp/ccEN923a.s:54     .rodata:00000000 $d
+     /tmp/ccEN923a.s:59     .text.RNG_Cmd:00000000 $t
+     /tmp/ccEN923a.s:64     .text.RNG_Cmd:00000000 RNG_Cmd
+     /tmp/ccEN923a.s:122    .text.RNG_Cmd:00000044 $d
+     /tmp/ccEN923a.s:128    .text.RNG_GetRandomNumber:00000000 $t
+     /tmp/ccEN923a.s:133    .text.RNG_GetRandomNumber:00000000 RNG_GetRandomNumber
+     /tmp/ccEN923a.s:159    .text.RNG_GetRandomNumber:00000014 $d
+     /tmp/ccEN923a.s:164    .text.RNG_ITConfig:00000000 $t
+     /tmp/ccEN923a.s:169    .text.RNG_ITConfig:00000000 RNG_ITConfig
+     /tmp/ccEN923a.s:227    .text.RNG_ITConfig:00000048 $d
+     /tmp/ccEN923a.s:233    .text.RNG_GetFlagStatus:00000000 $t
+     /tmp/ccEN923a.s:238    .text.RNG_GetFlagStatus:00000000 RNG_GetFlagStatus
+     /tmp/ccEN923a.s:302    .text.RNG_GetFlagStatus:0000004c $d
+     /tmp/ccEN923a.s:308    .text.RNG_ClearFlag:00000000 $t
+     /tmp/ccEN923a.s:313    .text.RNG_ClearFlag:00000000 RNG_ClearFlag
+     /tmp/ccEN923a.s:358    .text.RNG_ClearFlag:00000030 $d
+     /tmp/ccEN923a.s:364    .text.RNG_GetITStatus:00000000 $t
+     /tmp/ccEN923a.s:369    .text.RNG_GetITStatus:00000000 RNG_GetITStatus
+     /tmp/ccEN923a.s:430    .text.RNG_GetITStatus:00000044 $d
+     /tmp/ccEN923a.s:436    .text.RNG_ClearITPendingBit:00000000 $t
+     /tmp/ccEN923a.s:441    .text.RNG_ClearITPendingBit:00000000 RNG_ClearITPendingBit
+     /tmp/ccEN923a.s:489    .text.RNG_ClearITPendingBit:00000034 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+RCC_AHB2PeriphResetCmd
+assert_failed
