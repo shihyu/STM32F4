@@ -1,0 +1,395 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.eabi_attribute 27, 3
+   4              		.fpu fpv4-sp-d16
+   5              		.eabi_attribute 20, 1
+   6              		.eabi_attribute 21, 1
+   7              		.eabi_attribute 23, 3
+   8              		.eabi_attribute 24, 1
+   9              		.eabi_attribute 25, 1
+  10              		.eabi_attribute 26, 1
+  11              		.eabi_attribute 30, 6
+  12              		.eabi_attribute 34, 1
+  13              		.eabi_attribute 18, 4
+  14              		.thumb
+  15              		.file	"ustime.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.get_us_time,"ax",%progbits
+  20              		.align	2
+  21              		.global	get_us_time
+  22              		.thumb
+  23              		.thumb_func
+  25              	get_us_time:
+  26              	.LFB110:
+  27              		.file 1 "src/ustime.c"
+   1:src/ustime.c  **** #include "ustime.h"
+   2:src/ustime.c  **** #include <FreeRTOS.h>
+   3:src/ustime.c  **** #include "stm32f4xx.h"
+   4:src/ustime.c  **** 
+   5:src/ustime.c  **** /**
+   6:src/ustime.c  ****  * Get time count in microseconds.
+   7:src/ustime.c  ****  *
+   8:src/ustime.c  ****  * \note
+   9:src/ustime.c  ****  *   this function must be called at least
+  10:src/ustime.c  ****  *   once every 65ms to work correctly.
+  11:src/ustime.c  ****  *
+  12:src/ustime.c  ****  */
+  13:src/ustime.c  **** uint64_t get_us_time()
+  14:src/ustime.c  **** {
+  28              		.loc 1 14 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 8
+  31              		@ frame_needed = 1, uses_anonymous_args = 0
+  32 0000 80B5     		push	{r7, lr}
+  33              	.LCFI0:
+  34              		.cfi_def_cfa_offset 8
+  35              		.cfi_offset 7, -8
+  36              		.cfi_offset 14, -4
+  37 0002 82B0     		sub	sp, sp, #8
+  38              	.LCFI1:
+  39              		.cfi_def_cfa_offset 16
+  40 0004 00AF     		add	r7, sp, #0
+  41              	.LCFI2:
+  42              		.cfi_def_cfa_register 7
+  15:src/ustime.c  ****     static uint16_t t0;
+  16:src/ustime.c  ****     static uint64_t tickcount;
+  17:src/ustime.c  **** 
+  18:src/ustime.c  ****     vPortEnterCritical();
+  43              		.loc 1 18 0
+  44 0006 FFF7FEFF 		bl	vPortEnterCritical
+  19:src/ustime.c  **** 
+  20:src/ustime.c  ****     int t = TIM7->CNT;
+  45              		.loc 1 20 0
+  46 000a 154B     		ldr	r3, .L4
+  47 000c 5B6A     		ldr	r3, [r3, #36]
+  48 000e 7B60     		str	r3, [r7, #4]
+  21:src/ustime.c  ****     if (t < t0)
+  49              		.loc 1 21 0
+  50 0010 144B     		ldr	r3, .L4+4
+  51 0012 1B88     		ldrh	r3, [r3]
+  52 0014 1A46     		mov	r2, r3
+  53 0016 7B68     		ldr	r3, [r7, #4]
+  54 0018 9A42     		cmp	r2, r3
+  55 001a 03DD     		ble	.L2
+  22:src/ustime.c  ****         t += 0x10000;
+  56              		.loc 1 22 0
+  57 001c 7B68     		ldr	r3, [r7, #4]
+  58 001e 03F58033 		add	r3, r3, #65536
+  59 0022 7B60     		str	r3, [r7, #4]
+  60              	.L2:
+  23:src/ustime.c  **** 
+  24:src/ustime.c  ****     tickcount += t - t0;
+  61              		.loc 1 24 0
+  62 0024 0F4B     		ldr	r3, .L4+4
+  63 0026 1B88     		ldrh	r3, [r3]
+  64 0028 7A68     		ldr	r2, [r7, #4]
+  65 002a D31A     		subs	r3, r2, r3
+  66 002c 1846     		mov	r0, r3
+  67 002e 4FEAE071 		asr	r1, r0, #31
+  68 0032 0D4B     		ldr	r3, .L4+8
+  69 0034 D3E90023 		ldrd	r2, [r3]
+  70 0038 1218     		adds	r2, r2, r0
+  71 003a 43EB0103 		adc	r3, r3, r1
+  72 003e 0A49     		ldr	r1, .L4+8
+  73 0040 C1E90023 		strd	r2, [r1]
+  25:src/ustime.c  ****     t0 = t;
+  74              		.loc 1 25 0
+  75 0044 7B68     		ldr	r3, [r7, #4]
+  76 0046 9AB2     		uxth	r2, r3
+  77 0048 064B     		ldr	r3, .L4+4
+  78 004a 1A80     		strh	r2, [r3]	@ movhi
+  26:src/ustime.c  **** 
+  27:src/ustime.c  ****     vPortExitCritical();
+  79              		.loc 1 27 0
+  80 004c FFF7FEFF 		bl	vPortExitCritical
+  28:src/ustime.c  **** 
+  29:src/ustime.c  ****     return tickcount;
+  81              		.loc 1 29 0
+  82 0050 054B     		ldr	r3, .L4+8
+  83 0052 D3E90023 		ldrd	r2, [r3]
+  30:src/ustime.c  **** }
+  84              		.loc 1 30 0
+  85 0056 1046     		mov	r0, r2
+  86 0058 1946     		mov	r1, r3
+  87 005a 0837     		adds	r7, r7, #8
+  88 005c BD46     		mov	sp, r7
+  89              		@ sp needed
+  90 005e 80BD     		pop	{r7, pc}
+  91              	.L5:
+  92              		.align	2
+  93              	.L4:
+  94 0060 00140040 		.word	1073746944
+  95 0064 00000000 		.word	t0.7336
+  96 0068 00000000 		.word	tickcount.7337
+  97              		.cfi_endproc
+  98              	.LFE110:
+ 100              		.section	.text.delay_us,"ax",%progbits
+ 101              		.align	2
+ 102              		.global	delay_us
+ 103              		.thumb
+ 104              		.thumb_func
+ 106              	delay_us:
+ 107              	.LFB111:
+  31:src/ustime.c  **** 
+  32:src/ustime.c  **** 
+  33:src/ustime.c  **** /**
+  34:src/ustime.c  ****  * Perform a microsecond delay
+  35:src/ustime.c  ****  *
+  36:src/ustime.c  ****  * \param  us  number of microseconds to wait.
+  37:src/ustime.c  ****  * \note   The actual delay will last between us and (us-1) microseconds.
+  38:src/ustime.c  ****  *         To wait _at_least_ 1 us, you should use delay_us(2).
+  39:src/ustime.c  ****  */
+  40:src/ustime.c  **** void delay_us(unsigned long us)
+  41:src/ustime.c  **** {
+ 108              		.loc 1 41 0
+ 109              		.cfi_startproc
+ 110              		@ args = 0, pretend = 0, frame = 16
+ 111              		@ frame_needed = 1, uses_anonymous_args = 0
+ 112              		@ link register save eliminated.
+ 113 0000 80B4     		push	{r7}
+ 114              	.LCFI3:
+ 115              		.cfi_def_cfa_offset 4
+ 116              		.cfi_offset 7, -4
+ 117 0002 85B0     		sub	sp, sp, #20
+ 118              	.LCFI4:
+ 119              		.cfi_def_cfa_offset 24
+ 120 0004 00AF     		add	r7, sp, #0
+ 121              	.LCFI5:
+ 122              		.cfi_def_cfa_register 7
+ 123 0006 7860     		str	r0, [r7, #4]
+  42:src/ustime.c  ****     uint16_t  t0 = TIM7->CNT;
+ 124              		.loc 1 42 0
+ 125 0008 114B     		ldr	r3, .L12
+ 126 000a 5B6A     		ldr	r3, [r3, #36]
+ 127 000c FB81     		strh	r3, [r7, #14]	@ movhi
+ 128              	.L10:
+ 129              	.LBB2:
+  43:src/ustime.c  ****     for (;;) {
+  44:src/ustime.c  ****         int  t = TIM7->CNT;
+ 130              		.loc 1 44 0
+ 131 000e 104B     		ldr	r3, .L12
+ 132 0010 5B6A     		ldr	r3, [r3, #36]
+ 133 0012 BB60     		str	r3, [r7, #8]
+  45:src/ustime.c  ****         if (t < t0)
+ 134              		.loc 1 45 0
+ 135 0014 FA89     		ldrh	r2, [r7, #14]
+ 136 0016 BB68     		ldr	r3, [r7, #8]
+ 137 0018 9A42     		cmp	r2, r3
+ 138 001a 03DD     		ble	.L7
+  46:src/ustime.c  ****             t += 0x10000;
+ 139              		.loc 1 46 0
+ 140 001c BB68     		ldr	r3, [r7, #8]
+ 141 001e 03F58033 		add	r3, r3, #65536
+ 142 0022 BB60     		str	r3, [r7, #8]
+ 143              	.L7:
+  47:src/ustime.c  **** 
+  48:src/ustime.c  ****         if (us < t - t0)
+ 144              		.loc 1 48 0
+ 145 0024 FB89     		ldrh	r3, [r7, #14]
+ 146 0026 BA68     		ldr	r2, [r7, #8]
+ 147 0028 D31A     		subs	r3, r2, r3
+ 148 002a 1A46     		mov	r2, r3
+ 149 002c 7B68     		ldr	r3, [r7, #4]
+ 150 002e 9A42     		cmp	r2, r3
+ 151 0030 00D9     		bls	.L8
+  49:src/ustime.c  ****             return;
+ 152              		.loc 1 49 0
+ 153 0032 08E0     		b	.L11
+ 154              	.L8:
+  50:src/ustime.c  **** 
+  51:src/ustime.c  ****         us -= t - t0;
+ 155              		.loc 1 51 0
+ 156 0034 FA89     		ldrh	r2, [r7, #14]
+ 157 0036 BB68     		ldr	r3, [r7, #8]
+ 158 0038 D31A     		subs	r3, r2, r3
+ 159 003a 7A68     		ldr	r2, [r7, #4]
+ 160 003c 1344     		add	r3, r3, r2
+ 161 003e 7B60     		str	r3, [r7, #4]
+  52:src/ustime.c  ****         t0  = t;
+ 162              		.loc 1 52 0
+ 163 0040 BB68     		ldr	r3, [r7, #8]
+ 164 0042 FB81     		strh	r3, [r7, #14]	@ movhi
+ 165              	.LBE2:
+  53:src/ustime.c  ****     }
+ 166              		.loc 1 53 0
+ 167 0044 E3E7     		b	.L10
+ 168              	.L11:
+  54:src/ustime.c  **** }
+ 169              		.loc 1 54 0
+ 170 0046 1437     		adds	r7, r7, #20
+ 171 0048 BD46     		mov	sp, r7
+ 172              		@ sp needed
+ 173 004a 5DF8047B 		ldr	r7, [sp], #4
+ 174 004e 7047     		bx	lr
+ 175              	.L13:
+ 176              		.align	2
+ 177              	.L12:
+ 178 0050 00140040 		.word	1073746944
+ 179              		.cfi_endproc
+ 180              	.LFE111:
+ 182              		.section	.text.delay_ms,"ax",%progbits
+ 183              		.align	2
+ 184              		.global	delay_ms
+ 185              		.thumb
+ 186              		.thumb_func
+ 188              	delay_ms:
+ 189              	.LFB112:
+  55:src/ustime.c  **** 
+  56:src/ustime.c  **** 
+  57:src/ustime.c  **** /**
+  58:src/ustime.c  ****  * Perform a millisecond delay
+  59:src/ustime.c  ****  *
+  60:src/ustime.c  ****  * \param  ms  number of milliseconds to wait.
+  61:src/ustime.c  ****  */
+  62:src/ustime.c  **** void delay_ms(unsigned long ms)
+  63:src/ustime.c  **** {
+ 190              		.loc 1 63 0
+ 191              		.cfi_startproc
+ 192              		@ args = 0, pretend = 0, frame = 8
+ 193              		@ frame_needed = 1, uses_anonymous_args = 0
+ 194 0000 80B5     		push	{r7, lr}
+ 195              	.LCFI6:
+ 196              		.cfi_def_cfa_offset 8
+ 197              		.cfi_offset 7, -8
+ 198              		.cfi_offset 14, -4
+ 199 0002 82B0     		sub	sp, sp, #8
+ 200              	.LCFI7:
+ 201              		.cfi_def_cfa_offset 16
+ 202 0004 00AF     		add	r7, sp, #0
+ 203              	.LCFI8:
+ 204              		.cfi_def_cfa_register 7
+ 205 0006 7860     		str	r0, [r7, #4]
+  64:src/ustime.c  ****     delay_us(ms * 1000);
+ 206              		.loc 1 64 0
+ 207 0008 7B68     		ldr	r3, [r7, #4]
+ 208 000a 4FF47A72 		mov	r2, #1000
+ 209 000e 02FB03F3 		mul	r3, r2, r3
+ 210 0012 1846     		mov	r0, r3
+ 211 0014 FFF7FEFF 		bl	delay_us
+  65:src/ustime.c  **** }
+ 212              		.loc 1 65 0
+ 213 0018 0837     		adds	r7, r7, #8
+ 214 001a BD46     		mov	sp, r7
+ 215              		@ sp needed
+ 216 001c 80BD     		pop	{r7, pc}
+ 217              		.cfi_endproc
+ 218              	.LFE112:
+ 220 001e 00BF     		.section	.text.init_us_timer,"ax",%progbits
+ 221              		.align	2
+ 222              		.global	init_us_timer
+ 223              		.thumb
+ 224              		.thumb_func
+ 226              	init_us_timer:
+ 227              	.LFB113:
+  66:src/ustime.c  **** 
+  67:src/ustime.c  **** 
+  68:src/ustime.c  **** /**
+  69:src/ustime.c  ****  * Set up TIM7 as a 16bit, microsecond-timer.
+  70:src/ustime.c  ****  *
+  71:src/ustime.c  ****  */
+  72:src/ustime.c  **** void init_us_timer()
+  73:src/ustime.c  **** {
+ 228              		.loc 1 73 0
+ 229              		.cfi_startproc
+ 230              		@ args = 0, pretend = 0, frame = 16
+ 231              		@ frame_needed = 1, uses_anonymous_args = 0
+ 232 0000 80B5     		push	{r7, lr}
+ 233              	.LCFI9:
+ 234              		.cfi_def_cfa_offset 8
+ 235              		.cfi_offset 7, -8
+ 236              		.cfi_offset 14, -4
+ 237 0002 84B0     		sub	sp, sp, #16
+ 238              	.LCFI10:
+ 239              		.cfi_def_cfa_offset 24
+ 240 0004 00AF     		add	r7, sp, #0
+ 241              	.LCFI11:
+ 242              		.cfi_def_cfa_register 7
+  74:src/ustime.c  ****     RCC_ClocksTypeDef RCC_Clocks;
+  75:src/ustime.c  ****     RCC_GetClocksFreq(&RCC_Clocks);
+ 243              		.loc 1 75 0
+ 244 0006 3B46     		mov	r3, r7
+ 245 0008 1846     		mov	r0, r3
+ 246 000a FFF7FEFF 		bl	RCC_GetClocksFreq
+  76:src/ustime.c  **** 
+  77:src/ustime.c  ****     RCC->APB1ENR |= RCC_APB1Periph_TIM7;
+ 247              		.loc 1 77 0
+ 248 000e 0D4B     		ldr	r3, .L16
+ 249 0010 0C4A     		ldr	r2, .L16
+ 250 0012 126C     		ldr	r2, [r2, #64]
+ 251 0014 42F02002 		orr	r2, r2, #32
+ 252 0018 1A64     		str	r2, [r3, #64]
+  78:src/ustime.c  ****     TIM7->PSC = (RCC_Clocks.PCLK2_Frequency / 1000000) - 1;
+ 253              		.loc 1 78 0
+ 254 001a 0B4B     		ldr	r3, .L16+4
+ 255 001c F968     		ldr	r1, [r7, #12]
+ 256 001e 0B4A     		ldr	r2, .L16+8
+ 257 0020 A2FB0102 		umull	r0, r2, r2, r1
+ 258 0024 920C     		lsrs	r2, r2, #18
+ 259 0026 92B2     		uxth	r2, r2
+ 260 0028 013A     		subs	r2, r2, #1
+ 261 002a 92B2     		uxth	r2, r2
+ 262 002c 1A85     		strh	r2, [r3, #40]	@ movhi
+  79:src/ustime.c  ****     TIM7->ARR = 0xFFFF;
+ 263              		.loc 1 79 0
+ 264 002e 064B     		ldr	r3, .L16+4
+ 265 0030 4FF6FF72 		movw	r2, #65535
+ 266 0034 DA62     		str	r2, [r3, #44]
+  80:src/ustime.c  ****     TIM7->CR1 = TIM_CR1_CEN;
+ 267              		.loc 1 80 0
+ 268 0036 044B     		ldr	r3, .L16+4
+ 269 0038 0122     		movs	r2, #1
+ 270 003a 1A80     		strh	r2, [r3]	@ movhi
+  81:src/ustime.c  **** }
+ 271              		.loc 1 81 0
+ 272 003c 1037     		adds	r7, r7, #16
+ 273 003e BD46     		mov	sp, r7
+ 274              		@ sp needed
+ 275 0040 80BD     		pop	{r7, pc}
+ 276              	.L17:
+ 277 0042 00BF     		.align	2
+ 278              	.L16:
+ 279 0044 00380240 		.word	1073887232
+ 280 0048 00140040 		.word	1073746944
+ 281 004c 83DE1B43 		.word	1125899907
+ 282              		.cfi_endproc
+ 283              	.LFE113:
+ 285              		.section	.bss.t0.7336,"aw",%nobits
+ 286              		.align	1
+ 289              	t0.7336:
+ 290 0000 0000     		.space	2
+ 291              		.section	.bss.tickcount.7337,"aw",%nobits
+ 292              		.align	3
+ 295              	tickcount.7337:
+ 296 0000 00000000 		.space	8
+ 296      00000000 
+ 297              		.text
+ 298              	.Letext0:
+ 299              		.file 2 "/home/shihyu/data/STM32F4/gcc-arm-none-eabi-4_8-2013q4/arm-none-eabi/include/stdint.h"
+ 300              		.file 3 "libs/Device/STM32F4xx/Include/stm32f4xx.h"
+ 301              		.file 4 "libs/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h"
+ 302              		.file 5 "libs/CMSIS/Include/core_cm4.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 ustime.c
+     /tmp/ccF6Va3g.s:20     .text.get_us_time:00000000 $t
+     /tmp/ccF6Va3g.s:25     .text.get_us_time:00000000 get_us_time
+     /tmp/ccF6Va3g.s:94     .text.get_us_time:00000060 $d
+     /tmp/ccF6Va3g.s:289    .bss.t0.7336:00000000 t0.7336
+     /tmp/ccF6Va3g.s:295    .bss.tickcount.7337:00000000 tickcount.7337
+     /tmp/ccF6Va3g.s:101    .text.delay_us:00000000 $t
+     /tmp/ccF6Va3g.s:106    .text.delay_us:00000000 delay_us
+     /tmp/ccF6Va3g.s:178    .text.delay_us:00000050 $d
+     /tmp/ccF6Va3g.s:183    .text.delay_ms:00000000 $t
+     /tmp/ccF6Va3g.s:188    .text.delay_ms:00000000 delay_ms
+     /tmp/ccF6Va3g.s:221    .text.init_us_timer:00000000 $t
+     /tmp/ccF6Va3g.s:226    .text.init_us_timer:00000000 init_us_timer
+     /tmp/ccF6Va3g.s:279    .text.init_us_timer:00000044 $d
+     /tmp/ccF6Va3g.s:286    .bss.t0.7336:00000000 $d
+     /tmp/ccF6Va3g.s:292    .bss.tickcount.7337:00000000 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+vPortEnterCritical
+vPortExitCritical
+RCC_GetClocksFreq

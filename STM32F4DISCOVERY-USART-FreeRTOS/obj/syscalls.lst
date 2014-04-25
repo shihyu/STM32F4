@@ -1,0 +1,1145 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.eabi_attribute 27, 3
+   4              		.fpu fpv4-sp-d16
+   5              		.eabi_attribute 20, 1
+   6              		.eabi_attribute 21, 1
+   7              		.eabi_attribute 23, 3
+   8              		.eabi_attribute 24, 1
+   9              		.eabi_attribute 25, 1
+  10              		.eabi_attribute 26, 1
+  11              		.eabi_attribute 30, 6
+  12              		.eabi_attribute 34, 1
+  13              		.eabi_attribute 18, 4
+  14              		.thumb
+  15              		.file	"syscalls.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.global	__malloc_margin
+  20              		.section	.data.__malloc_margin,"aw",%progbits
+  21              		.align	2
+  24              	__malloc_margin:
+  25 0000 00010000 		.word	256
+  26              		.comm	__brkval,4,4
+  27              		.section	.text._exit,"ax",%progbits
+  28              		.align	2
+  29              		.global	_exit
+  30              		.thumb
+  31              		.thumb_func
+  33              	_exit:
+  34              	.LFB110:
+  35              		.file 1 "src/syscalls.c"
+   1:src/syscalls.c **** #include "syscalls.h"
+   2:src/syscalls.c **** #include "uart.h"
+   3:src/syscalls.c **** #include "stm32f4xx.h"
+   4:src/syscalls.c **** #include "FreeRTOS.h"
+   5:src/syscalls.c **** #include <unistd.h>
+   6:src/syscalls.c **** #include <stdlib.h>
+   7:src/syscalls.c **** #include <errno.h>
+   8:src/syscalls.c **** #include <string.h>
+   9:src/syscalls.c **** #include <sys/stat.h>
+  10:src/syscalls.c **** #include <sys/time.h>
+  11:src/syscalls.c **** 
+  12:src/syscalls.c **** size_t   __malloc_margin = 256;
+  13:src/syscalls.c **** char    *__brkval;
+  14:src/syscalls.c **** 
+  15:src/syscalls.c **** void _exit(int code)
+  16:src/syscalls.c **** {
+  36              		.loc 1 16 0
+  37              		.cfi_startproc
+  38              		@ args = 0, pretend = 0, frame = 8
+  39              		@ frame_needed = 1, uses_anonymous_args = 0
+  40              		@ link register save eliminated.
+  41 0000 80B4     		push	{r7}
+  42              	.LCFI0:
+  43              		.cfi_def_cfa_offset 4
+  44              		.cfi_offset 7, -4
+  45 0002 83B0     		sub	sp, sp, #12
+  46              	.LCFI1:
+  47              		.cfi_def_cfa_offset 16
+  48 0004 00AF     		add	r7, sp, #0
+  49              	.LCFI2:
+  50              		.cfi_def_cfa_register 7
+  51 0006 7860     		str	r0, [r7, #4]
+  52              	.L2:
+  17:src/syscalls.c ****     for (;;);
+  53              		.loc 1 17 0 discriminator 1
+  54 0008 FEE7     		b	.L2
+  55              		.cfi_endproc
+  56              	.LFE110:
+  58 000a 00BF     		.section	.text._read_r,"ax",%progbits
+  59              		.align	2
+  60              		.global	_read_r
+  61              		.thumb
+  62              		.thumb_func
+  64              	_read_r:
+  65              	.LFB111:
+  18:src/syscalls.c **** }
+  19:src/syscalls.c **** 
+  20:src/syscalls.c **** 
+  21:src/syscalls.c **** ssize_t _read_r(struct _reent *r, int fd, void *ptr, size_t len)
+  22:src/syscalls.c **** {
+  66              		.loc 1 22 0
+  67              		.cfi_startproc
+  68              		@ args = 0, pretend = 0, frame = 16
+  69              		@ frame_needed = 1, uses_anonymous_args = 0
+  70 0000 80B5     		push	{r7, lr}
+  71              	.LCFI3:
+  72              		.cfi_def_cfa_offset 8
+  73              		.cfi_offset 7, -8
+  74              		.cfi_offset 14, -4
+  75 0002 84B0     		sub	sp, sp, #16
+  76              	.LCFI4:
+  77              		.cfi_def_cfa_offset 24
+  78 0004 00AF     		add	r7, sp, #0
+  79              	.LCFI5:
+  80              		.cfi_def_cfa_register 7
+  81 0006 F860     		str	r0, [r7, #12]
+  82 0008 B960     		str	r1, [r7, #8]
+  83 000a 7A60     		str	r2, [r7, #4]
+  84 000c 3B60     		str	r3, [r7]
+  23:src/syscalls.c ****     return uart_read_r(r, fd, ptr, len);
+  85              		.loc 1 23 0
+  86 000e F868     		ldr	r0, [r7, #12]
+  87 0010 B968     		ldr	r1, [r7, #8]
+  88 0012 7A68     		ldr	r2, [r7, #4]
+  89 0014 3B68     		ldr	r3, [r7]
+  90 0016 FFF7FEFF 		bl	uart_read_r
+  91 001a 0346     		mov	r3, r0
+  24:src/syscalls.c **** }
+  92              		.loc 1 24 0
+  93 001c 1846     		mov	r0, r3
+  94 001e 1037     		adds	r7, r7, #16
+  95 0020 BD46     		mov	sp, r7
+  96              		@ sp needed
+  97 0022 80BD     		pop	{r7, pc}
+  98              		.cfi_endproc
+  99              	.LFE111:
+ 101              		.section	.text._write_r,"ax",%progbits
+ 102              		.align	2
+ 103              		.global	_write_r
+ 104              		.thumb
+ 105              		.thumb_func
+ 107              	_write_r:
+ 108              	.LFB112:
+  25:src/syscalls.c **** 
+  26:src/syscalls.c **** 
+  27:src/syscalls.c **** ssize_t _write_r(struct _reent *r, int fd, const void *ptr, size_t len)
+  28:src/syscalls.c **** {
+ 109              		.loc 1 28 0
+ 110              		.cfi_startproc
+ 111              		@ args = 0, pretend = 0, frame = 16
+ 112              		@ frame_needed = 1, uses_anonymous_args = 0
+ 113 0000 80B5     		push	{r7, lr}
+ 114              	.LCFI6:
+ 115              		.cfi_def_cfa_offset 8
+ 116              		.cfi_offset 7, -8
+ 117              		.cfi_offset 14, -4
+ 118 0002 84B0     		sub	sp, sp, #16
+ 119              	.LCFI7:
+ 120              		.cfi_def_cfa_offset 24
+ 121 0004 00AF     		add	r7, sp, #0
+ 122              	.LCFI8:
+ 123              		.cfi_def_cfa_register 7
+ 124 0006 F860     		str	r0, [r7, #12]
+ 125 0008 B960     		str	r1, [r7, #8]
+ 126 000a 7A60     		str	r2, [r7, #4]
+ 127 000c 3B60     		str	r3, [r7]
+  29:src/syscalls.c ****     return uart_write_r(r, fd, ptr, len);
+ 128              		.loc 1 29 0
+ 129 000e F868     		ldr	r0, [r7, #12]
+ 130 0010 B968     		ldr	r1, [r7, #8]
+ 131 0012 7A68     		ldr	r2, [r7, #4]
+ 132 0014 3B68     		ldr	r3, [r7]
+ 133 0016 FFF7FEFF 		bl	uart_write_r
+ 134 001a 0346     		mov	r3, r0
+  30:src/syscalls.c **** }
+ 135              		.loc 1 30 0
+ 136 001c 1846     		mov	r0, r3
+ 137 001e 1037     		adds	r7, r7, #16
+ 138 0020 BD46     		mov	sp, r7
+ 139              		@ sp needed
+ 140 0022 80BD     		pop	{r7, pc}
+ 141              		.cfi_endproc
+ 142              	.LFE112:
+ 144              		.section	.text._lseek_r,"ax",%progbits
+ 145              		.align	2
+ 146              		.global	_lseek_r
+ 147              		.thumb
+ 148              		.thumb_func
+ 150              	_lseek_r:
+ 151              	.LFB113:
+  31:src/syscalls.c **** 
+  32:src/syscalls.c **** 
+  33:src/syscalls.c **** off_t _lseek_r(struct _reent *r, int fd, _off_t ptr, int dir)
+  34:src/syscalls.c **** {
+ 152              		.loc 1 34 0
+ 153              		.cfi_startproc
+ 154              		@ args = 0, pretend = 0, frame = 16
+ 155              		@ frame_needed = 1, uses_anonymous_args = 0
+ 156              		@ link register save eliminated.
+ 157 0000 80B4     		push	{r7}
+ 158              	.LCFI9:
+ 159              		.cfi_def_cfa_offset 4
+ 160              		.cfi_offset 7, -4
+ 161 0002 85B0     		sub	sp, sp, #20
+ 162              	.LCFI10:
+ 163              		.cfi_def_cfa_offset 24
+ 164 0004 00AF     		add	r7, sp, #0
+ 165              	.LCFI11:
+ 166              		.cfi_def_cfa_register 7
+ 167 0006 F860     		str	r0, [r7, #12]
+ 168 0008 B960     		str	r1, [r7, #8]
+ 169 000a 7A60     		str	r2, [r7, #4]
+ 170 000c 3B60     		str	r3, [r7]
+  35:src/syscalls.c ****     fd  = fd;
+  36:src/syscalls.c ****     ptr = ptr;
+  37:src/syscalls.c ****     dir = dir;
+  38:src/syscalls.c ****     r->_errno = ENOSYS;
+ 171              		.loc 1 38 0
+ 172 000e FB68     		ldr	r3, [r7, #12]
+ 173 0010 5822     		movs	r2, #88
+ 174 0012 1A60     		str	r2, [r3]
+  39:src/syscalls.c ****     return -1;
+ 175              		.loc 1 39 0
+ 176 0014 4FF0FF33 		mov	r3, #-1
+  40:src/syscalls.c **** }
+ 177              		.loc 1 40 0
+ 178 0018 1846     		mov	r0, r3
+ 179 001a 1437     		adds	r7, r7, #20
+ 180 001c BD46     		mov	sp, r7
+ 181              		@ sp needed
+ 182 001e 5DF8047B 		ldr	r7, [sp], #4
+ 183 0022 7047     		bx	lr
+ 184              		.cfi_endproc
+ 185              	.LFE113:
+ 187              		.section	.text._close_r,"ax",%progbits
+ 188              		.align	2
+ 189              		.global	_close_r
+ 190              		.thumb
+ 191              		.thumb_func
+ 193              	_close_r:
+ 194              	.LFB114:
+  41:src/syscalls.c **** 
+  42:src/syscalls.c **** 
+  43:src/syscalls.c **** int _close_r(struct _reent *r, int fd)
+  44:src/syscalls.c **** {
+ 195              		.loc 1 44 0
+ 196              		.cfi_startproc
+ 197              		@ args = 0, pretend = 0, frame = 8
+ 198              		@ frame_needed = 1, uses_anonymous_args = 0
+ 199              		@ link register save eliminated.
+ 200 0000 80B4     		push	{r7}
+ 201              	.LCFI12:
+ 202              		.cfi_def_cfa_offset 4
+ 203              		.cfi_offset 7, -4
+ 204 0002 83B0     		sub	sp, sp, #12
+ 205              	.LCFI13:
+ 206              		.cfi_def_cfa_offset 16
+ 207 0004 00AF     		add	r7, sp, #0
+ 208              	.LCFI14:
+ 209              		.cfi_def_cfa_register 7
+ 210 0006 7860     		str	r0, [r7, #4]
+ 211 0008 3960     		str	r1, [r7]
+  45:src/syscalls.c ****     fd = fd;
+  46:src/syscalls.c ****     r->_errno = ENOSYS;
+ 212              		.loc 1 46 0
+ 213 000a 7B68     		ldr	r3, [r7, #4]
+ 214 000c 5822     		movs	r2, #88
+ 215 000e 1A60     		str	r2, [r3]
+  47:src/syscalls.c ****     return -1;
+ 216              		.loc 1 47 0
+ 217 0010 4FF0FF33 		mov	r3, #-1
+  48:src/syscalls.c **** }
+ 218              		.loc 1 48 0
+ 219 0014 1846     		mov	r0, r3
+ 220 0016 0C37     		adds	r7, r7, #12
+ 221 0018 BD46     		mov	sp, r7
+ 222              		@ sp needed
+ 223 001a 5DF8047B 		ldr	r7, [sp], #4
+ 224 001e 7047     		bx	lr
+ 225              		.cfi_endproc
+ 226              	.LFE114:
+ 228              		.section	.text._fstat_r,"ax",%progbits
+ 229              		.align	2
+ 230              		.global	_fstat_r
+ 231              		.thumb
+ 232              		.thumb_func
+ 234              	_fstat_r:
+ 235              	.LFB115:
+  49:src/syscalls.c **** 
+  50:src/syscalls.c **** 
+  51:src/syscalls.c **** int _fstat_r(struct _reent *r, int fd, struct stat *st)
+  52:src/syscalls.c **** {
+ 236              		.loc 1 52 0
+ 237              		.cfi_startproc
+ 238              		@ args = 0, pretend = 0, frame = 16
+ 239              		@ frame_needed = 1, uses_anonymous_args = 0
+ 240              		@ link register save eliminated.
+ 241 0000 80B4     		push	{r7}
+ 242              	.LCFI15:
+ 243              		.cfi_def_cfa_offset 4
+ 244              		.cfi_offset 7, -4
+ 245 0002 85B0     		sub	sp, sp, #20
+ 246              	.LCFI16:
+ 247              		.cfi_def_cfa_offset 24
+ 248 0004 00AF     		add	r7, sp, #0
+ 249              	.LCFI17:
+ 250              		.cfi_def_cfa_register 7
+ 251 0006 F860     		str	r0, [r7, #12]
+ 252 0008 B960     		str	r1, [r7, #8]
+ 253 000a 7A60     		str	r2, [r7, #4]
+  53:src/syscalls.c ****     if ((fd >= STDIN_FILENO) && (fd <= STDERR_FILENO)) {
+ 254              		.loc 1 53 0
+ 255 000c BB68     		ldr	r3, [r7, #8]
+ 256 000e 002B     		cmp	r3, #0
+ 257 0010 08DB     		blt	.L12
+ 258              		.loc 1 53 0 is_stmt 0 discriminator 1
+ 259 0012 BB68     		ldr	r3, [r7, #8]
+ 260 0014 022B     		cmp	r3, #2
+ 261 0016 05DC     		bgt	.L12
+  54:src/syscalls.c ****       st->st_mode = S_IFCHR;
+ 262              		.loc 1 54 0 is_stmt 1
+ 263 0018 7B68     		ldr	r3, [r7, #4]
+ 264 001a 4FF40052 		mov	r2, #8192
+ 265 001e 5A60     		str	r2, [r3, #4]
+  55:src/syscalls.c ****       return 0;
+ 266              		.loc 1 55 0
+ 267 0020 0023     		movs	r3, #0
+ 268 0022 04E0     		b	.L13
+ 269              	.L12:
+  56:src/syscalls.c ****     }
+  57:src/syscalls.c **** 
+  58:src/syscalls.c ****     r->_errno = ENOSYS;
+ 270              		.loc 1 58 0
+ 271 0024 FB68     		ldr	r3, [r7, #12]
+ 272 0026 5822     		movs	r2, #88
+ 273 0028 1A60     		str	r2, [r3]
+  59:src/syscalls.c ****     return -1;
+ 274              		.loc 1 59 0
+ 275 002a 4FF0FF33 		mov	r3, #-1
+ 276              	.L13:
+  60:src/syscalls.c **** }
+ 277              		.loc 1 60 0
+ 278 002e 1846     		mov	r0, r3
+ 279 0030 1437     		adds	r7, r7, #20
+ 280 0032 BD46     		mov	sp, r7
+ 281              		@ sp needed
+ 282 0034 5DF8047B 		ldr	r7, [sp], #4
+ 283 0038 7047     		bx	lr
+ 284              		.cfi_endproc
+ 285              	.LFE115:
+ 287 003a 00BF     		.section	.text._isatty_r,"ax",%progbits
+ 288              		.align	2
+ 289              		.global	_isatty_r
+ 290              		.thumb
+ 291              		.thumb_func
+ 293              	_isatty_r:
+ 294              	.LFB116:
+  61:src/syscalls.c **** 
+  62:src/syscalls.c **** 
+  63:src/syscalls.c **** int _isatty_r(struct _reent *r, int fd)
+  64:src/syscalls.c **** {
+ 295              		.loc 1 64 0
+ 296              		.cfi_startproc
+ 297              		@ args = 0, pretend = 0, frame = 8
+ 298              		@ frame_needed = 1, uses_anonymous_args = 0
+ 299              		@ link register save eliminated.
+ 300 0000 80B4     		push	{r7}
+ 301              	.LCFI18:
+ 302              		.cfi_def_cfa_offset 4
+ 303              		.cfi_offset 7, -4
+ 304 0002 83B0     		sub	sp, sp, #12
+ 305              	.LCFI19:
+ 306              		.cfi_def_cfa_offset 16
+ 307 0004 00AF     		add	r7, sp, #0
+ 308              	.LCFI20:
+ 309              		.cfi_def_cfa_register 7
+ 310 0006 7860     		str	r0, [r7, #4]
+ 311 0008 3960     		str	r1, [r7]
+  65:src/syscalls.c ****     r  = r;
+  66:src/syscalls.c ****     fd = fd;
+  67:src/syscalls.c ****     return 1;
+ 312              		.loc 1 67 0
+ 313 000a 0123     		movs	r3, #1
+  68:src/syscalls.c **** }
+ 314              		.loc 1 68 0
+ 315 000c 1846     		mov	r0, r3
+ 316 000e 0C37     		adds	r7, r7, #12
+ 317 0010 BD46     		mov	sp, r7
+ 318              		@ sp needed
+ 319 0012 5DF8047B 		ldr	r7, [sp], #4
+ 320 0016 7047     		bx	lr
+ 321              		.cfi_endproc
+ 322              	.LFE116:
+ 324              		.section	.text._sbrk_r,"ax",%progbits
+ 325              		.align	2
+ 326              		.global	_sbrk_r
+ 327              		.thumb
+ 328              		.thumb_func
+ 330              	_sbrk_r:
+ 331              	.LFB117:
+  69:src/syscalls.c **** 
+  70:src/syscalls.c **** 
+  71:src/syscalls.c **** void *_sbrk_r(struct _reent *r, ptrdiff_t incr)
+  72:src/syscalls.c **** {
+ 332              		.loc 1 72 0
+ 333              		.cfi_startproc
+ 334              		@ args = 0, pretend = 0, frame = 16
+ 335              		@ frame_needed = 1, uses_anonymous_args = 0
+ 336              		@ link register save eliminated.
+ 337 0000 90B4     		push	{r4, r7}
+ 338              	.LCFI21:
+ 339              		.cfi_def_cfa_offset 8
+ 340              		.cfi_offset 4, -8
+ 341              		.cfi_offset 7, -4
+ 342 0002 84B0     		sub	sp, sp, #16
+ 343              	.LCFI22:
+ 344              		.cfi_def_cfa_offset 24
+ 345 0004 00AF     		add	r7, sp, #0
+ 346              	.LCFI23:
+ 347              		.cfi_def_cfa_register 7
+ 348 0006 7860     		str	r0, [r7, #4]
+ 349 0008 3960     		str	r1, [r7]
+  73:src/syscalls.c ****     extern char end;   // provided by the linker script
+  74:src/syscalls.c **** 
+  75:src/syscalls.c ****     if (__brkval == 0)
+ 350              		.loc 1 75 0
+ 351 000a 154B     		ldr	r3, .L21
+ 352 000c 1B68     		ldr	r3, [r3]
+ 353 000e 002B     		cmp	r3, #0
+ 354 0010 02D1     		bne	.L17
+  76:src/syscalls.c ****         __brkval = &end;
+ 355              		.loc 1 76 0
+ 356 0012 134B     		ldr	r3, .L21
+ 357 0014 134A     		ldr	r2, .L21+4
+ 358 0016 1A60     		str	r2, [r3]
+ 359              	.L17:
+  77:src/syscalls.c **** 
+  78:src/syscalls.c ****     if (__brkval + incr > (char*)__get_MSP() - __malloc_margin) {
+ 360              		.loc 1 78 0
+ 361 0018 114B     		ldr	r3, .L21
+ 362 001a 1A68     		ldr	r2, [r3]
+ 363 001c 3B68     		ldr	r3, [r7]
+ 364 001e 1A44     		add	r2, r2, r3
+ 365              	.LBB4:
+ 366              	.LBB5:
+ 367              		.file 2 "libs/CMSIS/Include/core_cmFunc.h"
+   1:libs/CMSIS/Include/core_cmFunc.h **** /**************************************************************************//**
+   2:libs/CMSIS/Include/core_cmFunc.h ****  * @file     core_cmFunc.h
+   3:libs/CMSIS/Include/core_cmFunc.h ****  * @brief    CMSIS Cortex-M Core Function Access Header File
+   4:libs/CMSIS/Include/core_cmFunc.h ****  * @version  V2.10
+   5:libs/CMSIS/Include/core_cmFunc.h ****  * @date     26. July 2011
+   6:libs/CMSIS/Include/core_cmFunc.h ****  *
+   7:libs/CMSIS/Include/core_cmFunc.h ****  * @note
+   8:libs/CMSIS/Include/core_cmFunc.h ****  * Copyright (C) 2009-2011 ARM Limited. All rights reserved.
+   9:libs/CMSIS/Include/core_cmFunc.h ****  *
+  10:libs/CMSIS/Include/core_cmFunc.h ****  * @par
+  11:libs/CMSIS/Include/core_cmFunc.h ****  * ARM Limited (ARM) is supplying this software for use with Cortex-M 
+  12:libs/CMSIS/Include/core_cmFunc.h ****  * processor based microcontrollers.  This file can be freely distributed 
+  13:libs/CMSIS/Include/core_cmFunc.h ****  * within development tools that are supporting such ARM based processors. 
+  14:libs/CMSIS/Include/core_cmFunc.h ****  *
+  15:libs/CMSIS/Include/core_cmFunc.h ****  * @par
+  16:libs/CMSIS/Include/core_cmFunc.h ****  * THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
+  17:libs/CMSIS/Include/core_cmFunc.h ****  * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
+  18:libs/CMSIS/Include/core_cmFunc.h ****  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
+  19:libs/CMSIS/Include/core_cmFunc.h ****  * ARM SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR
+  20:libs/CMSIS/Include/core_cmFunc.h ****  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
+  21:libs/CMSIS/Include/core_cmFunc.h ****  *
+  22:libs/CMSIS/Include/core_cmFunc.h ****  ******************************************************************************/
+  23:libs/CMSIS/Include/core_cmFunc.h **** 
+  24:libs/CMSIS/Include/core_cmFunc.h **** #ifndef __CORE_CMFUNC_H
+  25:libs/CMSIS/Include/core_cmFunc.h **** #define __CORE_CMFUNC_H
+  26:libs/CMSIS/Include/core_cmFunc.h **** 
+  27:libs/CMSIS/Include/core_cmFunc.h **** 
+  28:libs/CMSIS/Include/core_cmFunc.h **** /* ###########################  Core Function Access  ########################### */
+  29:libs/CMSIS/Include/core_cmFunc.h **** /** \ingroup  CMSIS_Core_FunctionInterface   
+  30:libs/CMSIS/Include/core_cmFunc.h ****     \defgroup CMSIS_Core_RegAccFunctions CMSIS Core Register Access Functions
+  31:libs/CMSIS/Include/core_cmFunc.h ****   @{
+  32:libs/CMSIS/Include/core_cmFunc.h ****  */
+  33:libs/CMSIS/Include/core_cmFunc.h **** 
+  34:libs/CMSIS/Include/core_cmFunc.h **** #if   defined ( __CC_ARM ) /*------------------RealView Compiler -----------------*/
+  35:libs/CMSIS/Include/core_cmFunc.h **** /* ARM armcc specific functions */
+  36:libs/CMSIS/Include/core_cmFunc.h **** 
+  37:libs/CMSIS/Include/core_cmFunc.h **** #if (__ARMCC_VERSION < 400677)
+  38:libs/CMSIS/Include/core_cmFunc.h ****   #error "Please use ARM Compiler Toolchain V4.0.677 or later!"
+  39:libs/CMSIS/Include/core_cmFunc.h **** #endif
+  40:libs/CMSIS/Include/core_cmFunc.h **** 
+  41:libs/CMSIS/Include/core_cmFunc.h **** /* intrinsic void __enable_irq();     */
+  42:libs/CMSIS/Include/core_cmFunc.h **** /* intrinsic void __disable_irq();    */
+  43:libs/CMSIS/Include/core_cmFunc.h **** 
+  44:libs/CMSIS/Include/core_cmFunc.h **** /** \brief  Get Control Register
+  45:libs/CMSIS/Include/core_cmFunc.h **** 
+  46:libs/CMSIS/Include/core_cmFunc.h ****     This function returns the content of the Control Register.
+  47:libs/CMSIS/Include/core_cmFunc.h **** 
+  48:libs/CMSIS/Include/core_cmFunc.h ****     \return               Control Register value
+  49:libs/CMSIS/Include/core_cmFunc.h ****  */
+  50:libs/CMSIS/Include/core_cmFunc.h **** static __INLINE uint32_t __get_CONTROL(void)
+  51:libs/CMSIS/Include/core_cmFunc.h **** {
+  52:libs/CMSIS/Include/core_cmFunc.h ****   register uint32_t __regControl         __ASM("control");
+  53:libs/CMSIS/Include/core_cmFunc.h ****   return(__regControl);
+  54:libs/CMSIS/Include/core_cmFunc.h **** }
+  55:libs/CMSIS/Include/core_cmFunc.h **** 
+  56:libs/CMSIS/Include/core_cmFunc.h **** 
+  57:libs/CMSIS/Include/core_cmFunc.h **** /** \brief  Set Control Register
+  58:libs/CMSIS/Include/core_cmFunc.h **** 
+  59:libs/CMSIS/Include/core_cmFunc.h ****     This function writes the given value to the Control Register.
+  60:libs/CMSIS/Include/core_cmFunc.h **** 
+  61:libs/CMSIS/Include/core_cmFunc.h ****     \param [in]    control  Control Register value to set
+  62:libs/CMSIS/Include/core_cmFunc.h ****  */
+  63:libs/CMSIS/Include/core_cmFunc.h **** static __INLINE void __set_CONTROL(uint32_t control)
+  64:libs/CMSIS/Include/core_cmFunc.h **** {
+  65:libs/CMSIS/Include/core_cmFunc.h ****   register uint32_t __regControl         __ASM("control");
+  66:libs/CMSIS/Include/core_cmFunc.h ****   __regControl = control;
+  67:libs/CMSIS/Include/core_cmFunc.h **** }
+  68:libs/CMSIS/Include/core_cmFunc.h **** 
+  69:libs/CMSIS/Include/core_cmFunc.h **** 
+  70:libs/CMSIS/Include/core_cmFunc.h **** /** \brief  Get ISPR Register
+  71:libs/CMSIS/Include/core_cmFunc.h **** 
+  72:libs/CMSIS/Include/core_cmFunc.h ****     This function returns the content of the ISPR Register.
+  73:libs/CMSIS/Include/core_cmFunc.h **** 
+  74:libs/CMSIS/Include/core_cmFunc.h ****     \return               ISPR Register value
+  75:libs/CMSIS/Include/core_cmFunc.h ****  */
+  76:libs/CMSIS/Include/core_cmFunc.h **** static __INLINE uint32_t __get_IPSR(void)
+  77:libs/CMSIS/Include/core_cmFunc.h **** {
+  78:libs/CMSIS/Include/core_cmFunc.h ****   register uint32_t __regIPSR          __ASM("ipsr");
+  79:libs/CMSIS/Include/core_cmFunc.h ****   return(__regIPSR);
+  80:libs/CMSIS/Include/core_cmFunc.h **** }
+  81:libs/CMSIS/Include/core_cmFunc.h **** 
+  82:libs/CMSIS/Include/core_cmFunc.h **** 
+  83:libs/CMSIS/Include/core_cmFunc.h **** /** \brief  Get APSR Register
+  84:libs/CMSIS/Include/core_cmFunc.h **** 
+  85:libs/CMSIS/Include/core_cmFunc.h ****     This function returns the content of the APSR Register.
+  86:libs/CMSIS/Include/core_cmFunc.h **** 
+  87:libs/CMSIS/Include/core_cmFunc.h ****     \return               APSR Register value
+  88:libs/CMSIS/Include/core_cmFunc.h ****  */
+  89:libs/CMSIS/Include/core_cmFunc.h **** static __INLINE uint32_t __get_APSR(void)
+  90:libs/CMSIS/Include/core_cmFunc.h **** {
+  91:libs/CMSIS/Include/core_cmFunc.h ****   register uint32_t __regAPSR          __ASM("apsr");
+  92:libs/CMSIS/Include/core_cmFunc.h ****   return(__regAPSR);
+  93:libs/CMSIS/Include/core_cmFunc.h **** }
+  94:libs/CMSIS/Include/core_cmFunc.h **** 
+  95:libs/CMSIS/Include/core_cmFunc.h **** 
+  96:libs/CMSIS/Include/core_cmFunc.h **** /** \brief  Get xPSR Register
+  97:libs/CMSIS/Include/core_cmFunc.h **** 
+  98:libs/CMSIS/Include/core_cmFunc.h ****     This function returns the content of the xPSR Register.
+  99:libs/CMSIS/Include/core_cmFunc.h **** 
+ 100:libs/CMSIS/Include/core_cmFunc.h ****     \return               xPSR Register value
+ 101:libs/CMSIS/Include/core_cmFunc.h ****  */
+ 102:libs/CMSIS/Include/core_cmFunc.h **** static __INLINE uint32_t __get_xPSR(void)
+ 103:libs/CMSIS/Include/core_cmFunc.h **** {
+ 104:libs/CMSIS/Include/core_cmFunc.h ****   register uint32_t __regXPSR          __ASM("xpsr");
+ 105:libs/CMSIS/Include/core_cmFunc.h ****   return(__regXPSR);
+ 106:libs/CMSIS/Include/core_cmFunc.h **** }
+ 107:libs/CMSIS/Include/core_cmFunc.h **** 
+ 108:libs/CMSIS/Include/core_cmFunc.h **** 
+ 109:libs/CMSIS/Include/core_cmFunc.h **** /** \brief  Get Process Stack Pointer
+ 110:libs/CMSIS/Include/core_cmFunc.h **** 
+ 111:libs/CMSIS/Include/core_cmFunc.h ****     This function returns the current value of the Process Stack Pointer (PSP).
+ 112:libs/CMSIS/Include/core_cmFunc.h **** 
+ 113:libs/CMSIS/Include/core_cmFunc.h ****     \return               PSP Register value
+ 114:libs/CMSIS/Include/core_cmFunc.h ****  */
+ 115:libs/CMSIS/Include/core_cmFunc.h **** static __INLINE uint32_t __get_PSP(void)
+ 116:libs/CMSIS/Include/core_cmFunc.h **** {
+ 117:libs/CMSIS/Include/core_cmFunc.h ****   register uint32_t __regProcessStackPointer  __ASM("psp");
+ 118:libs/CMSIS/Include/core_cmFunc.h ****   return(__regProcessStackPointer);
+ 119:libs/CMSIS/Include/core_cmFunc.h **** }
+ 120:libs/CMSIS/Include/core_cmFunc.h **** 
+ 121:libs/CMSIS/Include/core_cmFunc.h **** 
+ 122:libs/CMSIS/Include/core_cmFunc.h **** /** \brief  Set Process Stack Pointer
+ 123:libs/CMSIS/Include/core_cmFunc.h **** 
+ 124:libs/CMSIS/Include/core_cmFunc.h ****     This function assigns the given value to the Process Stack Pointer (PSP).
+ 125:libs/CMSIS/Include/core_cmFunc.h **** 
+ 126:libs/CMSIS/Include/core_cmFunc.h ****     \param [in]    topOfProcStack  Process Stack Pointer value to set
+ 127:libs/CMSIS/Include/core_cmFunc.h ****  */
+ 128:libs/CMSIS/Include/core_cmFunc.h **** static __INLINE void __set_PSP(uint32_t topOfProcStack)
+ 129:libs/CMSIS/Include/core_cmFunc.h **** {
+ 130:libs/CMSIS/Include/core_cmFunc.h ****   register uint32_t __regProcessStackPointer  __ASM("psp");
+ 131:libs/CMSIS/Include/core_cmFunc.h ****   __regProcessStackPointer = topOfProcStack;
+ 132:libs/CMSIS/Include/core_cmFunc.h **** }
+ 133:libs/CMSIS/Include/core_cmFunc.h **** 
+ 134:libs/CMSIS/Include/core_cmFunc.h **** 
+ 135:libs/CMSIS/Include/core_cmFunc.h **** /** \brief  Get Main Stack Pointer
+ 136:libs/CMSIS/Include/core_cmFunc.h **** 
+ 137:libs/CMSIS/Include/core_cmFunc.h ****     This function returns the current value of the Main Stack Pointer (MSP).
+ 138:libs/CMSIS/Include/core_cmFunc.h **** 
+ 139:libs/CMSIS/Include/core_cmFunc.h ****     \return               MSP Register value
+ 140:libs/CMSIS/Include/core_cmFunc.h ****  */
+ 141:libs/CMSIS/Include/core_cmFunc.h **** static __INLINE uint32_t __get_MSP(void)
+ 142:libs/CMSIS/Include/core_cmFunc.h **** {
+ 143:libs/CMSIS/Include/core_cmFunc.h ****   register uint32_t __regMainStackPointer     __ASM("msp");
+ 144:libs/CMSIS/Include/core_cmFunc.h ****   return(__regMainStackPointer);
+ 145:libs/CMSIS/Include/core_cmFunc.h **** }
+ 146:libs/CMSIS/Include/core_cmFunc.h **** 
+ 147:libs/CMSIS/Include/core_cmFunc.h **** 
+ 148:libs/CMSIS/Include/core_cmFunc.h **** /** \brief  Set Main Stack Pointer
+ 149:libs/CMSIS/Include/core_cmFunc.h **** 
+ 150:libs/CMSIS/Include/core_cmFunc.h ****     This function assigns the given value to the Main Stack Pointer (MSP).
+ 151:libs/CMSIS/Include/core_cmFunc.h **** 
+ 152:libs/CMSIS/Include/core_cmFunc.h ****     \param [in]    topOfMainStack  Main Stack Pointer value to set
+ 153:libs/CMSIS/Include/core_cmFunc.h ****  */
+ 154:libs/CMSIS/Include/core_cmFunc.h **** static __INLINE void __set_MSP(uint32_t topOfMainStack)
+ 155:libs/CMSIS/Include/core_cmFunc.h **** {
+ 156:libs/CMSIS/Include/core_cmFunc.h ****   register uint32_t __regMainStackPointer     __ASM("msp");
+ 157:libs/CMSIS/Include/core_cmFunc.h ****   __regMainStackPointer = topOfMainStack;
+ 158:libs/CMSIS/Include/core_cmFunc.h **** }
+ 159:libs/CMSIS/Include/core_cmFunc.h **** 
+ 160:libs/CMSIS/Include/core_cmFunc.h **** 
+ 161:libs/CMSIS/Include/core_cmFunc.h **** /** \brief  Get Priority Mask
+ 162:libs/CMSIS/Include/core_cmFunc.h **** 
+ 163:libs/CMSIS/Include/core_cmFunc.h ****     This function returns the current state of the priority mask bit from the Priority Mask Registe
+ 164:libs/CMSIS/Include/core_cmFunc.h **** 
+ 165:libs/CMSIS/Include/core_cmFunc.h ****     \return               Priority Mask value
+ 166:libs/CMSIS/Include/core_cmFunc.h ****  */
+ 167:libs/CMSIS/Include/core_cmFunc.h **** static __INLINE uint32_t __get_PRIMASK(void)
+ 168:libs/CMSIS/Include/core_cmFunc.h **** {
+ 169:libs/CMSIS/Include/core_cmFunc.h ****   register uint32_t __regPriMask         __ASM("primask");
+ 170:libs/CMSIS/Include/core_cmFunc.h ****   return(__regPriMask);
+ 171:libs/CMSIS/Include/core_cmFunc.h **** }
+ 172:libs/CMSIS/Include/core_cmFunc.h **** 
+ 173:libs/CMSIS/Include/core_cmFunc.h **** 
+ 174:libs/CMSIS/Include/core_cmFunc.h **** /** \brief  Set Priority Mask
+ 175:libs/CMSIS/Include/core_cmFunc.h **** 
+ 176:libs/CMSIS/Include/core_cmFunc.h ****     This function assigns the given value to the Priority Mask Register.
+ 177:libs/CMSIS/Include/core_cmFunc.h **** 
+ 178:libs/CMSIS/Include/core_cmFunc.h ****     \param [in]    priMask  Priority Mask
+ 179:libs/CMSIS/Include/core_cmFunc.h ****  */
+ 180:libs/CMSIS/Include/core_cmFunc.h **** static __INLINE void __set_PRIMASK(uint32_t priMask)
+ 181:libs/CMSIS/Include/core_cmFunc.h **** {
+ 182:libs/CMSIS/Include/core_cmFunc.h ****   register uint32_t __regPriMask         __ASM("primask");
+ 183:libs/CMSIS/Include/core_cmFunc.h ****   __regPriMask = (priMask);
+ 184:libs/CMSIS/Include/core_cmFunc.h **** }
+ 185:libs/CMSIS/Include/core_cmFunc.h ****  
+ 186:libs/CMSIS/Include/core_cmFunc.h **** 
+ 187:libs/CMSIS/Include/core_cmFunc.h **** #if       (__CORTEX_M >= 0x03)
+ 188:libs/CMSIS/Include/core_cmFunc.h **** 
+ 189:libs/CMSIS/Include/core_cmFunc.h **** /** \brief  Enable FIQ
+ 190:libs/CMSIS/Include/core_cmFunc.h **** 
+ 191:libs/CMSIS/Include/core_cmFunc.h ****     This function enables FIQ interrupts by clearing the F-bit in the CPSR.
+ 192:libs/CMSIS/Include/core_cmFunc.h ****     Can only be executed in Privileged modes.
+ 193:libs/CMSIS/Include/core_cmFunc.h ****  */
+ 194:libs/CMSIS/Include/core_cmFunc.h **** #define __enable_fault_irq                __enable_fiq
+ 195:libs/CMSIS/Include/core_cmFunc.h **** 
+ 196:libs/CMSIS/Include/core_cmFunc.h **** 
+ 197:libs/CMSIS/Include/core_cmFunc.h **** /** \brief  Disable FIQ
+ 198:libs/CMSIS/Include/core_cmFunc.h **** 
+ 199:libs/CMSIS/Include/core_cmFunc.h ****     This function disables FIQ interrupts by setting the F-bit in the CPSR.
+ 200:libs/CMSIS/Include/core_cmFunc.h ****     Can only be executed in Privileged modes.
+ 201:libs/CMSIS/Include/core_cmFunc.h ****  */
+ 202:libs/CMSIS/Include/core_cmFunc.h **** #define __disable_fault_irq               __disable_fiq
+ 203:libs/CMSIS/Include/core_cmFunc.h **** 
+ 204:libs/CMSIS/Include/core_cmFunc.h **** 
+ 205:libs/CMSIS/Include/core_cmFunc.h **** /** \brief  Get Base Priority
+ 206:libs/CMSIS/Include/core_cmFunc.h **** 
+ 207:libs/CMSIS/Include/core_cmFunc.h ****     This function returns the current value of the Base Priority register.
+ 208:libs/CMSIS/Include/core_cmFunc.h **** 
+ 209:libs/CMSIS/Include/core_cmFunc.h ****     \return               Base Priority register value
+ 210:libs/CMSIS/Include/core_cmFunc.h ****  */
+ 211:libs/CMSIS/Include/core_cmFunc.h **** static __INLINE uint32_t  __get_BASEPRI(void)
+ 212:libs/CMSIS/Include/core_cmFunc.h **** {
+ 213:libs/CMSIS/Include/core_cmFunc.h ****   register uint32_t __regBasePri         __ASM("basepri");
+ 214:libs/CMSIS/Include/core_cmFunc.h ****   return(__regBasePri);
+ 215:libs/CMSIS/Include/core_cmFunc.h **** }
+ 216:libs/CMSIS/Include/core_cmFunc.h **** 
+ 217:libs/CMSIS/Include/core_cmFunc.h **** 
+ 218:libs/CMSIS/Include/core_cmFunc.h **** /** \brief  Set Base Priority
+ 219:libs/CMSIS/Include/core_cmFunc.h **** 
+ 220:libs/CMSIS/Include/core_cmFunc.h ****     This function assigns the given value to the Base Priority register.
+ 221:libs/CMSIS/Include/core_cmFunc.h **** 
+ 222:libs/CMSIS/Include/core_cmFunc.h ****     \param [in]    basePri  Base Priority value to set
+ 223:libs/CMSIS/Include/core_cmFunc.h ****  */
+ 224:libs/CMSIS/Include/core_cmFunc.h **** static __INLINE void __set_BASEPRI(uint32_t basePri)
+ 225:libs/CMSIS/Include/core_cmFunc.h **** {
+ 226:libs/CMSIS/Include/core_cmFunc.h ****   register uint32_t __regBasePri         __ASM("basepri");
+ 227:libs/CMSIS/Include/core_cmFunc.h ****   __regBasePri = (basePri & 0xff);
+ 228:libs/CMSIS/Include/core_cmFunc.h **** }
+ 229:libs/CMSIS/Include/core_cmFunc.h ****  
+ 230:libs/CMSIS/Include/core_cmFunc.h **** 
+ 231:libs/CMSIS/Include/core_cmFunc.h **** /** \brief  Get Fault Mask
+ 232:libs/CMSIS/Include/core_cmFunc.h **** 
+ 233:libs/CMSIS/Include/core_cmFunc.h ****     This function returns the current value of the Fault Mask register.
+ 234:libs/CMSIS/Include/core_cmFunc.h **** 
+ 235:libs/CMSIS/Include/core_cmFunc.h ****     \return               Fault Mask register value
+ 236:libs/CMSIS/Include/core_cmFunc.h ****  */
+ 237:libs/CMSIS/Include/core_cmFunc.h **** static __INLINE uint32_t __get_FAULTMASK(void)
+ 238:libs/CMSIS/Include/core_cmFunc.h **** {
+ 239:libs/CMSIS/Include/core_cmFunc.h ****   register uint32_t __regFaultMask       __ASM("faultmask");
+ 240:libs/CMSIS/Include/core_cmFunc.h ****   return(__regFaultMask);
+ 241:libs/CMSIS/Include/core_cmFunc.h **** }
+ 242:libs/CMSIS/Include/core_cmFunc.h **** 
+ 243:libs/CMSIS/Include/core_cmFunc.h **** 
+ 244:libs/CMSIS/Include/core_cmFunc.h **** /** \brief  Set Fault Mask
+ 245:libs/CMSIS/Include/core_cmFunc.h **** 
+ 246:libs/CMSIS/Include/core_cmFunc.h ****     This function assigns the given value to the Fault Mask register.
+ 247:libs/CMSIS/Include/core_cmFunc.h **** 
+ 248:libs/CMSIS/Include/core_cmFunc.h ****     \param [in]    faultMask  Fault Mask value to set
+ 249:libs/CMSIS/Include/core_cmFunc.h ****  */
+ 250:libs/CMSIS/Include/core_cmFunc.h **** static __INLINE void __set_FAULTMASK(uint32_t faultMask)
+ 251:libs/CMSIS/Include/core_cmFunc.h **** {
+ 252:libs/CMSIS/Include/core_cmFunc.h ****   register uint32_t __regFaultMask       __ASM("faultmask");
+ 253:libs/CMSIS/Include/core_cmFunc.h ****   __regFaultMask = (faultMask & (uint32_t)1);
+ 254:libs/CMSIS/Include/core_cmFunc.h **** }
+ 255:libs/CMSIS/Include/core_cmFunc.h **** 
+ 256:libs/CMSIS/Include/core_cmFunc.h **** #endif /* (__CORTEX_M >= 0x03) */
+ 257:libs/CMSIS/Include/core_cmFunc.h **** 
+ 258:libs/CMSIS/Include/core_cmFunc.h **** 
+ 259:libs/CMSIS/Include/core_cmFunc.h **** #if       (__CORTEX_M == 0x04)
+ 260:libs/CMSIS/Include/core_cmFunc.h **** 
+ 261:libs/CMSIS/Include/core_cmFunc.h **** /** \brief  Get FPSCR
+ 262:libs/CMSIS/Include/core_cmFunc.h **** 
+ 263:libs/CMSIS/Include/core_cmFunc.h ****     This function returns the current value of the Floating Point Status/Control register.
+ 264:libs/CMSIS/Include/core_cmFunc.h **** 
+ 265:libs/CMSIS/Include/core_cmFunc.h ****     \return               Floating Point Status/Control register value
+ 266:libs/CMSIS/Include/core_cmFunc.h ****  */
+ 267:libs/CMSIS/Include/core_cmFunc.h **** static __INLINE uint32_t __get_FPSCR(void)
+ 268:libs/CMSIS/Include/core_cmFunc.h **** {
+ 269:libs/CMSIS/Include/core_cmFunc.h **** #if (__FPU_PRESENT == 1) && (__FPU_USED == 1)
+ 270:libs/CMSIS/Include/core_cmFunc.h ****   register uint32_t __regfpscr         __ASM("fpscr");
+ 271:libs/CMSIS/Include/core_cmFunc.h ****   return(__regfpscr);
+ 272:libs/CMSIS/Include/core_cmFunc.h **** #else
+ 273:libs/CMSIS/Include/core_cmFunc.h ****    return(0);
+ 274:libs/CMSIS/Include/core_cmFunc.h **** #endif
+ 275:libs/CMSIS/Include/core_cmFunc.h **** }
+ 276:libs/CMSIS/Include/core_cmFunc.h **** 
+ 277:libs/CMSIS/Include/core_cmFunc.h **** 
+ 278:libs/CMSIS/Include/core_cmFunc.h **** /** \brief  Set FPSCR
+ 279:libs/CMSIS/Include/core_cmFunc.h **** 
+ 280:libs/CMSIS/Include/core_cmFunc.h ****     This function assigns the given value to the Floating Point Status/Control register.
+ 281:libs/CMSIS/Include/core_cmFunc.h **** 
+ 282:libs/CMSIS/Include/core_cmFunc.h ****     \param [in]    fpscr  Floating Point Status/Control value to set
+ 283:libs/CMSIS/Include/core_cmFunc.h ****  */
+ 284:libs/CMSIS/Include/core_cmFunc.h **** static __INLINE void __set_FPSCR(uint32_t fpscr)
+ 285:libs/CMSIS/Include/core_cmFunc.h **** {
+ 286:libs/CMSIS/Include/core_cmFunc.h **** #if (__FPU_PRESENT == 1) && (__FPU_USED == 1)
+ 287:libs/CMSIS/Include/core_cmFunc.h ****   register uint32_t __regfpscr         __ASM("fpscr");
+ 288:libs/CMSIS/Include/core_cmFunc.h ****   __regfpscr = (fpscr);
+ 289:libs/CMSIS/Include/core_cmFunc.h **** #endif
+ 290:libs/CMSIS/Include/core_cmFunc.h **** }
+ 291:libs/CMSIS/Include/core_cmFunc.h **** 
+ 292:libs/CMSIS/Include/core_cmFunc.h **** #endif /* (__CORTEX_M == 0x04) */
+ 293:libs/CMSIS/Include/core_cmFunc.h **** 
+ 294:libs/CMSIS/Include/core_cmFunc.h **** 
+ 295:libs/CMSIS/Include/core_cmFunc.h **** #elif defined ( __ICCARM__ ) /*------------------ ICC Compiler -------------------*/
+ 296:libs/CMSIS/Include/core_cmFunc.h **** /* IAR iccarm specific functions */
+ 297:libs/CMSIS/Include/core_cmFunc.h **** 
+ 298:libs/CMSIS/Include/core_cmFunc.h **** #include <cmsis_iar.h>
+ 299:libs/CMSIS/Include/core_cmFunc.h **** 
+ 300:libs/CMSIS/Include/core_cmFunc.h **** #elif defined ( __GNUC__ ) /*------------------ GNU Compiler ---------------------*/
+ 301:libs/CMSIS/Include/core_cmFunc.h **** /* GNU gcc specific functions */
+ 302:libs/CMSIS/Include/core_cmFunc.h **** 
+ 303:libs/CMSIS/Include/core_cmFunc.h **** /** \brief  Enable IRQ Interrupts
+ 304:libs/CMSIS/Include/core_cmFunc.h **** 
+ 305:libs/CMSIS/Include/core_cmFunc.h ****   This function enables IRQ interrupts by clearing the I-bit in the CPSR.
+ 306:libs/CMSIS/Include/core_cmFunc.h ****   Can only be executed in Privileged modes.
+ 307:libs/CMSIS/Include/core_cmFunc.h ****  */
+ 308:libs/CMSIS/Include/core_cmFunc.h **** __attribute__( ( always_inline ) ) static __INLINE void __enable_irq(void)
+ 309:libs/CMSIS/Include/core_cmFunc.h **** {
+ 310:libs/CMSIS/Include/core_cmFunc.h ****   __ASM volatile ("cpsie i");
+ 311:libs/CMSIS/Include/core_cmFunc.h **** }
+ 312:libs/CMSIS/Include/core_cmFunc.h **** 
+ 313:libs/CMSIS/Include/core_cmFunc.h **** 
+ 314:libs/CMSIS/Include/core_cmFunc.h **** /** \brief  Disable IRQ Interrupts
+ 315:libs/CMSIS/Include/core_cmFunc.h **** 
+ 316:libs/CMSIS/Include/core_cmFunc.h ****   This function disables IRQ interrupts by setting the I-bit in the CPSR.
+ 317:libs/CMSIS/Include/core_cmFunc.h ****   Can only be executed in Privileged modes.
+ 318:libs/CMSIS/Include/core_cmFunc.h ****  */
+ 319:libs/CMSIS/Include/core_cmFunc.h **** __attribute__( ( always_inline ) ) static __INLINE void __disable_irq(void)
+ 320:libs/CMSIS/Include/core_cmFunc.h **** {
+ 321:libs/CMSIS/Include/core_cmFunc.h ****   __ASM volatile ("cpsid i");
+ 322:libs/CMSIS/Include/core_cmFunc.h **** }
+ 323:libs/CMSIS/Include/core_cmFunc.h **** 
+ 324:libs/CMSIS/Include/core_cmFunc.h **** 
+ 325:libs/CMSIS/Include/core_cmFunc.h **** /** \brief  Get Control Register
+ 326:libs/CMSIS/Include/core_cmFunc.h **** 
+ 327:libs/CMSIS/Include/core_cmFunc.h ****     This function returns the content of the Control Register.
+ 328:libs/CMSIS/Include/core_cmFunc.h **** 
+ 329:libs/CMSIS/Include/core_cmFunc.h ****     \return               Control Register value
+ 330:libs/CMSIS/Include/core_cmFunc.h ****  */
+ 331:libs/CMSIS/Include/core_cmFunc.h **** __attribute__( ( always_inline ) ) static __INLINE uint32_t __get_CONTROL(void)
+ 332:libs/CMSIS/Include/core_cmFunc.h **** {
+ 333:libs/CMSIS/Include/core_cmFunc.h ****   uint32_t result;
+ 334:libs/CMSIS/Include/core_cmFunc.h **** 
+ 335:libs/CMSIS/Include/core_cmFunc.h ****   __ASM volatile ("MRS %0, control" : "=r" (result) );
+ 336:libs/CMSIS/Include/core_cmFunc.h ****   return(result);
+ 337:libs/CMSIS/Include/core_cmFunc.h **** }
+ 338:libs/CMSIS/Include/core_cmFunc.h **** 
+ 339:libs/CMSIS/Include/core_cmFunc.h **** 
+ 340:libs/CMSIS/Include/core_cmFunc.h **** /** \brief  Set Control Register
+ 341:libs/CMSIS/Include/core_cmFunc.h **** 
+ 342:libs/CMSIS/Include/core_cmFunc.h ****     This function writes the given value to the Control Register.
+ 343:libs/CMSIS/Include/core_cmFunc.h **** 
+ 344:libs/CMSIS/Include/core_cmFunc.h ****     \param [in]    control  Control Register value to set
+ 345:libs/CMSIS/Include/core_cmFunc.h ****  */
+ 346:libs/CMSIS/Include/core_cmFunc.h **** __attribute__( ( always_inline ) ) static __INLINE void __set_CONTROL(uint32_t control)
+ 347:libs/CMSIS/Include/core_cmFunc.h **** {
+ 348:libs/CMSIS/Include/core_cmFunc.h ****   __ASM volatile ("MSR control, %0" : : "r" (control) );
+ 349:libs/CMSIS/Include/core_cmFunc.h **** }
+ 350:libs/CMSIS/Include/core_cmFunc.h **** 
+ 351:libs/CMSIS/Include/core_cmFunc.h **** 
+ 352:libs/CMSIS/Include/core_cmFunc.h **** /** \brief  Get ISPR Register
+ 353:libs/CMSIS/Include/core_cmFunc.h **** 
+ 354:libs/CMSIS/Include/core_cmFunc.h ****     This function returns the content of the ISPR Register.
+ 355:libs/CMSIS/Include/core_cmFunc.h **** 
+ 356:libs/CMSIS/Include/core_cmFunc.h ****     \return               ISPR Register value
+ 357:libs/CMSIS/Include/core_cmFunc.h ****  */
+ 358:libs/CMSIS/Include/core_cmFunc.h **** __attribute__( ( always_inline ) ) static __INLINE uint32_t __get_IPSR(void)
+ 359:libs/CMSIS/Include/core_cmFunc.h **** {
+ 360:libs/CMSIS/Include/core_cmFunc.h ****   uint32_t result;
+ 361:libs/CMSIS/Include/core_cmFunc.h **** 
+ 362:libs/CMSIS/Include/core_cmFunc.h ****   __ASM volatile ("MRS %0, ipsr" : "=r" (result) );
+ 363:libs/CMSIS/Include/core_cmFunc.h ****   return(result);
+ 364:libs/CMSIS/Include/core_cmFunc.h **** }
+ 365:libs/CMSIS/Include/core_cmFunc.h **** 
+ 366:libs/CMSIS/Include/core_cmFunc.h **** 
+ 367:libs/CMSIS/Include/core_cmFunc.h **** /** \brief  Get APSR Register
+ 368:libs/CMSIS/Include/core_cmFunc.h **** 
+ 369:libs/CMSIS/Include/core_cmFunc.h ****     This function returns the content of the APSR Register.
+ 370:libs/CMSIS/Include/core_cmFunc.h **** 
+ 371:libs/CMSIS/Include/core_cmFunc.h ****     \return               APSR Register value
+ 372:libs/CMSIS/Include/core_cmFunc.h ****  */
+ 373:libs/CMSIS/Include/core_cmFunc.h **** __attribute__( ( always_inline ) ) static __INLINE uint32_t __get_APSR(void)
+ 374:libs/CMSIS/Include/core_cmFunc.h **** {
+ 375:libs/CMSIS/Include/core_cmFunc.h ****   uint32_t result;
+ 376:libs/CMSIS/Include/core_cmFunc.h **** 
+ 377:libs/CMSIS/Include/core_cmFunc.h ****   __ASM volatile ("MRS %0, apsr" : "=r" (result) );
+ 378:libs/CMSIS/Include/core_cmFunc.h ****   return(result);
+ 379:libs/CMSIS/Include/core_cmFunc.h **** }
+ 380:libs/CMSIS/Include/core_cmFunc.h **** 
+ 381:libs/CMSIS/Include/core_cmFunc.h **** 
+ 382:libs/CMSIS/Include/core_cmFunc.h **** /** \brief  Get xPSR Register
+ 383:libs/CMSIS/Include/core_cmFunc.h **** 
+ 384:libs/CMSIS/Include/core_cmFunc.h ****     This function returns the content of the xPSR Register.
+ 385:libs/CMSIS/Include/core_cmFunc.h **** 
+ 386:libs/CMSIS/Include/core_cmFunc.h ****     \return               xPSR Register value
+ 387:libs/CMSIS/Include/core_cmFunc.h ****  */
+ 388:libs/CMSIS/Include/core_cmFunc.h **** __attribute__( ( always_inline ) ) static __INLINE uint32_t __get_xPSR(void)
+ 389:libs/CMSIS/Include/core_cmFunc.h **** {
+ 390:libs/CMSIS/Include/core_cmFunc.h ****   uint32_t result;
+ 391:libs/CMSIS/Include/core_cmFunc.h **** 
+ 392:libs/CMSIS/Include/core_cmFunc.h ****   __ASM volatile ("MRS %0, xpsr" : "=r" (result) );
+ 393:libs/CMSIS/Include/core_cmFunc.h ****   return(result);
+ 394:libs/CMSIS/Include/core_cmFunc.h **** }
+ 395:libs/CMSIS/Include/core_cmFunc.h **** 
+ 396:libs/CMSIS/Include/core_cmFunc.h **** 
+ 397:libs/CMSIS/Include/core_cmFunc.h **** /** \brief  Get Process Stack Pointer
+ 398:libs/CMSIS/Include/core_cmFunc.h **** 
+ 399:libs/CMSIS/Include/core_cmFunc.h ****     This function returns the current value of the Process Stack Pointer (PSP).
+ 400:libs/CMSIS/Include/core_cmFunc.h **** 
+ 401:libs/CMSIS/Include/core_cmFunc.h ****     \return               PSP Register value
+ 402:libs/CMSIS/Include/core_cmFunc.h ****  */
+ 403:libs/CMSIS/Include/core_cmFunc.h **** __attribute__( ( always_inline ) ) static __INLINE uint32_t __get_PSP(void)
+ 404:libs/CMSIS/Include/core_cmFunc.h **** {
+ 405:libs/CMSIS/Include/core_cmFunc.h ****   register uint32_t result;
+ 406:libs/CMSIS/Include/core_cmFunc.h **** 
+ 407:libs/CMSIS/Include/core_cmFunc.h ****   __ASM volatile ("MRS %0, psp\n"  : "=r" (result) );
+ 408:libs/CMSIS/Include/core_cmFunc.h ****   return(result);
+ 409:libs/CMSIS/Include/core_cmFunc.h **** }
+ 410:libs/CMSIS/Include/core_cmFunc.h ****  
+ 411:libs/CMSIS/Include/core_cmFunc.h **** 
+ 412:libs/CMSIS/Include/core_cmFunc.h **** /** \brief  Set Process Stack Pointer
+ 413:libs/CMSIS/Include/core_cmFunc.h **** 
+ 414:libs/CMSIS/Include/core_cmFunc.h ****     This function assigns the given value to the Process Stack Pointer (PSP).
+ 415:libs/CMSIS/Include/core_cmFunc.h **** 
+ 416:libs/CMSIS/Include/core_cmFunc.h ****     \param [in]    topOfProcStack  Process Stack Pointer value to set
+ 417:libs/CMSIS/Include/core_cmFunc.h ****  */
+ 418:libs/CMSIS/Include/core_cmFunc.h **** __attribute__( ( always_inline ) ) static __INLINE void __set_PSP(uint32_t topOfProcStack)
+ 419:libs/CMSIS/Include/core_cmFunc.h **** {
+ 420:libs/CMSIS/Include/core_cmFunc.h ****   __ASM volatile ("MSR psp, %0\n" : : "r" (topOfProcStack) );
+ 421:libs/CMSIS/Include/core_cmFunc.h **** }
+ 422:libs/CMSIS/Include/core_cmFunc.h **** 
+ 423:libs/CMSIS/Include/core_cmFunc.h **** 
+ 424:libs/CMSIS/Include/core_cmFunc.h **** /** \brief  Get Main Stack Pointer
+ 425:libs/CMSIS/Include/core_cmFunc.h **** 
+ 426:libs/CMSIS/Include/core_cmFunc.h ****     This function returns the current value of the Main Stack Pointer (MSP).
+ 427:libs/CMSIS/Include/core_cmFunc.h **** 
+ 428:libs/CMSIS/Include/core_cmFunc.h ****     \return               MSP Register value
+ 429:libs/CMSIS/Include/core_cmFunc.h ****  */
+ 430:libs/CMSIS/Include/core_cmFunc.h **** __attribute__( ( always_inline ) ) static __INLINE uint32_t __get_MSP(void)
+ 431:libs/CMSIS/Include/core_cmFunc.h **** {
+ 432:libs/CMSIS/Include/core_cmFunc.h ****   register uint32_t result;
+ 433:libs/CMSIS/Include/core_cmFunc.h **** 
+ 434:libs/CMSIS/Include/core_cmFunc.h ****   __ASM volatile ("MRS %0, msp\n" : "=r" (result) );
+ 368              		.loc 2 434 0
+ 369              	@ 434 "libs/CMSIS/Include/core_cmFunc.h" 1
+ 370 0020 EFF30883 		MRS r3, msp
+ 371              	
+ 372              	@ 0 "" 2
+ 373              		.thumb
+ 374 0024 1C46     		mov	r4, r3
+ 435:libs/CMSIS/Include/core_cmFunc.h ****   return(result);
+ 375              		.loc 2 435 0
+ 376 0026 2346     		mov	r3, r4
+ 377              	.LBE5:
+ 378              	.LBE4:
+ 379              		.loc 1 78 0
+ 380 0028 1946     		mov	r1, r3
+ 381 002a 0F4B     		ldr	r3, .L21+8
+ 382 002c 1B68     		ldr	r3, [r3]
+ 383 002e CB1A     		subs	r3, r1, r3
+ 384 0030 9A42     		cmp	r2, r3
+ 385 0032 05D9     		bls	.L19
+  79:src/syscalls.c ****         r->_errno = ENOMEM;
+ 386              		.loc 1 79 0
+ 387 0034 7B68     		ldr	r3, [r7, #4]
+ 388 0036 0C22     		movs	r2, #12
+ 389 0038 1A60     		str	r2, [r3]
+  80:src/syscalls.c ****         return (void*)-1;
+ 390              		.loc 1 80 0
+ 391 003a 4FF0FF33 		mov	r3, #-1
+ 392 003e 09E0     		b	.L20
+ 393              	.L19:
+  81:src/syscalls.c ****     }
+  82:src/syscalls.c **** 
+  83:src/syscalls.c ****     void *ret = __brkval;
+ 394              		.loc 1 83 0
+ 395 0040 074B     		ldr	r3, .L21
+ 396 0042 1B68     		ldr	r3, [r3]
+ 397 0044 FB60     		str	r3, [r7, #12]
+  84:src/syscalls.c ****     __brkval += incr;
+ 398              		.loc 1 84 0
+ 399 0046 064B     		ldr	r3, .L21
+ 400 0048 1A68     		ldr	r2, [r3]
+ 401 004a 3B68     		ldr	r3, [r7]
+ 402 004c 1A44     		add	r2, r2, r3
+ 403 004e 044B     		ldr	r3, .L21
+ 404 0050 1A60     		str	r2, [r3]
+  85:src/syscalls.c **** 
+  86:src/syscalls.c ****     return ret;
+ 405              		.loc 1 86 0
+ 406 0052 FB68     		ldr	r3, [r7, #12]
+ 407              	.L20:
+  87:src/syscalls.c **** }
+ 408              		.loc 1 87 0
+ 409 0054 1846     		mov	r0, r3
+ 410 0056 1037     		adds	r7, r7, #16
+ 411 0058 BD46     		mov	sp, r7
+ 412              		@ sp needed
+ 413 005a 90BC     		pop	{r4, r7}
+ 414 005c 7047     		bx	lr
+ 415              	.L22:
+ 416 005e 00BF     		.align	2
+ 417              	.L21:
+ 418 0060 00000000 		.word	__brkval
+ 419 0064 00000000 		.word	end
+ 420 0068 00000000 		.word	__malloc_margin
+ 421              		.cfi_endproc
+ 422              	.LFE117:
+ 424              		.section	.text._kill_r,"ax",%progbits
+ 425              		.align	2
+ 426              		.global	_kill_r
+ 427              		.thumb
+ 428              		.thumb_func
+ 430              	_kill_r:
+ 431              	.LFB118:
+  88:src/syscalls.c **** 
+  89:src/syscalls.c **** 
+  90:src/syscalls.c **** int _kill_r(struct _reent *r, int pid, int signal)
+  91:src/syscalls.c **** {
+ 432              		.loc 1 91 0
+ 433              		.cfi_startproc
+ 434              		@ args = 0, pretend = 0, frame = 16
+ 435              		@ frame_needed = 1, uses_anonymous_args = 0
+ 436              		@ link register save eliminated.
+ 437 0000 80B4     		push	{r7}
+ 438              	.LCFI24:
+ 439              		.cfi_def_cfa_offset 4
+ 440              		.cfi_offset 7, -4
+ 441 0002 85B0     		sub	sp, sp, #20
+ 442              	.LCFI25:
+ 443              		.cfi_def_cfa_offset 24
+ 444 0004 00AF     		add	r7, sp, #0
+ 445              	.LCFI26:
+ 446              		.cfi_def_cfa_register 7
+ 447 0006 F860     		str	r0, [r7, #12]
+ 448 0008 B960     		str	r1, [r7, #8]
+ 449 000a 7A60     		str	r2, [r7, #4]
+  92:src/syscalls.c ****     r->_errno = ENOSYS;
+ 450              		.loc 1 92 0
+ 451 000c FB68     		ldr	r3, [r7, #12]
+ 452 000e 5822     		movs	r2, #88
+ 453 0010 1A60     		str	r2, [r3]
+  93:src/syscalls.c ****     return -1;
+ 454              		.loc 1 93 0
+ 455 0012 4FF0FF33 		mov	r3, #-1
+  94:src/syscalls.c **** }
+ 456              		.loc 1 94 0
+ 457 0016 1846     		mov	r0, r3
+ 458 0018 1437     		adds	r7, r7, #20
+ 459 001a BD46     		mov	sp, r7
+ 460              		@ sp needed
+ 461 001c 5DF8047B 		ldr	r7, [sp], #4
+ 462 0020 7047     		bx	lr
+ 463              		.cfi_endproc
+ 464              	.LFE118:
+ 466 0022 00BF     		.section	.text._getpid_r,"ax",%progbits
+ 467              		.align	2
+ 468              		.global	_getpid_r
+ 469              		.thumb
+ 470              		.thumb_func
+ 472              	_getpid_r:
+ 473              	.LFB119:
+  95:src/syscalls.c **** 
+  96:src/syscalls.c **** 
+  97:src/syscalls.c **** int _getpid_r(struct _reent *r)
+  98:src/syscalls.c **** {
+ 474              		.loc 1 98 0
+ 475              		.cfi_startproc
+ 476              		@ args = 0, pretend = 0, frame = 8
+ 477              		@ frame_needed = 1, uses_anonymous_args = 0
+ 478              		@ link register save eliminated.
+ 479 0000 80B4     		push	{r7}
+ 480              	.LCFI27:
+ 481              		.cfi_def_cfa_offset 4
+ 482              		.cfi_offset 7, -4
+ 483 0002 83B0     		sub	sp, sp, #12
+ 484              	.LCFI28:
+ 485              		.cfi_def_cfa_offset 16
+ 486 0004 00AF     		add	r7, sp, #0
+ 487              	.LCFI29:
+ 488              		.cfi_def_cfa_register 7
+ 489 0006 7860     		str	r0, [r7, #4]
+  99:src/syscalls.c ****     r->_errno = ENOSYS;
+ 490              		.loc 1 99 0
+ 491 0008 7B68     		ldr	r3, [r7, #4]
+ 492 000a 5822     		movs	r2, #88
+ 493 000c 1A60     		str	r2, [r3]
+ 100:src/syscalls.c ****     return -1;
+ 494              		.loc 1 100 0
+ 495 000e 4FF0FF33 		mov	r3, #-1
+ 101:src/syscalls.c **** }
+ 496              		.loc 1 101 0
+ 497 0012 1846     		mov	r0, r3
+ 498 0014 0C37     		adds	r7, r7, #12
+ 499 0016 BD46     		mov	sp, r7
+ 500              		@ sp needed
+ 501 0018 5DF8047B 		ldr	r7, [sp], #4
+ 502 001c 7047     		bx	lr
+ 503              		.cfi_endproc
+ 504              	.LFE119:
+ 506 001e 00BF     		.section	.text.__malloc_lock,"ax",%progbits
+ 507              		.align	2
+ 508              		.global	__malloc_lock
+ 509              		.thumb
+ 510              		.thumb_func
+ 512              	__malloc_lock:
+ 513              	.LFB120:
+ 102:src/syscalls.c **** 
+ 103:src/syscalls.c **** 
+ 104:src/syscalls.c **** void __malloc_lock(struct _reent *r)
+ 105:src/syscalls.c **** {
+ 514              		.loc 1 105 0
+ 515              		.cfi_startproc
+ 516              		@ args = 0, pretend = 0, frame = 8
+ 517              		@ frame_needed = 1, uses_anonymous_args = 0
+ 518 0000 80B5     		push	{r7, lr}
+ 519              	.LCFI30:
+ 520              		.cfi_def_cfa_offset 8
+ 521              		.cfi_offset 7, -8
+ 522              		.cfi_offset 14, -4
+ 523 0002 82B0     		sub	sp, sp, #8
+ 524              	.LCFI31:
+ 525              		.cfi_def_cfa_offset 16
+ 526 0004 00AF     		add	r7, sp, #0
+ 527              	.LCFI32:
+ 528              		.cfi_def_cfa_register 7
+ 529 0006 7860     		str	r0, [r7, #4]
+ 106:src/syscalls.c ****     vPortEnterCritical();
+ 530              		.loc 1 106 0
+ 531 0008 FFF7FEFF 		bl	vPortEnterCritical
+ 107:src/syscalls.c **** }
+ 532              		.loc 1 107 0
+ 533 000c 0837     		adds	r7, r7, #8
+ 534 000e BD46     		mov	sp, r7
+ 535              		@ sp needed
+ 536 0010 80BD     		pop	{r7, pc}
+ 537              		.cfi_endproc
+ 538              	.LFE120:
+ 540 0012 00BF     		.section	.text.__malloc_unlock,"ax",%progbits
+ 541              		.align	2
+ 542              		.global	__malloc_unlock
+ 543              		.thumb
+ 544              		.thumb_func
+ 546              	__malloc_unlock:
+ 547              	.LFB121:
+ 108:src/syscalls.c **** 
+ 109:src/syscalls.c **** 
+ 110:src/syscalls.c **** void __malloc_unlock(struct _reent *r)
+ 111:src/syscalls.c **** {
+ 548              		.loc 1 111 0
+ 549              		.cfi_startproc
+ 550              		@ args = 0, pretend = 0, frame = 8
+ 551              		@ frame_needed = 1, uses_anonymous_args = 0
+ 552 0000 80B5     		push	{r7, lr}
+ 553              	.LCFI33:
+ 554              		.cfi_def_cfa_offset 8
+ 555              		.cfi_offset 7, -8
+ 556              		.cfi_offset 14, -4
+ 557 0002 82B0     		sub	sp, sp, #8
+ 558              	.LCFI34:
+ 559              		.cfi_def_cfa_offset 16
+ 560 0004 00AF     		add	r7, sp, #0
+ 561              	.LCFI35:
+ 562              		.cfi_def_cfa_register 7
+ 563 0006 7860     		str	r0, [r7, #4]
+ 112:src/syscalls.c ****     vPortExitCritical();
+ 564              		.loc 1 112 0
+ 565 0008 FFF7FEFF 		bl	vPortExitCritical
+ 113:src/syscalls.c **** }
+ 566              		.loc 1 113 0
+ 567 000c 0837     		adds	r7, r7, #8
+ 568 000e BD46     		mov	sp, r7
+ 569              		@ sp needed
+ 570 0010 80BD     		pop	{r7, pc}
+ 571              		.cfi_endproc
+ 572              	.LFE121:
+ 574 0012 00BF     		.text
+ 575              	.Letext0:
+ 576              		.file 3 "/home/shihyu/data/STM32F4/gcc-arm-none-eabi-4_8-2013q4/lib/gcc/arm-none-eabi/4.8.3/includ
+ 577              		.file 4 "/home/shihyu/data/STM32F4/gcc-arm-none-eabi-4_8-2013q4/arm-none-eabi/include/sys/lock.h"
+ 578              		.file 5 "/home/shihyu/data/STM32F4/gcc-arm-none-eabi-4_8-2013q4/arm-none-eabi/include/sys/_types.h
+ 579              		.file 6 "/home/shihyu/data/STM32F4/gcc-arm-none-eabi-4_8-2013q4/arm-none-eabi/include/sys/reent.h"
+ 580              		.file 7 "/home/shihyu/data/STM32F4/gcc-arm-none-eabi-4_8-2013q4/arm-none-eabi/include/sys/types.h"
+ 581              		.file 8 "/home/shihyu/data/STM32F4/gcc-arm-none-eabi-4_8-2013q4/arm-none-eabi/include/stdint.h"
+ 582              		.file 9 "/home/shihyu/data/STM32F4/gcc-arm-none-eabi-4_8-2013q4/arm-none-eabi/include/sys/stat.h"
+ 583              		.file 10 "/home/shihyu/data/STM32F4/gcc-arm-none-eabi-4_8-2013q4/arm-none-eabi/include/reent.h"
+ 584              		.file 11 "/home/shihyu/data/STM32F4/gcc-arm-none-eabi-4_8-2013q4/arm-none-eabi/include/sys/unistd.
+ 585              		.file 12 "libs/CMSIS/Include/core_cm4.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 syscalls.c
+     /tmp/cc1xJqvk.s:24     .data.__malloc_margin:00000000 __malloc_margin
+     /tmp/cc1xJqvk.s:21     .data.__malloc_margin:00000000 $d
+                            *COM*:00000004 __brkval
+     /tmp/cc1xJqvk.s:28     .text._exit:00000000 $t
+     /tmp/cc1xJqvk.s:33     .text._exit:00000000 _exit
+     /tmp/cc1xJqvk.s:59     .text._read_r:00000000 $t
+     /tmp/cc1xJqvk.s:64     .text._read_r:00000000 _read_r
+     /tmp/cc1xJqvk.s:102    .text._write_r:00000000 $t
+     /tmp/cc1xJqvk.s:107    .text._write_r:00000000 _write_r
+     /tmp/cc1xJqvk.s:145    .text._lseek_r:00000000 $t
+     /tmp/cc1xJqvk.s:150    .text._lseek_r:00000000 _lseek_r
+     /tmp/cc1xJqvk.s:188    .text._close_r:00000000 $t
+     /tmp/cc1xJqvk.s:193    .text._close_r:00000000 _close_r
+     /tmp/cc1xJqvk.s:229    .text._fstat_r:00000000 $t
+     /tmp/cc1xJqvk.s:234    .text._fstat_r:00000000 _fstat_r
+     /tmp/cc1xJqvk.s:288    .text._isatty_r:00000000 $t
+     /tmp/cc1xJqvk.s:293    .text._isatty_r:00000000 _isatty_r
+     /tmp/cc1xJqvk.s:325    .text._sbrk_r:00000000 $t
+     /tmp/cc1xJqvk.s:330    .text._sbrk_r:00000000 _sbrk_r
+     /tmp/cc1xJqvk.s:418    .text._sbrk_r:00000060 $d
+     /tmp/cc1xJqvk.s:425    .text._kill_r:00000000 $t
+     /tmp/cc1xJqvk.s:430    .text._kill_r:00000000 _kill_r
+     /tmp/cc1xJqvk.s:467    .text._getpid_r:00000000 $t
+     /tmp/cc1xJqvk.s:472    .text._getpid_r:00000000 _getpid_r
+     /tmp/cc1xJqvk.s:507    .text.__malloc_lock:00000000 $t
+     /tmp/cc1xJqvk.s:512    .text.__malloc_lock:00000000 __malloc_lock
+     /tmp/cc1xJqvk.s:541    .text.__malloc_unlock:00000000 $t
+     /tmp/cc1xJqvk.s:546    .text.__malloc_unlock:00000000 __malloc_unlock
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+uart_read_r
+uart_write_r
+end
+vPortEnterCritical
+vPortExitCritical

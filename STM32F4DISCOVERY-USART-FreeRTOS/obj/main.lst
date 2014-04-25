@@ -1,0 +1,445 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.eabi_attribute 27, 3
+   4              		.fpu fpv4-sp-d16
+   5              		.eabi_attribute 20, 1
+   6              		.eabi_attribute 21, 1
+   7              		.eabi_attribute 23, 3
+   8              		.eabi_attribute 24, 1
+   9              		.eabi_attribute 25, 1
+  10              		.eabi_attribute 26, 1
+  11              		.eabi_attribute 30, 6
+  12              		.eabi_attribute 34, 1
+  13              		.eabi_attribute 18, 4
+  14              		.thumb
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.UsartTask,"ax",%progbits
+  20              		.align	2
+  21              		.thumb
+  22              		.thumb_func
+  24              	UsartTask:
+  25              	.LFB110:
+  26              		.file 1 "src/main.c"
+   1:src/main.c    **** /**
+   2:src/main.c    ****  * Copyright (C) 2013 Chetan Patil, http://chetanpatil.info
+   3:src/main.c    ****  * 
+   4:src/main.c    ****  * Permission is hereby granted, free of charge, to any person obtaining a copy
+   5:src/main.c    ****  * of this software and associated documentation files (the "Software"), to deal
+   6:src/main.c    ****  * in the Software without restriction, including without limitation the rights
+   7:src/main.c    ****  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+   8:src/main.c    ****  * copies of the Software, and to permit persons to whom the Software is
+   9:src/main.c    ****  * furnished to do so, subject to the following conditions:
+  10:src/main.c    ****  * 
+  11:src/main.c    ****  * The above copyright notice and this permission notice shall be included in
+  12:src/main.c    ****  * all copies or substantial portions of the Software.
+  13:src/main.c    ****  * 
+  14:src/main.c    ****  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  15:src/main.c    ****  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  16:src/main.c    ****  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  17:src/main.c    ****  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  18:src/main.c    ****  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  19:src/main.c    ****  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  20:src/main.c    ****  * THE SOFTWARE.
+  21:src/main.c    ****  * 
+  22:src/main.c    ****  * @author Chetan Patil | http://chetanpatil.info
+  23:src/main.c    ****  */
+  24:src/main.c    **** 
+  25:src/main.c    **** //Example code to loop back the data sent to USART2 on STM32F4DISCOVERY
+  26:src/main.c    **** 
+  27:src/main.c    **** //Inlcude header files
+  28:src/main.c    **** #include "stm32f4xx.h"
+  29:src/main.c    **** #include "FreeRTOS.h"
+  30:src/main.c    **** #include "task.h"
+  31:src/main.c    **** #include <math.h>
+  32:src/main.c    **** #include <stdio.h>
+  33:src/main.c    **** #include <stdlib.h>
+  34:src/main.c    **** 
+  35:src/main.c    **** //Task For Sending Data Via USART
+  36:src/main.c    **** static void UsartTask(void *pvParameters)
+  37:src/main.c    **** 
+  38:src/main.c    **** {
+  27              		.loc 1 38 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 16
+  30              		@ frame_needed = 1, uses_anonymous_args = 0
+  31 0000 80B5     		push	{r7, lr}
+  32              	.LCFI0:
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 7, -8
+  35              		.cfi_offset 14, -4
+  36 0002 84B0     		sub	sp, sp, #16
+  37              	.LCFI1:
+  38              		.cfi_def_cfa_offset 24
+  39 0004 00AF     		add	r7, sp, #0
+  40              	.LCFI2:
+  41              		.cfi_def_cfa_register 7
+  42 0006 7860     		str	r0, [r7, #4]
+  43              	.LBB2:
+  39:src/main.c    **** 
+  40:src/main.c    **** while(1) {
+  41:src/main.c    **** 
+  42:src/main.c    **** 	//Variable to store received data	
+  43:src/main.c    **** 	uint32_t Data;
+  44:src/main.c    **** 	
+  45:src/main.c    **** 	//Wait for character
+  46:src/main.c    **** 	while(USART_GetFlagStatus(USART2, USART_FLAG_RXNE) == RESET) {
+  44              		.loc 1 46 0
+  45 0008 09E0     		b	.L2
+  46              	.L3:
+  47:src/main.c    ****                 if (USART_GetFlagStatus(USART2, (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | U
+  47              		.loc 1 47 0
+  48 000a 1348     		ldr	r0, .L6
+  49 000c 0F21     		movs	r1, #15
+  50 000e FFF7FEFF 		bl	USART_GetFlagStatus
+  51 0012 0346     		mov	r3, r0
+  52 0014 002B     		cmp	r3, #0
+  53 0016 02D0     		beq	.L2
+  48:src/main.c    **** 		USART_ReceiveData(USART2); // Clear Error
+  54              		.loc 1 48 0
+  55 0018 0F48     		ldr	r0, .L6
+  56 001a FFF7FEFF 		bl	USART_ReceiveData
+  57              	.L2:
+  46:src/main.c    **** 	while(USART_GetFlagStatus(USART2, USART_FLAG_RXNE) == RESET) {
+  58              		.loc 1 46 0 discriminator 1
+  59 001e 0E48     		ldr	r0, .L6
+  60 0020 2021     		movs	r1, #32
+  61 0022 FFF7FEFF 		bl	USART_GetFlagStatus
+  62 0026 0346     		mov	r3, r0
+  63 0028 002B     		cmp	r3, #0
+  64 002a EED0     		beq	.L3
+  49:src/main.c    **** 	}
+  50:src/main.c    **** 
+  51:src/main.c    **** 	//Collect the caracter
+  52:src/main.c    **** 	Data = USART_ReceiveData(USART2);
+  65              		.loc 1 52 0
+  66 002c 0A48     		ldr	r0, .L6
+  67 002e FFF7FEFF 		bl	USART_ReceiveData
+  68 0032 0346     		mov	r3, r0
+  69 0034 FB60     		str	r3, [r7, #12]
+  53:src/main.c    **** 
+  54:src/main.c    **** 	//Wait till the flag resets
+  55:src/main.c    **** 	while(USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
+  70              		.loc 1 55 0
+  71 0036 00BF     		nop
+  72              	.L4:
+  73              		.loc 1 55 0 is_stmt 0 discriminator 1
+  74 0038 0748     		ldr	r0, .L6
+  75 003a 8021     		movs	r1, #128
+  76 003c FFF7FEFF 		bl	USART_GetFlagStatus
+  77 0040 0346     		mov	r3, r0
+  78 0042 002B     		cmp	r3, #0
+  79 0044 F8D0     		beq	.L4
+  56:src/main.c    **** 
+  57:src/main.c    **** 	//Send the data
+  58:src/main.c    **** 	USART_SendData(USART2, Data); // Echo Char
+  80              		.loc 1 58 0 is_stmt 1
+  81 0046 FB68     		ldr	r3, [r7, #12]
+  82 0048 9BB2     		uxth	r3, r3
+  83 004a 0348     		ldr	r0, .L6
+  84 004c 1946     		mov	r1, r3
+  85 004e FFF7FEFF 		bl	USART_SendData
+  86              	.LBE2:
+  59:src/main.c    **** }
+  87              		.loc 1 59 0
+  88 0052 00BF     		nop
+  89              	.LBB3:
+  46:src/main.c    **** 	while(USART_GetFlagStatus(USART2, USART_FLAG_RXNE) == RESET) {
+  90              		.loc 1 46 0
+  91 0054 E3E7     		b	.L2
+  92              	.L7:
+  93 0056 00BF     		.align	2
+  94              	.L6:
+  95 0058 00440040 		.word	1073759232
+  96              	.LBE3:
+  97              		.cfi_endproc
+  98              	.LFE110:
+ 100              		.section	.text.initx,"ax",%progbits
+ 101              		.align	2
+ 102              		.global	initx
+ 103              		.thumb
+ 104              		.thumb_func
+ 106              	initx:
+ 107              	.LFB111:
+  60:src/main.c    **** 
+  61:src/main.c    **** while(1);
+  62:src/main.c    **** 
+  63:src/main.c    **** }
+  64:src/main.c    **** 
+  65:src/main.c    **** 
+  66:src/main.c    **** //Initialize GPIO and USART2
+  67:src/main.c    **** void initx(void){
+ 108              		.loc 1 67 0
+ 109              		.cfi_startproc
+ 110              		@ args = 0, pretend = 0, frame = 24
+ 111              		@ frame_needed = 1, uses_anonymous_args = 0
+ 112 0000 80B5     		push	{r7, lr}
+ 113              	.LCFI3:
+ 114              		.cfi_def_cfa_offset 8
+ 115              		.cfi_offset 7, -8
+ 116              		.cfi_offset 14, -4
+ 117 0002 86B0     		sub	sp, sp, #24
+ 118              	.LCFI4:
+ 119              		.cfi_def_cfa_offset 32
+ 120 0004 00AF     		add	r7, sp, #0
+ 121              	.LCFI5:
+ 122              		.cfi_def_cfa_register 7
+  68:src/main.c    **** 
+  69:src/main.c    **** 	//Enable GPIO Clocks For USART2
+  70:src/main.c    ****         RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+ 123              		.loc 1 70 0
+ 124 0006 0120     		movs	r0, #1
+ 125 0008 0121     		movs	r1, #1
+ 126 000a FFF7FEFF 		bl	RCC_AHB1PeriphClockCmd
+  71:src/main.c    **** 
+  72:src/main.c    **** 	//Enable Clocks for USART2
+  73:src/main.c    ****         RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);	
+ 127              		.loc 1 73 0
+ 128 000e 4FF40030 		mov	r0, #131072
+ 129 0012 0121     		movs	r1, #1
+ 130 0014 FFF7FEFF 		bl	RCC_APB1PeriphClockCmd
+  74:src/main.c    **** 
+  75:src/main.c    **** 	//Structure With Data For GPIO Configuration
+  76:src/main.c    **** 	GPIO_InitTypeDef GPIO_InitStructure;
+  77:src/main.c    **** 
+  78:src/main.c    **** 	//Structure With Data For USART Configuration
+  79:src/main.c    **** 	USART_InitTypeDef USART_InitStructure;
+  80:src/main.c    **** 
+  81:src/main.c    **** 	//GPIO Configuration
+  82:src/main.c    ****   	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2 | GPIO_Pin_3;
+ 131              		.loc 1 82 0
+ 132 0018 0C23     		movs	r3, #12
+ 133 001a 3B61     		str	r3, [r7, #16]
+  83:src/main.c    **** 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+ 134              		.loc 1 83 0
+ 135 001c 0223     		movs	r3, #2
+ 136 001e 3B75     		strb	r3, [r7, #20]
+  84:src/main.c    **** 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+ 137              		.loc 1 84 0
+ 138 0020 0023     		movs	r3, #0
+ 139 0022 BB75     		strb	r3, [r7, #22]
+  85:src/main.c    **** 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+ 140              		.loc 1 85 0
+ 141 0024 0023     		movs	r3, #0
+ 142 0026 FB75     		strb	r3, [r7, #23]
+  86:src/main.c    **** 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ 143              		.loc 1 86 0
+ 144 0028 0223     		movs	r3, #2
+ 145 002a 7B75     		strb	r3, [r7, #21]
+  87:src/main.c    **** 	GPIO_Init(GPIOA, &GPIO_InitStructure);
+ 146              		.loc 1 87 0
+ 147 002c 07F11003 		add	r3, r7, #16
+ 148 0030 1D48     		ldr	r0, .L9
+ 149 0032 1946     		mov	r1, r3
+ 150 0034 FFF7FEFF 		bl	GPIO_Init
+  88:src/main.c    **** 
+  89:src/main.c    **** 	//Connect USART pins to AF
+  90:src/main.c    **** 	GPIO_PinAFConfig(GPIOA, GPIO_PinSource2, GPIO_AF_USART2);
+ 151              		.loc 1 90 0
+ 152 0038 1B48     		ldr	r0, .L9
+ 153 003a 0221     		movs	r1, #2
+ 154 003c 0722     		movs	r2, #7
+ 155 003e FFF7FEFF 		bl	GPIO_PinAFConfig
+  91:src/main.c    **** 	GPIO_PinAFConfig(GPIOA, GPIO_PinSource3, GPIO_AF_USART2);
+ 156              		.loc 1 91 0
+ 157 0042 1948     		ldr	r0, .L9
+ 158 0044 0321     		movs	r1, #3
+ 159 0046 0722     		movs	r2, #7
+ 160 0048 FFF7FEFF 		bl	GPIO_PinAFConfig
+  92:src/main.c    **** 
+  93:src/main.c    **** 	//Initialize LED
+  94:src/main.c    **** 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
+ 161              		.loc 1 94 0
+ 162 004c 0820     		movs	r0, #8
+ 163 004e 0121     		movs	r1, #1
+ 164 0050 FFF7FEFF 		bl	RCC_AHB1PeriphClockCmd
+  95:src/main.c    **** 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12 | GPIO_Pin_13| GPIO_Pin_14| GPIO_Pin_15;
+ 165              		.loc 1 95 0
+ 166 0054 4FF47043 		mov	r3, #61440
+ 167 0058 3B61     		str	r3, [r7, #16]
+  96:src/main.c    **** 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+ 168              		.loc 1 96 0
+ 169 005a 0123     		movs	r3, #1
+ 170 005c 3B75     		strb	r3, [r7, #20]
+  97:src/main.c    **** 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+ 171              		.loc 1 97 0
+ 172 005e 0023     		movs	r3, #0
+ 173 0060 BB75     		strb	r3, [r7, #22]
+  98:src/main.c    **** 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+ 174              		.loc 1 98 0
+ 175 0062 0323     		movs	r3, #3
+ 176 0064 7B75     		strb	r3, [r7, #21]
+  99:src/main.c    **** 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+ 177              		.loc 1 99 0
+ 178 0066 0023     		movs	r3, #0
+ 179 0068 FB75     		strb	r3, [r7, #23]
+ 100:src/main.c    **** 	GPIO_Init(GPIOD, &GPIO_InitStructure);
+ 180              		.loc 1 100 0
+ 181 006a 07F11003 		add	r3, r7, #16
+ 182 006e 0F48     		ldr	r0, .L9+4
+ 183 0070 1946     		mov	r1, r3
+ 184 0072 FFF7FEFF 		bl	GPIO_Init
+ 101:src/main.c    **** 
+ 102:src/main.c    **** 	//USART Parameters
+ 103:src/main.c    **** 	USART_InitStructure.USART_BaudRate = 38400;
+ 185              		.loc 1 103 0
+ 186 0076 4FF41643 		mov	r3, #38400
+ 187 007a 3B60     		str	r3, [r7]
+ 104:src/main.c    **** 	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+ 188              		.loc 1 104 0
+ 189 007c 0023     		movs	r3, #0
+ 190 007e BB80     		strh	r3, [r7, #4]	@ movhi
+ 105:src/main.c    **** 	USART_InitStructure.USART_StopBits = USART_StopBits_1;
+ 191              		.loc 1 105 0
+ 192 0080 0023     		movs	r3, #0
+ 193 0082 FB80     		strh	r3, [r7, #6]	@ movhi
+ 106:src/main.c    **** 	USART_InitStructure.USART_Parity = USART_Parity_No ;
+ 194              		.loc 1 106 0
+ 195 0084 0023     		movs	r3, #0
+ 196 0086 3B81     		strh	r3, [r7, #8]	@ movhi
+ 107:src/main.c    **** 	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;  
+ 197              		.loc 1 107 0
+ 198 0088 0023     		movs	r3, #0
+ 199 008a BB81     		strh	r3, [r7, #12]	@ movhi
+ 108:src/main.c    ****         USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx ;
+ 200              		.loc 1 108 0
+ 201 008c 0C23     		movs	r3, #12
+ 202 008e 7B81     		strh	r3, [r7, #10]	@ movhi
+ 109:src/main.c    **** 
+ 110:src/main.c    **** 	//Configuring And Enabling USART2
+ 111:src/main.c    **** 	USART_Init(USART2, &USART_InitStructure);
+ 203              		.loc 1 111 0
+ 204 0090 3B46     		mov	r3, r7
+ 205 0092 0748     		ldr	r0, .L9+8
+ 206 0094 1946     		mov	r1, r3
+ 207 0096 FFF7FEFF 		bl	USART_Init
+ 112:src/main.c    **** 	USART_Cmd(USART2, ENABLE);
+ 208              		.loc 1 112 0
+ 209 009a 0548     		ldr	r0, .L9+8
+ 210 009c 0121     		movs	r1, #1
+ 211 009e FFF7FEFF 		bl	USART_Cmd
+ 113:src/main.c    **** 
+ 114:src/main.c    **** }
+ 212              		.loc 1 114 0
+ 213 00a2 1837     		adds	r7, r7, #24
+ 214 00a4 BD46     		mov	sp, r7
+ 215              		@ sp needed
+ 216 00a6 80BD     		pop	{r7, pc}
+ 217              	.L10:
+ 218              		.align	2
+ 219              	.L9:
+ 220 00a8 00000240 		.word	1073872896
+ 221 00ac 000C0240 		.word	1073875968
+ 222 00b0 00440040 		.word	1073759232
+ 223              		.cfi_endproc
+ 224              	.LFE111:
+ 226              		.section	.rodata
+ 227              		.align	2
+ 228              	.LC0:
+ 229 0000 55736172 		.ascii	"UsartTask\000"
+ 229      74546173 
+ 229      6B00
+ 230 000a 0000     		.section	.text.main,"ax",%progbits
+ 231              		.align	2
+ 232              		.global	main
+ 233              		.thumb
+ 234              		.thumb_func
+ 236              	main:
+ 237              	.LFB112:
+ 115:src/main.c    **** 
+ 116:src/main.c    **** 
+ 117:src/main.c    **** //Main Function
+ 118:src/main.c    **** int main(void)
+ 119:src/main.c    **** {
+ 238              		.loc 1 119 0
+ 239              		.cfi_startproc
+ 240              		@ args = 0, pretend = 0, frame = 0
+ 241              		@ frame_needed = 1, uses_anonymous_args = 0
+ 242 0000 80B5     		push	{r7, lr}
+ 243              	.LCFI6:
+ 244              		.cfi_def_cfa_offset 8
+ 245              		.cfi_offset 7, -8
+ 246              		.cfi_offset 14, -4
+ 247 0002 84B0     		sub	sp, sp, #16
+ 248              	.LCFI7:
+ 249              		.cfi_def_cfa_offset 24
+ 250 0004 04AF     		add	r7, sp, #16
+ 251              	.LCFI8:
+ 252              		.cfi_def_cfa 7, 8
+ 120:src/main.c    **** 
+ 121:src/main.c    **** 	//Call initx(); To Initialize USART & GPIO
+ 122:src/main.c    **** 	initx();
+ 253              		.loc 1 122 0
+ 254 0006 FFF7FEFF 		bl	initx
+ 123:src/main.c    **** 
+ 124:src/main.c    **** 	//Create Task For USART
+ 125:src/main.c    **** 	xTaskCreate(UsartTask, (signed char*)"UsartTask", 128, NULL, tskIDLE_PRIORITY+1, NULL);
+ 255              		.loc 1 125 0
+ 256 000a 0123     		movs	r3, #1
+ 257 000c 0093     		str	r3, [sp]
+ 258 000e 0023     		movs	r3, #0
+ 259 0010 0193     		str	r3, [sp, #4]
+ 260 0012 0023     		movs	r3, #0
+ 261 0014 0293     		str	r3, [sp, #8]
+ 262 0016 0023     		movs	r3, #0
+ 263 0018 0393     		str	r3, [sp, #12]
+ 264 001a 0648     		ldr	r0, .L13
+ 265 001c 0649     		ldr	r1, .L13+4
+ 266 001e 8022     		movs	r2, #128
+ 267 0020 0023     		movs	r3, #0
+ 268 0022 FFF7FEFF 		bl	xTaskGenericCreate
+ 126:src/main.c    **** 
+ 127:src/main.c    **** 	//Call Scheduler
+ 128:src/main.c    **** 	vTaskStartScheduler();
+ 269              		.loc 1 128 0
+ 270 0026 FFF7FEFF 		bl	vTaskStartScheduler
+ 271 002a 0023     		movs	r3, #0
+ 129:src/main.c    **** 
+ 130:src/main.c    **** }
+ 272              		.loc 1 130 0
+ 273 002c 1846     		mov	r0, r3
+ 274 002e BD46     		mov	sp, r7
+ 275              		@ sp needed
+ 276 0030 80BD     		pop	{r7, pc}
+ 277              	.L14:
+ 278 0032 00BF     		.align	2
+ 279              	.L13:
+ 280 0034 00000000 		.word	UsartTask
+ 281 0038 00000000 		.word	.LC0
+ 282              		.cfi_endproc
+ 283              	.LFE112:
+ 285              		.text
+ 286              	.Letext0:
+ 287              		.file 2 "/home/shihyu/data/STM32F4/gcc-arm-none-eabi-4_8-2013q4/arm-none-eabi/include/stdint.h"
+ 288              		.file 3 "libs/Device/STM32F4xx/Include/stm32f4xx.h"
+ 289              		.file 4 "libs/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h"
+ 290              		.file 5 "libs/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_usart.h"
+ 291              		.file 6 "libs/CMSIS/Include/core_cm4.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+     /tmp/ccnSvT5d.s:20     .text.UsartTask:00000000 $t
+     /tmp/ccnSvT5d.s:24     .text.UsartTask:00000000 UsartTask
+     /tmp/ccnSvT5d.s:95     .text.UsartTask:00000058 $d
+     /tmp/ccnSvT5d.s:101    .text.initx:00000000 $t
+     /tmp/ccnSvT5d.s:106    .text.initx:00000000 initx
+     /tmp/ccnSvT5d.s:220    .text.initx:000000a8 $d
+     /tmp/ccnSvT5d.s:227    .rodata:00000000 $d
+     /tmp/ccnSvT5d.s:231    .text.main:00000000 $t
+     /tmp/ccnSvT5d.s:236    .text.main:00000000 main
+     /tmp/ccnSvT5d.s:280    .text.main:00000034 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+USART_GetFlagStatus
+USART_ReceiveData
+USART_SendData
+RCC_AHB1PeriphClockCmd
+RCC_APB1PeriphClockCmd
+GPIO_Init
+GPIO_PinAFConfig
+USART_Init
+USART_Cmd
+xTaskGenericCreate
+vTaskStartScheduler

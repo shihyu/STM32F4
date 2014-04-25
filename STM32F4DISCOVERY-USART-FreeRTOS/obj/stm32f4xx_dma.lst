@@ -1,0 +1,2813 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.eabi_attribute 27, 3
+   4              		.fpu fpv4-sp-d16
+   5              		.eabi_attribute 20, 1
+   6              		.eabi_attribute 21, 1
+   7              		.eabi_attribute 23, 3
+   8              		.eabi_attribute 24, 1
+   9              		.eabi_attribute 25, 1
+  10              		.eabi_attribute 26, 1
+  11              		.eabi_attribute 30, 6
+  12              		.eabi_attribute 34, 1
+  13              		.eabi_attribute 18, 4
+  14              		.thumb
+  15              		.file	"stm32f4xx_dma.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.DMA_DeInit,"ax",%progbits
+  20              		.align	2
+  21              		.global	DMA_DeInit
+  22              		.thumb
+  23              		.thumb_func
+  25              	DMA_DeInit:
+  26              	.LFB110:
+  27              		.file 1 "libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c"
+   1:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /**
+   2:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   ******************************************************************************
+   3:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @file    stm32f4xx_dma.c
+   4:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @author  MCD Application Team
+   5:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @version V1.0.0RC1
+   6:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @date    25-August-2011
+   7:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @brief   This file provides firmware functions to manage the following 
+   8:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          functionalities of the Direct Memory Access controller (DMA):           
+   9:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *           - Initialization and Configuration
+  10:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *           - Data Counter
+  11:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *           - Double Buffer mode configuration and command  
+  12:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *           - Interrupts and flags management
+  13:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *           
+  14:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *  @verbatim
+  15:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *      
+  16:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          ===================================================================      
+  17:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *                                 How to use this driver
+  18:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          =================================================================== 
+  19:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          1. Enable The DMA controller clock using RCC_AHB1PeriphResetCmd(RCC_AHB1Periph_DMA1, E
+  20:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *             function for DMA1 or using RCC_AHB1PeriphResetCmd(RCC_AHB1Periph_DMA2, ENABLE)
+  21:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *             function for DMA2.
+  22:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *
+  23:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          2. Enable and configure the peripheral to be connected to the DMA Stream
+  24:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *             (except for internal SRAM / FLASH memories: no initialization is 
+  25:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *             necessary). 
+  26:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *        
+  27:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          3. For a given Stream, program the required configuration through following parameters
+  28:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *             Source and Destination addresses, Transfer Direction, Transfer size, Source and Des
+  29:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *             data formats, Circular or Normal mode, Stream Priority level, Source and Destinatio
+  30:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *             Incrementation mode, FIFO mode and its Threshold (if needed), Burst mode for Source
+  31:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *             Destination (if needed) using the DMA_Init() function.
+  32:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *             To avoid filling un-nesecessary fields, you can call DMA_StructInit() function
+  33:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *             to initialize a given structure with default values (reset values), the modify
+  34:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *             only necessary fields (ie. Source and Destination addresses, Transfer size and Data
+  35:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *
+  36:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          4. Enable the NVIC and the corresponding interrupt(s) using the function 
+  37:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *             DMA_ITConfig() if you need to use DMA interrupts. 
+  38:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *
+  39:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          5. Optionally, if the Circular mode is enabled, you can use the Double buffer mode by 
+  40:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *             the second Memory address and the first Memory to be used through the function 
+  41:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *             DMA_DoubleBufferModeConfig(). Then enable the Double buffer mode through the functi
+  42:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *             DMA_DoubleBufferModeCmd(). These operations must be done before step 6.
+  43:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *    
+  44:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          6. Enable the DMA stream using the DMA_Cmd() function. 
+  45:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *                
+  46:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          7. Activate the needed Stream Request using PPP_DMACmd() function for
+  47:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *             any PPP peripheral except internal SRAM and FLASH (ie. SPI, USART ...)
+  48:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *             The function allowing this operation is provided in each PPP peripheral
+  49:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *             driver (ie. SPI_DMACmd for SPI peripheral).
+  50:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *             Once the Stream is enabled, it is not possible to modify its configuration
+  51:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *             unless the stream is stopped and disabled.
+  52:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *             After enabling the Stream, it is advised to monitor the EN bit status using
+  53:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *             the function DMA_GetCmdStatus(). In case of configuration errors or bus errors
+  54:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *             this bit will remain reset and all transfers on this Stream will remain on hold.   
+  55:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *
+  56:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          8. Optionally, you can configure the number of data to be transferred
+  57:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *             when the Stream is disabled (ie. after each Transfer Complete event
+  58:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *             or when a Transfer Error occurs) using the function DMA_SetCurrDataCounter().
+  59:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *             And you can get the number of remaining data to be transferred using 
+  60:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *             the function DMA_GetCurrDataCounter() at run time (when the DMA Stream is
+  61:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *             enabled and running).  
+  62:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *                   
+  63:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          9. To control DMA events you can use one of the following 
+  64:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *              two methods:
+  65:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *               a- Check on DMA Stream flags using the function DMA_GetFlagStatus().  
+  66:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *               b- Use DMA interrupts through the function DMA_ITConfig() at initialization
+  67:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *                  phase and DMA_GetITStatus() function into interrupt routines in
+  68:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *                  communication phase.  
+  69:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *              After checking on a flag you should clear it using DMA_ClearFlag()
+  70:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *              function. And after checking on an interrupt event you should 
+  71:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *              clear it using DMA_ClearITPendingBit() function.    
+  72:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *              
+  73:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          10. Optionally, if Circular mode and Double Buffer mode are enabled, you can modify
+  74:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *              the Memory Addresses using the function DMA_MemoryTargetConfig(). Make sure that
+  75:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *              the Memory Address to be modified is not the one currently in use by DMA Stream.
+  76:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *              This condition can be monitored using the function DMA_GetCurrentMemoryTarget().
+  77:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *              
+  78:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          11. Optionally, Pause-Resume operations may be performed:
+  79:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *              The DMA_Cmd() function may be used to perform Pause-Resume operation. When a 
+  80:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *              transfer is ongoing, calling this function to disable the Stream will cause the 
+  81:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *              transfer to be paused. All configuration registers and the number of remaining 
+  82:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *              data will be preserved. When calling again this function to re-enable the Stream, 
+  83:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *              the transfer will be resumed from the point where it was paused.          
+  84:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *                 
+  85:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @note   Memory-to-Memory transfer is possible by setting the address of the memory into
+  86:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         the Peripheral registers. In this mode, Circular mode and Double Buffer mode
+  87:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         are not allowed.
+  88:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *  
+  89:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @note   The FIFO is used mainly to reduce bus usage and to allow data packing/unpacking: it is
+  90:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         possible to set different Data Sizes for the Peripheral and the Memory (ie. you can set
+  91:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         Half-Word data size for the peripheral to access its data register and set Word data si
+  92:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         for the Memory to gain in access time. Each two Half-words will be packed and written i
+  93:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         a single access to a Word in the Memory).
+  94:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *    
+  95:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @note  When FIFO is disabled, it is not allowed to configure different Data Sizes for Source
+  96:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *        and Destination. In this case the Peripheral Data Size will be applied to both Source
+  97:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *        and Destination.               
+  98:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *
+  99:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *  @endverbatim
+ 100:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *                                  
+ 101:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   ******************************************************************************
+ 102:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @attention
+ 103:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *
+ 104:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+ 105:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+ 106:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+ 107:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+ 108:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+ 109:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+ 110:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *
+ 111:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * <h2><center>&copy; COPYRIGHT 2011 STMicroelectronics</center></h2>
+ 112:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   ******************************************************************************  
+ 113:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   */ 
+ 114:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 115:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /* Includes ------------------------------------------------------------------*/
+ 116:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** #include "stm32f4xx_dma.h"
+ 117:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** #include "stm32f4xx_rcc.h"
+ 118:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 119:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /** @addtogroup STM32F4xx_StdPeriph_Driver
+ 120:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @{
+ 121:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   */
+ 122:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 123:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /** @defgroup DMA 
+ 124:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @brief DMA driver modules
+ 125:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @{
+ 126:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   */ 
+ 127:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 128:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /* Private typedef -----------------------------------------------------------*/
+ 129:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /* Private define ------------------------------------------------------------*/
+ 130:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 131:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /* Masks Definition */
+ 132:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** #define TRANSFER_IT_ENABLE_MASK (uint32_t)(DMA_SxCR_TCIE | DMA_SxCR_HTIE | \
+ 133:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****                                            DMA_SxCR_TEIE | DMA_SxCR_DMEIE)
+ 134:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 135:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** #define DMA_Stream0_IT_MASK     (uint32_t)(DMA_LISR_FEIF0 | DMA_LISR_DMEIF0 | \
+ 136:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****                                            DMA_LISR_TEIF0 | DMA_LISR_HTIF0 | \
+ 137:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****                                            DMA_LISR_TCIF0)
+ 138:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 139:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** #define DMA_Stream1_IT_MASK     (uint32_t)(DMA_Stream0_IT_MASK << 6)
+ 140:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** #define DMA_Stream2_IT_MASK     (uint32_t)(DMA_Stream0_IT_MASK << 16)
+ 141:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** #define DMA_Stream3_IT_MASK     (uint32_t)(DMA_Stream0_IT_MASK << 22)
+ 142:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** #define DMA_Stream4_IT_MASK     (uint32_t)(DMA_Stream0_IT_MASK | (uint32_t)0x20000000)
+ 143:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** #define DMA_Stream5_IT_MASK     (uint32_t)(DMA_Stream1_IT_MASK | (uint32_t)0x20000000)
+ 144:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** #define DMA_Stream6_IT_MASK     (uint32_t)(DMA_Stream2_IT_MASK | (uint32_t)0x20000000)
+ 145:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** #define DMA_Stream7_IT_MASK     (uint32_t)(DMA_Stream3_IT_MASK | (uint32_t)0x20000000)
+ 146:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** #define TRANSFER_IT_MASK        (uint32_t)0x0F3C0F3C
+ 147:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** #define HIGH_ISR_MASK           (uint32_t)0x20000000
+ 148:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** #define RESERVED_MASK           (uint32_t)0x0F7D0F7D  
+ 149:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 150:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /* Private macro -------------------------------------------------------------*/
+ 151:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /* Private variables ---------------------------------------------------------*/
+ 152:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /* Private function prototypes -----------------------------------------------*/
+ 153:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /* Private functions ---------------------------------------------------------*/
+ 154:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 155:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 156:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /** @defgroup DMA_Private_Functions
+ 157:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @{
+ 158:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   */
+ 159:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 160:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /** @defgroup DMA_Group1 Initialization and Configuration functions
+ 161:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****  *  @brief   Initialization and Configuration functions
+ 162:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****  *
+ 163:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** @verbatim   
+ 164:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****  ===============================================================================
+ 165:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****                  Initialization and Configuration functions
+ 166:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****  ===============================================================================  
+ 167:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 168:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   This subsection provides functions allowing to initialize the DMA Stream source
+ 169:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   and destination addresses, incrementation and data sizes, transfer direction, 
+ 170:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   buffer size, circular/normal mode selection, memory-to-memory mode selection 
+ 171:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   and Stream priority value.
+ 172:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   
+ 173:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   The DMA_Init() function follows the DMA configuration procedures as described in
+ 174:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   reference manual (RM0090) except the first point: waiting on EN bit to be reset.
+ 175:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   This condition should be checked by user application using the function DMA_GetCmdStatus()
+ 176:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   before calling the DMA_Init() function.
+ 177:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 178:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** @endverbatim
+ 179:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @{
+ 180:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   */
+ 181:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 182:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /**
+ 183:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @brief  Deinitialize the DMAy Streamx registers to their default reset values.
+ 184:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+ 185:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         to 7 to select the DMA Stream.
+ 186:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @retval None
+ 187:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   */
+ 188:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** void DMA_DeInit(DMA_Stream_TypeDef* DMAy_Streamx)
+ 189:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** {
+  28              		.loc 1 189 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 8
+  31              		@ frame_needed = 1, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  33 0000 80B4     		push	{r7}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 4
+  36              		.cfi_offset 7, -4
+  37 0002 83B0     		sub	sp, sp, #12
+  38              	.LCFI1:
+  39              		.cfi_def_cfa_offset 16
+  40 0004 00AF     		add	r7, sp, #0
+  41              	.LCFI2:
+  42              		.cfi_def_cfa_register 7
+  43 0006 7860     		str	r0, [r7, #4]
+ 190:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Check the parameters */
+ 191:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+ 192:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 193:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Disable the selected DMAy Streamx */
+ 194:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMAy_Streamx->CR &= ~((uint32_t)DMA_SxCR_EN);
+  44              		.loc 1 194 0
+  45 0008 7B68     		ldr	r3, [r7, #4]
+  46 000a 1B68     		ldr	r3, [r3]
+  47 000c 23F00102 		bic	r2, r3, #1
+  48 0010 7B68     		ldr	r3, [r7, #4]
+  49 0012 1A60     		str	r2, [r3]
+ 195:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 196:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Reset DMAy Streamx control register */
+ 197:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMAy_Streamx->CR  = 0;
+  50              		.loc 1 197 0
+  51 0014 7B68     		ldr	r3, [r7, #4]
+  52 0016 0022     		movs	r2, #0
+  53 0018 1A60     		str	r2, [r3]
+ 198:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   
+ 199:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Reset DMAy Streamx Number of Data to Transfer register */
+ 200:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMAy_Streamx->NDTR = 0;
+  54              		.loc 1 200 0
+  55 001a 7B68     		ldr	r3, [r7, #4]
+  56 001c 0022     		movs	r2, #0
+  57 001e 5A60     		str	r2, [r3, #4]
+ 201:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   
+ 202:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Reset DMAy Streamx peripheral address register */
+ 203:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMAy_Streamx->PAR  = 0;
+  58              		.loc 1 203 0
+  59 0020 7B68     		ldr	r3, [r7, #4]
+  60 0022 0022     		movs	r2, #0
+  61 0024 9A60     		str	r2, [r3, #8]
+ 204:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   
+ 205:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Reset DMAy Streamx memory 0 address register */
+ 206:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMAy_Streamx->M0AR = 0;
+  62              		.loc 1 206 0
+  63 0026 7B68     		ldr	r3, [r7, #4]
+  64 0028 0022     		movs	r2, #0
+  65 002a DA60     		str	r2, [r3, #12]
+ 207:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 208:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Reset DMAy Streamx memory 1 address register */
+ 209:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMAy_Streamx->M1AR = 0;
+  66              		.loc 1 209 0
+  67 002c 7B68     		ldr	r3, [r7, #4]
+  68 002e 0022     		movs	r2, #0
+  69 0030 1A61     		str	r2, [r3, #16]
+ 210:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 211:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Reset DMAy Streamx FIFO control register */
+ 212:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMAy_Streamx->FCR = (uint32_t)0x00000021; 
+  70              		.loc 1 212 0
+  71 0032 7B68     		ldr	r3, [r7, #4]
+  72 0034 2122     		movs	r2, #33
+  73 0036 5A61     		str	r2, [r3, #20]
+ 213:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 214:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Reset interrupt pending bits for the selected stream */
+ 215:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   if (DMAy_Streamx == DMA1_Stream0)
+  74              		.loc 1 215 0
+  75 0038 7A68     		ldr	r2, [r7, #4]
+  76 003a 454B     		ldr	r3, .L18
+  77 003c 9A42     		cmp	r2, r3
+  78 003e 03D1     		bne	.L2
+ 216:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 217:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Reset interrupt pending bits for DMA1 Stream0 */
+ 218:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMA1->LIFCR = DMA_Stream0_IT_MASK;
+  79              		.loc 1 218 0
+  80 0040 444B     		ldr	r3, .L18+4
+  81 0042 3D22     		movs	r2, #61
+  82 0044 9A60     		str	r2, [r3, #8]
+  83 0046 7EE0     		b	.L1
+  84              	.L2:
+ 219:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+ 220:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else if (DMAy_Streamx == DMA1_Stream1)
+  85              		.loc 1 220 0
+  86 0048 7A68     		ldr	r2, [r7, #4]
+  87 004a 434B     		ldr	r3, .L18+8
+  88 004c 9A42     		cmp	r2, r3
+  89 004e 04D1     		bne	.L4
+ 221:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 222:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Reset interrupt pending bits for DMA1 Stream1 */
+ 223:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMA1->LIFCR = DMA_Stream1_IT_MASK;
+  90              		.loc 1 223 0
+  91 0050 404B     		ldr	r3, .L18+4
+  92 0052 4FF47462 		mov	r2, #3904
+  93 0056 9A60     		str	r2, [r3, #8]
+  94 0058 75E0     		b	.L1
+  95              	.L4:
+ 224:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+ 225:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else if (DMAy_Streamx == DMA1_Stream2)
+  96              		.loc 1 225 0
+  97 005a 7A68     		ldr	r2, [r7, #4]
+  98 005c 3F4B     		ldr	r3, .L18+12
+  99 005e 9A42     		cmp	r2, r3
+ 100 0060 04D1     		bne	.L5
+ 226:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 227:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Reset interrupt pending bits for DMA1 Stream2 */
+ 228:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMA1->LIFCR = DMA_Stream2_IT_MASK;
+ 101              		.loc 1 228 0
+ 102 0062 3C4B     		ldr	r3, .L18+4
+ 103 0064 4FF47412 		mov	r2, #3997696
+ 104 0068 9A60     		str	r2, [r3, #8]
+ 105 006a 6CE0     		b	.L1
+ 106              	.L5:
+ 229:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+ 230:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else if (DMAy_Streamx == DMA1_Stream3)
+ 107              		.loc 1 230 0
+ 108 006c 7A68     		ldr	r2, [r7, #4]
+ 109 006e 3C4B     		ldr	r3, .L18+16
+ 110 0070 9A42     		cmp	r2, r3
+ 111 0072 04D1     		bne	.L6
+ 231:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 232:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Reset interrupt pending bits for DMA1 Stream3 */
+ 233:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMA1->LIFCR = DMA_Stream3_IT_MASK;
+ 112              		.loc 1 233 0
+ 113 0074 374B     		ldr	r3, .L18+4
+ 114 0076 4FF07462 		mov	r2, #255852544
+ 115 007a 9A60     		str	r2, [r3, #8]
+ 116 007c 63E0     		b	.L1
+ 117              	.L6:
+ 234:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+ 235:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else if (DMAy_Streamx == DMA1_Stream4)
+ 118              		.loc 1 235 0
+ 119 007e 7A68     		ldr	r2, [r7, #4]
+ 120 0080 384B     		ldr	r3, .L18+20
+ 121 0082 9A42     		cmp	r2, r3
+ 122 0084 03D1     		bne	.L7
+ 236:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 237:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Reset interrupt pending bits for DMA1 Stream4 */
+ 238:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMA1->HIFCR = DMA_Stream4_IT_MASK;
+ 123              		.loc 1 238 0
+ 124 0086 334B     		ldr	r3, .L18+4
+ 125 0088 374A     		ldr	r2, .L18+24
+ 126 008a DA60     		str	r2, [r3, #12]
+ 127 008c 5BE0     		b	.L1
+ 128              	.L7:
+ 239:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+ 240:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else if (DMAy_Streamx == DMA1_Stream5)
+ 129              		.loc 1 240 0
+ 130 008e 7A68     		ldr	r2, [r7, #4]
+ 131 0090 364B     		ldr	r3, .L18+28
+ 132 0092 9A42     		cmp	r2, r3
+ 133 0094 03D1     		bne	.L8
+ 241:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 242:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Reset interrupt pending bits for DMA1 Stream5 */
+ 243:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMA1->HIFCR = DMA_Stream5_IT_MASK;
+ 134              		.loc 1 243 0
+ 135 0096 2F4B     		ldr	r3, .L18+4
+ 136 0098 354A     		ldr	r2, .L18+32
+ 137 009a DA60     		str	r2, [r3, #12]
+ 138 009c 53E0     		b	.L1
+ 139              	.L8:
+ 244:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+ 245:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else if (DMAy_Streamx == DMA1_Stream6)
+ 140              		.loc 1 245 0
+ 141 009e 7A68     		ldr	r2, [r7, #4]
+ 142 00a0 344B     		ldr	r3, .L18+36
+ 143 00a2 9A42     		cmp	r2, r3
+ 144 00a4 03D1     		bne	.L9
+ 246:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 247:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Reset interrupt pending bits for DMA1 Stream6 */
+ 248:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMA1->HIFCR = (uint32_t)DMA_Stream6_IT_MASK;
+ 145              		.loc 1 248 0
+ 146 00a6 2B4B     		ldr	r3, .L18+4
+ 147 00a8 334A     		ldr	r2, .L18+40
+ 148 00aa DA60     		str	r2, [r3, #12]
+ 149 00ac 4BE0     		b	.L1
+ 150              	.L9:
+ 249:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+ 250:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else if (DMAy_Streamx == DMA1_Stream7)
+ 151              		.loc 1 250 0
+ 152 00ae 7A68     		ldr	r2, [r7, #4]
+ 153 00b0 324B     		ldr	r3, .L18+44
+ 154 00b2 9A42     		cmp	r2, r3
+ 155 00b4 04D1     		bne	.L10
+ 251:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 252:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Reset interrupt pending bits for DMA1 Stream7 */
+ 253:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMA1->HIFCR = DMA_Stream7_IT_MASK;
+ 156              		.loc 1 253 0
+ 157 00b6 274B     		ldr	r3, .L18+4
+ 158 00b8 4FF03D52 		mov	r2, #792723456
+ 159 00bc DA60     		str	r2, [r3, #12]
+ 160 00be 42E0     		b	.L1
+ 161              	.L10:
+ 254:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+ 255:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else if (DMAy_Streamx == DMA2_Stream0)
+ 162              		.loc 1 255 0
+ 163 00c0 7A68     		ldr	r2, [r7, #4]
+ 164 00c2 2F4B     		ldr	r3, .L18+48
+ 165 00c4 9A42     		cmp	r2, r3
+ 166 00c6 03D1     		bne	.L11
+ 256:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 257:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Reset interrupt pending bits for DMA2 Stream0 */
+ 258:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMA2->LIFCR = DMA_Stream0_IT_MASK;
+ 167              		.loc 1 258 0
+ 168 00c8 2E4B     		ldr	r3, .L18+52
+ 169 00ca 3D22     		movs	r2, #61
+ 170 00cc 9A60     		str	r2, [r3, #8]
+ 171 00ce 3AE0     		b	.L1
+ 172              	.L11:
+ 259:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+ 260:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else if (DMAy_Streamx == DMA2_Stream1)
+ 173              		.loc 1 260 0
+ 174 00d0 7A68     		ldr	r2, [r7, #4]
+ 175 00d2 2D4B     		ldr	r3, .L18+56
+ 176 00d4 9A42     		cmp	r2, r3
+ 177 00d6 04D1     		bne	.L12
+ 261:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 262:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Reset interrupt pending bits for DMA2 Stream1 */
+ 263:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMA2->LIFCR = DMA_Stream1_IT_MASK;
+ 178              		.loc 1 263 0
+ 179 00d8 2A4B     		ldr	r3, .L18+52
+ 180 00da 4FF47462 		mov	r2, #3904
+ 181 00de 9A60     		str	r2, [r3, #8]
+ 182 00e0 31E0     		b	.L1
+ 183              	.L12:
+ 264:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+ 265:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else if (DMAy_Streamx == DMA2_Stream2)
+ 184              		.loc 1 265 0
+ 185 00e2 7A68     		ldr	r2, [r7, #4]
+ 186 00e4 294B     		ldr	r3, .L18+60
+ 187 00e6 9A42     		cmp	r2, r3
+ 188 00e8 04D1     		bne	.L13
+ 266:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 267:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Reset interrupt pending bits for DMA2 Stream2 */
+ 268:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMA2->LIFCR = DMA_Stream2_IT_MASK;
+ 189              		.loc 1 268 0
+ 190 00ea 264B     		ldr	r3, .L18+52
+ 191 00ec 4FF47412 		mov	r2, #3997696
+ 192 00f0 9A60     		str	r2, [r3, #8]
+ 193 00f2 28E0     		b	.L1
+ 194              	.L13:
+ 269:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+ 270:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else if (DMAy_Streamx == DMA2_Stream3)
+ 195              		.loc 1 270 0
+ 196 00f4 7A68     		ldr	r2, [r7, #4]
+ 197 00f6 264B     		ldr	r3, .L18+64
+ 198 00f8 9A42     		cmp	r2, r3
+ 199 00fa 04D1     		bne	.L14
+ 271:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 272:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Reset interrupt pending bits for DMA2 Stream3 */
+ 273:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMA2->LIFCR = DMA_Stream3_IT_MASK;
+ 200              		.loc 1 273 0
+ 201 00fc 214B     		ldr	r3, .L18+52
+ 202 00fe 4FF07462 		mov	r2, #255852544
+ 203 0102 9A60     		str	r2, [r3, #8]
+ 204 0104 1FE0     		b	.L1
+ 205              	.L14:
+ 274:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+ 275:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else if (DMAy_Streamx == DMA2_Stream4)
+ 206              		.loc 1 275 0
+ 207 0106 7A68     		ldr	r2, [r7, #4]
+ 208 0108 224B     		ldr	r3, .L18+68
+ 209 010a 9A42     		cmp	r2, r3
+ 210 010c 03D1     		bne	.L15
+ 276:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 277:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Reset interrupt pending bits for DMA2 Stream4 */
+ 278:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMA2->HIFCR = DMA_Stream4_IT_MASK;
+ 211              		.loc 1 278 0
+ 212 010e 1D4B     		ldr	r3, .L18+52
+ 213 0110 154A     		ldr	r2, .L18+24
+ 214 0112 DA60     		str	r2, [r3, #12]
+ 215 0114 17E0     		b	.L1
+ 216              	.L15:
+ 279:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+ 280:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else if (DMAy_Streamx == DMA2_Stream5)
+ 217              		.loc 1 280 0
+ 218 0116 7A68     		ldr	r2, [r7, #4]
+ 219 0118 1F4B     		ldr	r3, .L18+72
+ 220 011a 9A42     		cmp	r2, r3
+ 221 011c 03D1     		bne	.L16
+ 281:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 282:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Reset interrupt pending bits for DMA2 Stream5 */
+ 283:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMA2->HIFCR = DMA_Stream5_IT_MASK;
+ 222              		.loc 1 283 0
+ 223 011e 194B     		ldr	r3, .L18+52
+ 224 0120 134A     		ldr	r2, .L18+32
+ 225 0122 DA60     		str	r2, [r3, #12]
+ 226 0124 0FE0     		b	.L1
+ 227              	.L16:
+ 284:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+ 285:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else if (DMAy_Streamx == DMA2_Stream6)
+ 228              		.loc 1 285 0
+ 229 0126 7A68     		ldr	r2, [r7, #4]
+ 230 0128 1C4B     		ldr	r3, .L18+76
+ 231 012a 9A42     		cmp	r2, r3
+ 232 012c 03D1     		bne	.L17
+ 286:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 287:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Reset interrupt pending bits for DMA2 Stream6 */
+ 288:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMA2->HIFCR = DMA_Stream6_IT_MASK;
+ 233              		.loc 1 288 0
+ 234 012e 154B     		ldr	r3, .L18+52
+ 235 0130 114A     		ldr	r2, .L18+40
+ 236 0132 DA60     		str	r2, [r3, #12]
+ 237 0134 07E0     		b	.L1
+ 238              	.L17:
+ 289:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+ 290:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else 
+ 291:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 292:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     if (DMAy_Streamx == DMA2_Stream7)
+ 239              		.loc 1 292 0
+ 240 0136 7A68     		ldr	r2, [r7, #4]
+ 241 0138 194B     		ldr	r3, .L18+80
+ 242 013a 9A42     		cmp	r2, r3
+ 243 013c 03D1     		bne	.L1
+ 293:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     {
+ 294:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****       /* Reset interrupt pending bits for DMA2 Stream7 */
+ 295:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****       DMA2->HIFCR = DMA_Stream7_IT_MASK;
+ 244              		.loc 1 295 0
+ 245 013e 114B     		ldr	r3, .L18+52
+ 246 0140 4FF03D52 		mov	r2, #792723456
+ 247 0144 DA60     		str	r2, [r3, #12]
+ 248              	.L1:
+ 296:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     }
+ 297:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+ 298:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** }
+ 249              		.loc 1 298 0
+ 250 0146 0C37     		adds	r7, r7, #12
+ 251 0148 BD46     		mov	sp, r7
+ 252              		@ sp needed
+ 253 014a 5DF8047B 		ldr	r7, [sp], #4
+ 254 014e 7047     		bx	lr
+ 255              	.L19:
+ 256              		.align	2
+ 257              	.L18:
+ 258 0150 10600240 		.word	1073897488
+ 259 0154 00600240 		.word	1073897472
+ 260 0158 28600240 		.word	1073897512
+ 261 015c 40600240 		.word	1073897536
+ 262 0160 58600240 		.word	1073897560
+ 263 0164 70600240 		.word	1073897584
+ 264 0168 3D000020 		.word	536870973
+ 265 016c 88600240 		.word	1073897608
+ 266 0170 400F0020 		.word	536874816
+ 267 0174 A0600240 		.word	1073897632
+ 268 0178 00003D20 		.word	540868608
+ 269 017c B8600240 		.word	1073897656
+ 270 0180 10640240 		.word	1073898512
+ 271 0184 00640240 		.word	1073898496
+ 272 0188 28640240 		.word	1073898536
+ 273 018c 40640240 		.word	1073898560
+ 274 0190 58640240 		.word	1073898584
+ 275 0194 70640240 		.word	1073898608
+ 276 0198 88640240 		.word	1073898632
+ 277 019c A0640240 		.word	1073898656
+ 278 01a0 B8640240 		.word	1073898680
+ 279              		.cfi_endproc
+ 280              	.LFE110:
+ 282              		.section	.text.DMA_Init,"ax",%progbits
+ 283              		.align	2
+ 284              		.global	DMA_Init
+ 285              		.thumb
+ 286              		.thumb_func
+ 288              	DMA_Init:
+ 289              	.LFB111:
+ 299:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 300:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /**
+ 301:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @brief  Initializes the DMAy Streamx according to the specified parameters in 
+ 302:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         the DMA_InitStruct structure.
+ 303:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @note   Before calling this function, it is recommended to check that the Stream 
+ 304:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         is actually disabled using the function DMA_GetCmdStatus().  
+ 305:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+ 306:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         to 7 to select the DMA Stream.
+ 307:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  DMA_InitStruct: pointer to a DMA_InitTypeDef structure that contains
+ 308:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         the configuration information for the specified DMA Stream.  
+ 309:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @retval None
+ 310:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   */
+ 311:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** void DMA_Init(DMA_Stream_TypeDef* DMAy_Streamx, DMA_InitTypeDef* DMA_InitStruct)
+ 312:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** {
+ 290              		.loc 1 312 0
+ 291              		.cfi_startproc
+ 292              		@ args = 0, pretend = 0, frame = 16
+ 293              		@ frame_needed = 1, uses_anonymous_args = 0
+ 294              		@ link register save eliminated.
+ 295 0000 80B4     		push	{r7}
+ 296              	.LCFI3:
+ 297              		.cfi_def_cfa_offset 4
+ 298              		.cfi_offset 7, -4
+ 299 0002 85B0     		sub	sp, sp, #20
+ 300              	.LCFI4:
+ 301              		.cfi_def_cfa_offset 24
+ 302 0004 00AF     		add	r7, sp, #0
+ 303              	.LCFI5:
+ 304              		.cfi_def_cfa_register 7
+ 305 0006 7860     		str	r0, [r7, #4]
+ 306 0008 3960     		str	r1, [r7]
+ 313:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   uint32_t tmpreg = 0;
+ 307              		.loc 1 313 0
+ 308 000a 0023     		movs	r3, #0
+ 309 000c FB60     		str	r3, [r7, #12]
+ 314:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 315:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Check the parameters */
+ 316:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+ 317:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_CHANNEL(DMA_InitStruct->DMA_Channel));
+ 318:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_DIRECTION(DMA_InitStruct->DMA_DIR));
+ 319:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_BUFFER_SIZE(DMA_InitStruct->DMA_BufferSize));
+ 320:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_PERIPHERAL_INC_STATE(DMA_InitStruct->DMA_PeripheralInc));
+ 321:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_MEMORY_INC_STATE(DMA_InitStruct->DMA_MemoryInc));
+ 322:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_PERIPHERAL_DATA_SIZE(DMA_InitStruct->DMA_PeripheralDataSize));
+ 323:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_MEMORY_DATA_SIZE(DMA_InitStruct->DMA_MemoryDataSize));
+ 324:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_MODE(DMA_InitStruct->DMA_Mode));
+ 325:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_PRIORITY(DMA_InitStruct->DMA_Priority));
+ 326:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_FIFO_MODE_STATE(DMA_InitStruct->DMA_FIFOMode));
+ 327:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_FIFO_THRESHOLD(DMA_InitStruct->DMA_FIFOThreshold));
+ 328:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_MEMORY_BURST(DMA_InitStruct->DMA_MemoryBurst));
+ 329:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_PERIPHERAL_BURST(DMA_InitStruct->DMA_PeripheralBurst));
+ 330:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 331:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /*------------------------- DMAy Streamx CR Configuration ------------------*/
+ 332:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Get the DMAy_Streamx CR value */
+ 333:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   tmpreg = DMAy_Streamx->CR;
+ 310              		.loc 1 333 0
+ 311 000e 7B68     		ldr	r3, [r7, #4]
+ 312 0010 1B68     		ldr	r3, [r3]
+ 313 0012 FB60     		str	r3, [r7, #12]
+ 334:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 335:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Clear CHSEL, MBURST, PBURST, PL, MSIZE, PSIZE, MINC, PINC, CIRC and DIR bits */
+ 336:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   tmpreg &= ((uint32_t)~(DMA_SxCR_CHSEL | DMA_SxCR_MBURST | DMA_SxCR_PBURST | \
+ 314              		.loc 1 336 0
+ 315 0014 FA68     		ldr	r2, [r7, #12]
+ 316 0016 244B     		ldr	r3, .L21
+ 317 0018 1340     		ands	r3, r3, r2
+ 318 001a FB60     		str	r3, [r7, #12]
+ 337:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****                          DMA_SxCR_PL | DMA_SxCR_MSIZE | DMA_SxCR_PSIZE | \
+ 338:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****                          DMA_SxCR_MINC | DMA_SxCR_PINC | DMA_SxCR_CIRC | \
+ 339:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****                          DMA_SxCR_DIR));
+ 340:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 341:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Configure DMAy Streamx: */
+ 342:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Set CHSEL bits according to DMA_CHSEL value */
+ 343:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Set DIR bits according to DMA_DIR value */
+ 344:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Set PINC bit according to DMA_PeripheralInc value */
+ 345:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Set MINC bit according to DMA_MemoryInc value */
+ 346:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Set PSIZE bits according to DMA_PeripheralDataSize value */
+ 347:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Set MSIZE bits according to DMA_MemoryDataSize value */
+ 348:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Set CIRC bit according to DMA_Mode value */
+ 349:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Set PL bits according to DMA_Priority value */
+ 350:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Set MBURST bits according to DMA_MemoryBurst value */
+ 351:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Set PBURST bits according to DMA_PeripheralBurst value */
+ 352:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   tmpreg |= DMA_InitStruct->DMA_Channel | DMA_InitStruct->DMA_DIR |
+ 319              		.loc 1 352 0
+ 320 001c 3B68     		ldr	r3, [r7]
+ 321 001e 1A68     		ldr	r2, [r3]
+ 322 0020 3B68     		ldr	r3, [r7]
+ 323 0022 DB68     		ldr	r3, [r3, #12]
+ 324 0024 1A43     		orrs	r2, r2, r3
+ 353:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****             DMA_InitStruct->DMA_PeripheralInc | DMA_InitStruct->DMA_MemoryInc |
+ 325              		.loc 1 353 0
+ 326 0026 3B68     		ldr	r3, [r7]
+ 327 0028 5B69     		ldr	r3, [r3, #20]
+ 352:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   tmpreg |= DMA_InitStruct->DMA_Channel | DMA_InitStruct->DMA_DIR |
+ 328              		.loc 1 352 0
+ 329 002a 1A43     		orrs	r2, r2, r3
+ 330              		.loc 1 353 0
+ 331 002c 3B68     		ldr	r3, [r7]
+ 332 002e 9B69     		ldr	r3, [r3, #24]
+ 333 0030 1A43     		orrs	r2, r2, r3
+ 354:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****             DMA_InitStruct->DMA_PeripheralDataSize | DMA_InitStruct->DMA_MemoryDataSize |
+ 334              		.loc 1 354 0
+ 335 0032 3B68     		ldr	r3, [r7]
+ 336 0034 DB69     		ldr	r3, [r3, #28]
+ 353:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****             DMA_InitStruct->DMA_PeripheralInc | DMA_InitStruct->DMA_MemoryInc |
+ 337              		.loc 1 353 0
+ 338 0036 1A43     		orrs	r2, r2, r3
+ 339              		.loc 1 354 0
+ 340 0038 3B68     		ldr	r3, [r7]
+ 341 003a 1B6A     		ldr	r3, [r3, #32]
+ 342 003c 1A43     		orrs	r2, r2, r3
+ 355:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****             DMA_InitStruct->DMA_Mode | DMA_InitStruct->DMA_Priority |
+ 343              		.loc 1 355 0
+ 344 003e 3B68     		ldr	r3, [r7]
+ 345 0040 5B6A     		ldr	r3, [r3, #36]
+ 354:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****             DMA_InitStruct->DMA_PeripheralDataSize | DMA_InitStruct->DMA_MemoryDataSize |
+ 346              		.loc 1 354 0
+ 347 0042 1A43     		orrs	r2, r2, r3
+ 348              		.loc 1 355 0
+ 349 0044 3B68     		ldr	r3, [r7]
+ 350 0046 9B6A     		ldr	r3, [r3, #40]
+ 351 0048 1A43     		orrs	r2, r2, r3
+ 356:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****             DMA_InitStruct->DMA_MemoryBurst | DMA_InitStruct->DMA_PeripheralBurst;
+ 352              		.loc 1 356 0
+ 353 004a 3B68     		ldr	r3, [r7]
+ 354 004c 5B6B     		ldr	r3, [r3, #52]
+ 355:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****             DMA_InitStruct->DMA_Mode | DMA_InitStruct->DMA_Priority |
+ 355              		.loc 1 355 0
+ 356 004e 1A43     		orrs	r2, r2, r3
+ 357              		.loc 1 356 0
+ 358 0050 3B68     		ldr	r3, [r7]
+ 359 0052 9B6B     		ldr	r3, [r3, #56]
+ 360 0054 1343     		orrs	r3, r3, r2
+ 352:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   tmpreg |= DMA_InitStruct->DMA_Channel | DMA_InitStruct->DMA_DIR |
+ 361              		.loc 1 352 0
+ 362 0056 FA68     		ldr	r2, [r7, #12]
+ 363 0058 1343     		orrs	r3, r3, r2
+ 364 005a FB60     		str	r3, [r7, #12]
+ 357:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 358:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Write to DMAy Streamx CR register */
+ 359:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMAy_Streamx->CR = tmpreg;
+ 365              		.loc 1 359 0
+ 366 005c 7B68     		ldr	r3, [r7, #4]
+ 367 005e FA68     		ldr	r2, [r7, #12]
+ 368 0060 1A60     		str	r2, [r3]
+ 360:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 361:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /*------------------------- DMAy Streamx FCR Configuration -----------------*/
+ 362:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Get the DMAy_Streamx FCR value */
+ 363:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   tmpreg = DMAy_Streamx->FCR;
+ 369              		.loc 1 363 0
+ 370 0062 7B68     		ldr	r3, [r7, #4]
+ 371 0064 5B69     		ldr	r3, [r3, #20]
+ 372 0066 FB60     		str	r3, [r7, #12]
+ 364:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 365:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Clear DMDIS and FTH bits */
+ 366:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   tmpreg &= (uint32_t)~(DMA_SxFCR_DMDIS | DMA_SxFCR_FTH);
+ 373              		.loc 1 366 0
+ 374 0068 FB68     		ldr	r3, [r7, #12]
+ 375 006a 23F00703 		bic	r3, r3, #7
+ 376 006e FB60     		str	r3, [r7, #12]
+ 367:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 368:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Configure DMAy Streamx FIFO: 
+ 369:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     Set DMDIS bits according to DMA_FIFOMode value 
+ 370:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     Set FTH bits according to DMA_FIFOThreshold value */
+ 371:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   tmpreg |= DMA_InitStruct->DMA_FIFOMode | DMA_InitStruct->DMA_FIFOThreshold;
+ 377              		.loc 1 371 0
+ 378 0070 3B68     		ldr	r3, [r7]
+ 379 0072 DA6A     		ldr	r2, [r3, #44]
+ 380 0074 3B68     		ldr	r3, [r7]
+ 381 0076 1B6B     		ldr	r3, [r3, #48]
+ 382 0078 1343     		orrs	r3, r3, r2
+ 383 007a FA68     		ldr	r2, [r7, #12]
+ 384 007c 1343     		orrs	r3, r3, r2
+ 385 007e FB60     		str	r3, [r7, #12]
+ 372:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 373:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Write to DMAy Streamx CR */
+ 374:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMAy_Streamx->FCR = tmpreg;
+ 386              		.loc 1 374 0
+ 387 0080 7B68     		ldr	r3, [r7, #4]
+ 388 0082 FA68     		ldr	r2, [r7, #12]
+ 389 0084 5A61     		str	r2, [r3, #20]
+ 375:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 376:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /*------------------------- DMAy Streamx NDTR Configuration ----------------*/
+ 377:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Write to DMAy Streamx NDTR register */
+ 378:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMAy_Streamx->NDTR = DMA_InitStruct->DMA_BufferSize;
+ 390              		.loc 1 378 0
+ 391 0086 3B68     		ldr	r3, [r7]
+ 392 0088 1A69     		ldr	r2, [r3, #16]
+ 393 008a 7B68     		ldr	r3, [r7, #4]
+ 394 008c 5A60     		str	r2, [r3, #4]
+ 379:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 380:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /*------------------------- DMAy Streamx PAR Configuration -----------------*/
+ 381:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Write to DMAy Streamx PAR */
+ 382:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMAy_Streamx->PAR = DMA_InitStruct->DMA_PeripheralBaseAddr;
+ 395              		.loc 1 382 0
+ 396 008e 3B68     		ldr	r3, [r7]
+ 397 0090 5A68     		ldr	r2, [r3, #4]
+ 398 0092 7B68     		ldr	r3, [r7, #4]
+ 399 0094 9A60     		str	r2, [r3, #8]
+ 383:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 384:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /*------------------------- DMAy Streamx M0AR Configuration ----------------*/
+ 385:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Write to DMAy Streamx M0AR */
+ 386:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMAy_Streamx->M0AR = DMA_InitStruct->DMA_Memory0BaseAddr;
+ 400              		.loc 1 386 0
+ 401 0096 3B68     		ldr	r3, [r7]
+ 402 0098 9A68     		ldr	r2, [r3, #8]
+ 403 009a 7B68     		ldr	r3, [r7, #4]
+ 404 009c DA60     		str	r2, [r3, #12]
+ 387:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** }
+ 405              		.loc 1 387 0
+ 406 009e 1437     		adds	r7, r7, #20
+ 407 00a0 BD46     		mov	sp, r7
+ 408              		@ sp needed
+ 409 00a2 5DF8047B 		ldr	r7, [sp], #4
+ 410 00a6 7047     		bx	lr
+ 411              	.L22:
+ 412              		.align	2
+ 413              	.L21:
+ 414 00a8 3F801CF0 		.word	-266567617
+ 415              		.cfi_endproc
+ 416              	.LFE111:
+ 418              		.section	.text.DMA_StructInit,"ax",%progbits
+ 419              		.align	2
+ 420              		.global	DMA_StructInit
+ 421              		.thumb
+ 422              		.thumb_func
+ 424              	DMA_StructInit:
+ 425              	.LFB112:
+ 388:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 389:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /**
+ 390:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @brief  Fills each DMA_InitStruct member with its default value.
+ 391:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  DMA_InitStruct : pointer to a DMA_InitTypeDef structure which will 
+ 392:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         be initialized.
+ 393:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @retval None
+ 394:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   */
+ 395:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** void DMA_StructInit(DMA_InitTypeDef* DMA_InitStruct)
+ 396:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** {
+ 426              		.loc 1 396 0
+ 427              		.cfi_startproc
+ 428              		@ args = 0, pretend = 0, frame = 8
+ 429              		@ frame_needed = 1, uses_anonymous_args = 0
+ 430              		@ link register save eliminated.
+ 431 0000 80B4     		push	{r7}
+ 432              	.LCFI6:
+ 433              		.cfi_def_cfa_offset 4
+ 434              		.cfi_offset 7, -4
+ 435 0002 83B0     		sub	sp, sp, #12
+ 436              	.LCFI7:
+ 437              		.cfi_def_cfa_offset 16
+ 438 0004 00AF     		add	r7, sp, #0
+ 439              	.LCFI8:
+ 440              		.cfi_def_cfa_register 7
+ 441 0006 7860     		str	r0, [r7, #4]
+ 397:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /*-------------- Reset DMA init structure parameters values ----------------*/
+ 398:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Initialize the DMA_Channel member */
+ 399:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMA_InitStruct->DMA_Channel = 0;
+ 442              		.loc 1 399 0
+ 443 0008 7B68     		ldr	r3, [r7, #4]
+ 444 000a 0022     		movs	r2, #0
+ 445 000c 1A60     		str	r2, [r3]
+ 400:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 401:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Initialize the DMA_PeripheralBaseAddr member */
+ 402:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMA_InitStruct->DMA_PeripheralBaseAddr = 0;
+ 446              		.loc 1 402 0
+ 447 000e 7B68     		ldr	r3, [r7, #4]
+ 448 0010 0022     		movs	r2, #0
+ 449 0012 5A60     		str	r2, [r3, #4]
+ 403:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 404:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Initialize the DMA_Memory0BaseAddr member */
+ 405:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMA_InitStruct->DMA_Memory0BaseAddr = 0;
+ 450              		.loc 1 405 0
+ 451 0014 7B68     		ldr	r3, [r7, #4]
+ 452 0016 0022     		movs	r2, #0
+ 453 0018 9A60     		str	r2, [r3, #8]
+ 406:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 407:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Initialize the DMA_DIR member */
+ 408:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMA_InitStruct->DMA_DIR = DMA_DIR_PeripheralToMemory;
+ 454              		.loc 1 408 0
+ 455 001a 7B68     		ldr	r3, [r7, #4]
+ 456 001c 0022     		movs	r2, #0
+ 457 001e DA60     		str	r2, [r3, #12]
+ 409:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 410:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Initialize the DMA_BufferSize member */
+ 411:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMA_InitStruct->DMA_BufferSize = 0;
+ 458              		.loc 1 411 0
+ 459 0020 7B68     		ldr	r3, [r7, #4]
+ 460 0022 0022     		movs	r2, #0
+ 461 0024 1A61     		str	r2, [r3, #16]
+ 412:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 413:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Initialize the DMA_PeripheralInc member */
+ 414:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMA_InitStruct->DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+ 462              		.loc 1 414 0
+ 463 0026 7B68     		ldr	r3, [r7, #4]
+ 464 0028 0022     		movs	r2, #0
+ 465 002a 5A61     		str	r2, [r3, #20]
+ 415:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 416:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Initialize the DMA_MemoryInc member */
+ 417:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMA_InitStruct->DMA_MemoryInc = DMA_MemoryInc_Disable;
+ 466              		.loc 1 417 0
+ 467 002c 7B68     		ldr	r3, [r7, #4]
+ 468 002e 0022     		movs	r2, #0
+ 469 0030 9A61     		str	r2, [r3, #24]
+ 418:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 419:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Initialize the DMA_PeripheralDataSize member */
+ 420:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMA_InitStruct->DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+ 470              		.loc 1 420 0
+ 471 0032 7B68     		ldr	r3, [r7, #4]
+ 472 0034 0022     		movs	r2, #0
+ 473 0036 DA61     		str	r2, [r3, #28]
+ 421:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 422:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Initialize the DMA_MemoryDataSize member */
+ 423:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMA_InitStruct->DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
+ 474              		.loc 1 423 0
+ 475 0038 7B68     		ldr	r3, [r7, #4]
+ 476 003a 0022     		movs	r2, #0
+ 477 003c 1A62     		str	r2, [r3, #32]
+ 424:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 425:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Initialize the DMA_Mode member */
+ 426:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMA_InitStruct->DMA_Mode = DMA_Mode_Normal;
+ 478              		.loc 1 426 0
+ 479 003e 7B68     		ldr	r3, [r7, #4]
+ 480 0040 0022     		movs	r2, #0
+ 481 0042 5A62     		str	r2, [r3, #36]
+ 427:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 428:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Initialize the DMA_Priority member */
+ 429:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMA_InitStruct->DMA_Priority = DMA_Priority_Low;
+ 482              		.loc 1 429 0
+ 483 0044 7B68     		ldr	r3, [r7, #4]
+ 484 0046 0022     		movs	r2, #0
+ 485 0048 9A62     		str	r2, [r3, #40]
+ 430:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 431:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Initialize the DMA_FIFOMode member */
+ 432:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMA_InitStruct->DMA_FIFOMode = DMA_FIFOMode_Disable;
+ 486              		.loc 1 432 0
+ 487 004a 7B68     		ldr	r3, [r7, #4]
+ 488 004c 0022     		movs	r2, #0
+ 489 004e DA62     		str	r2, [r3, #44]
+ 433:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 434:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Initialize the DMA_FIFOThreshold member */
+ 435:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMA_InitStruct->DMA_FIFOThreshold = DMA_FIFOThreshold_1QuarterFull;
+ 490              		.loc 1 435 0
+ 491 0050 7B68     		ldr	r3, [r7, #4]
+ 492 0052 0022     		movs	r2, #0
+ 493 0054 1A63     		str	r2, [r3, #48]
+ 436:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 437:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Initialize the DMA_MemoryBurst member */
+ 438:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMA_InitStruct->DMA_MemoryBurst = DMA_MemoryBurst_Single;
+ 494              		.loc 1 438 0
+ 495 0056 7B68     		ldr	r3, [r7, #4]
+ 496 0058 0022     		movs	r2, #0
+ 497 005a 5A63     		str	r2, [r3, #52]
+ 439:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 440:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Initialize the DMA_PeripheralBurst member */
+ 441:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMA_InitStruct->DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+ 498              		.loc 1 441 0
+ 499 005c 7B68     		ldr	r3, [r7, #4]
+ 500 005e 0022     		movs	r2, #0
+ 501 0060 9A63     		str	r2, [r3, #56]
+ 442:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** }
+ 502              		.loc 1 442 0
+ 503 0062 0C37     		adds	r7, r7, #12
+ 504 0064 BD46     		mov	sp, r7
+ 505              		@ sp needed
+ 506 0066 5DF8047B 		ldr	r7, [sp], #4
+ 507 006a 7047     		bx	lr
+ 508              		.cfi_endproc
+ 509              	.LFE112:
+ 511              		.section	.text.DMA_Cmd,"ax",%progbits
+ 512              		.align	2
+ 513              		.global	DMA_Cmd
+ 514              		.thumb
+ 515              		.thumb_func
+ 517              	DMA_Cmd:
+ 518              	.LFB113:
+ 443:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 444:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /**
+ 445:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @brief  Enables or disables the specified DMAy Streamx.
+ 446:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+ 447:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         to 7 to select the DMA Stream.
+ 448:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  NewState: new state of the DMAy Streamx. 
+ 449:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          This parameter can be: ENABLE or DISABLE.
+ 450:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *
+ 451:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @note  This function may be used to perform Pause-Resume operation. When a
+ 452:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *        transfer is ongoing, calling this function to disable the Stream will
+ 453:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *        cause the transfer to be paused. All configuration registers and the
+ 454:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *        number of remaining data will be preserved. When calling again this
+ 455:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *        function to re-enable the Stream, the transfer will be resumed from
+ 456:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *        the point where it was paused.          
+ 457:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *    
+ 458:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @note  After configuring the DMA Stream (DMA_Init() function) and enabling the
+ 459:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *        stream, it is recommended to check (or wait until) the DMA Stream is
+ 460:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *        effectively enabled. A Stream may remain disabled if a configuration 
+ 461:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *        parameter is wrong.
+ 462:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *        After disabling a DMA Stream, it is also recommended to check (or wait
+ 463:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *        until) the DMA Stream is effectively disabled. If a Stream is disabled 
+ 464:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *        while a data transfer is ongoing, the current data will be transferred
+ 465:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *        and the Stream will be effectively disabled only after the transfer of
+ 466:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *        this single data is finished.            
+ 467:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *    
+ 468:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @retval None
+ 469:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   */
+ 470:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** void DMA_Cmd(DMA_Stream_TypeDef* DMAy_Streamx, FunctionalState NewState)
+ 471:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** {
+ 519              		.loc 1 471 0
+ 520              		.cfi_startproc
+ 521              		@ args = 0, pretend = 0, frame = 8
+ 522              		@ frame_needed = 1, uses_anonymous_args = 0
+ 523              		@ link register save eliminated.
+ 524 0000 80B4     		push	{r7}
+ 525              	.LCFI9:
+ 526              		.cfi_def_cfa_offset 4
+ 527              		.cfi_offset 7, -4
+ 528 0002 83B0     		sub	sp, sp, #12
+ 529              	.LCFI10:
+ 530              		.cfi_def_cfa_offset 16
+ 531 0004 00AF     		add	r7, sp, #0
+ 532              	.LCFI11:
+ 533              		.cfi_def_cfa_register 7
+ 534 0006 7860     		str	r0, [r7, #4]
+ 535 0008 0B46     		mov	r3, r1
+ 536 000a FB70     		strb	r3, [r7, #3]
+ 472:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Check the parameters */
+ 473:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+ 474:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
+ 475:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 476:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   if (NewState != DISABLE)
+ 537              		.loc 1 476 0
+ 538 000c FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
+ 539 000e 002B     		cmp	r3, #0
+ 540 0010 06D0     		beq	.L25
+ 477:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 478:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Enable the selected DMAy Streamx by setting EN bit */
+ 479:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMAy_Streamx->CR |= (uint32_t)DMA_SxCR_EN;
+ 541              		.loc 1 479 0
+ 542 0012 7B68     		ldr	r3, [r7, #4]
+ 543 0014 1B68     		ldr	r3, [r3]
+ 544 0016 43F00102 		orr	r2, r3, #1
+ 545 001a 7B68     		ldr	r3, [r7, #4]
+ 546 001c 1A60     		str	r2, [r3]
+ 547 001e 05E0     		b	.L24
+ 548              	.L25:
+ 480:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+ 481:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else
+ 482:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 483:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Disable the selected DMAy Streamx by clearing EN bit */
+ 484:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMAy_Streamx->CR &= ~(uint32_t)DMA_SxCR_EN;
+ 549              		.loc 1 484 0
+ 550 0020 7B68     		ldr	r3, [r7, #4]
+ 551 0022 1B68     		ldr	r3, [r3]
+ 552 0024 23F00102 		bic	r2, r3, #1
+ 553 0028 7B68     		ldr	r3, [r7, #4]
+ 554 002a 1A60     		str	r2, [r3]
+ 555              	.L24:
+ 485:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+ 486:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** }
+ 556              		.loc 1 486 0
+ 557 002c 0C37     		adds	r7, r7, #12
+ 558 002e BD46     		mov	sp, r7
+ 559              		@ sp needed
+ 560 0030 5DF8047B 		ldr	r7, [sp], #4
+ 561 0034 7047     		bx	lr
+ 562              		.cfi_endproc
+ 563              	.LFE113:
+ 565 0036 00BF     		.section	.text.DMA_PeriphIncOffsetSizeConfig,"ax",%progbits
+ 566              		.align	2
+ 567              		.global	DMA_PeriphIncOffsetSizeConfig
+ 568              		.thumb
+ 569              		.thumb_func
+ 571              	DMA_PeriphIncOffsetSizeConfig:
+ 572              	.LFB114:
+ 487:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 488:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /**
+ 489:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @brief  Configures, when the PINC (Peripheral Increment address mode) bit is
+ 490:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         set, if the peripheral address should be incremented with the data 
+ 491:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         size (configured with PSIZE bits) or by a fixed offset equal to 4
+ 492:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         (32-bit aligned addresses).
+ 493:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *   
+ 494:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @note   This function has no effect if the Peripheral Increment mode is disabled.
+ 495:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *     
+ 496:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+ 497:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          to 7 to select the DMA Stream.
+ 498:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  DMA_Pincos: specifies the Peripheral increment offset size.
+ 499:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          This parameter can be one of the following values:
+ 500:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_PINCOS_Psize: Peripheral address increment is done  
+ 501:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *                                   accordingly to PSIZE parameter.
+ 502:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_PINCOS_WordAligned: Peripheral address increment offset is 
+ 503:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *                                         fixed to 4 (32-bit aligned addresses). 
+ 504:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @retval None
+ 505:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   */
+ 506:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** void DMA_PeriphIncOffsetSizeConfig(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_Pincos)
+ 507:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** {
+ 573              		.loc 1 507 0
+ 574              		.cfi_startproc
+ 575              		@ args = 0, pretend = 0, frame = 8
+ 576              		@ frame_needed = 1, uses_anonymous_args = 0
+ 577              		@ link register save eliminated.
+ 578 0000 80B4     		push	{r7}
+ 579              	.LCFI12:
+ 580              		.cfi_def_cfa_offset 4
+ 581              		.cfi_offset 7, -4
+ 582 0002 83B0     		sub	sp, sp, #12
+ 583              	.LCFI13:
+ 584              		.cfi_def_cfa_offset 16
+ 585 0004 00AF     		add	r7, sp, #0
+ 586              	.LCFI14:
+ 587              		.cfi_def_cfa_register 7
+ 588 0006 7860     		str	r0, [r7, #4]
+ 589 0008 3960     		str	r1, [r7]
+ 508:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Check the parameters */
+ 509:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+ 510:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_PINCOS_SIZE(DMA_Pincos));
+ 511:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 512:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Check the needed Peripheral increment offset */
+ 513:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   if(DMA_Pincos != DMA_PINCOS_Psize)
+ 590              		.loc 1 513 0
+ 591 000a 3B68     		ldr	r3, [r7]
+ 592 000c 002B     		cmp	r3, #0
+ 593 000e 06D0     		beq	.L28
+ 514:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 515:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Configure DMA_SxCR_PINCOS bit with the input parameter */
+ 516:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMAy_Streamx->CR |= (uint32_t)DMA_SxCR_PINCOS;     
+ 594              		.loc 1 516 0
+ 595 0010 7B68     		ldr	r3, [r7, #4]
+ 596 0012 1B68     		ldr	r3, [r3]
+ 597 0014 43F40042 		orr	r2, r3, #32768
+ 598 0018 7B68     		ldr	r3, [r7, #4]
+ 599 001a 1A60     		str	r2, [r3]
+ 600 001c 05E0     		b	.L27
+ 601              	.L28:
+ 517:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+ 518:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else
+ 519:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 520:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Clear the PINCOS bit: Peripheral address incremented according to PSIZE */
+ 521:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMAy_Streamx->CR &= ~(uint32_t)DMA_SxCR_PINCOS;    
+ 602              		.loc 1 521 0
+ 603 001e 7B68     		ldr	r3, [r7, #4]
+ 604 0020 1B68     		ldr	r3, [r3]
+ 605 0022 23F40042 		bic	r2, r3, #32768
+ 606 0026 7B68     		ldr	r3, [r7, #4]
+ 607 0028 1A60     		str	r2, [r3]
+ 608              	.L27:
+ 522:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+ 523:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** }
+ 609              		.loc 1 523 0
+ 610 002a 0C37     		adds	r7, r7, #12
+ 611 002c BD46     		mov	sp, r7
+ 612              		@ sp needed
+ 613 002e 5DF8047B 		ldr	r7, [sp], #4
+ 614 0032 7047     		bx	lr
+ 615              		.cfi_endproc
+ 616              	.LFE114:
+ 618              		.section	.text.DMA_FlowControllerConfig,"ax",%progbits
+ 619              		.align	2
+ 620              		.global	DMA_FlowControllerConfig
+ 621              		.thumb
+ 622              		.thumb_func
+ 624              	DMA_FlowControllerConfig:
+ 625              	.LFB115:
+ 524:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 525:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /**
+ 526:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @brief  Configures, when the DMAy Streamx is disabled, the flow controller for
+ 527:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         the next transactions (Peripheral or Memory).
+ 528:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *       
+ 529:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @note   Before enabling this feature, check if the used peripheral supports 
+ 530:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         the Flow Controller mode or not.    
+ 531:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *  
+ 532:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+ 533:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          to 7 to select the DMA Stream.
+ 534:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  DMA_FlowCtrl: specifies the DMA flow controller.
+ 535:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          This parameter can be one of the following values:
+ 536:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_FlowCtrl_Memory: DMAy_Streamx transactions flow controller is 
+ 537:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *                                      the DMA controller.
+ 538:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_FlowCtrl_Peripheral: DMAy_Streamx transactions flow controller 
+ 539:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *                                          is the peripheral.    
+ 540:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @retval None
+ 541:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   */
+ 542:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** void DMA_FlowControllerConfig(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_FlowCtrl)
+ 543:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** {
+ 626              		.loc 1 543 0
+ 627              		.cfi_startproc
+ 628              		@ args = 0, pretend = 0, frame = 8
+ 629              		@ frame_needed = 1, uses_anonymous_args = 0
+ 630              		@ link register save eliminated.
+ 631 0000 80B4     		push	{r7}
+ 632              	.LCFI15:
+ 633              		.cfi_def_cfa_offset 4
+ 634              		.cfi_offset 7, -4
+ 635 0002 83B0     		sub	sp, sp, #12
+ 636              	.LCFI16:
+ 637              		.cfi_def_cfa_offset 16
+ 638 0004 00AF     		add	r7, sp, #0
+ 639              	.LCFI17:
+ 640              		.cfi_def_cfa_register 7
+ 641 0006 7860     		str	r0, [r7, #4]
+ 642 0008 3960     		str	r1, [r7]
+ 544:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Check the parameters */
+ 545:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+ 546:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_FLOW_CTRL(DMA_FlowCtrl));
+ 547:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 548:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Check the needed flow controller  */
+ 549:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   if(DMA_FlowCtrl != DMA_FlowCtrl_Memory)
+ 643              		.loc 1 549 0
+ 644 000a 3B68     		ldr	r3, [r7]
+ 645 000c 002B     		cmp	r3, #0
+ 646 000e 06D0     		beq	.L31
+ 550:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 551:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Configure DMA_SxCR_PFCTRL bit with the input parameter */
+ 552:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMAy_Streamx->CR |= (uint32_t)DMA_SxCR_PFCTRL;   
+ 647              		.loc 1 552 0
+ 648 0010 7B68     		ldr	r3, [r7, #4]
+ 649 0012 1B68     		ldr	r3, [r3]
+ 650 0014 43F02002 		orr	r2, r3, #32
+ 651 0018 7B68     		ldr	r3, [r7, #4]
+ 652 001a 1A60     		str	r2, [r3]
+ 653 001c 05E0     		b	.L30
+ 654              	.L31:
+ 553:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+ 554:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else
+ 555:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 556:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Clear the PFCTRL bit: Memory is the flow controller */
+ 557:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMAy_Streamx->CR &= ~(uint32_t)DMA_SxCR_PFCTRL;    
+ 655              		.loc 1 557 0
+ 656 001e 7B68     		ldr	r3, [r7, #4]
+ 657 0020 1B68     		ldr	r3, [r3]
+ 658 0022 23F02002 		bic	r2, r3, #32
+ 659 0026 7B68     		ldr	r3, [r7, #4]
+ 660 0028 1A60     		str	r2, [r3]
+ 661              	.L30:
+ 558:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+ 559:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** }
+ 662              		.loc 1 559 0
+ 663 002a 0C37     		adds	r7, r7, #12
+ 664 002c BD46     		mov	sp, r7
+ 665              		@ sp needed
+ 666 002e 5DF8047B 		ldr	r7, [sp], #4
+ 667 0032 7047     		bx	lr
+ 668              		.cfi_endproc
+ 669              	.LFE115:
+ 671              		.section	.text.DMA_SetCurrDataCounter,"ax",%progbits
+ 672              		.align	2
+ 673              		.global	DMA_SetCurrDataCounter
+ 674              		.thumb
+ 675              		.thumb_func
+ 677              	DMA_SetCurrDataCounter:
+ 678              	.LFB116:
+ 560:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /**
+ 561:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @}
+ 562:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   */
+ 563:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 564:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /** @defgroup DMA_Group2 Data Counter functions
+ 565:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****  *  @brief   Data Counter functions 
+ 566:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****  *
+ 567:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** @verbatim   
+ 568:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****  ===============================================================================
+ 569:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****                            Data Counter functions
+ 570:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****  ===============================================================================  
+ 571:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 572:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   This subsection provides function allowing to configure and read the buffer size
+ 573:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   (number of data to be transferred). 
+ 574:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 575:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   The DMA data counter can be written only when the DMA Stream is disabled 
+ 576:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   (ie. after transfer complete event).
+ 577:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 578:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   The following function can be used to write the Stream data counter value:
+ 579:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     - void DMA_SetCurrDataCounter(DMA_Stream_TypeDef* DMAy_Streamx, uint16_t Counter);
+ 580:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 581:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** @note It is advised to use this function rather than DMA_Init() in situations where
+ 582:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****       only the Data buffer needs to be reloaded.
+ 583:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 584:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** @note If the Source and Destination Data Sizes are different, then the value written in
+ 585:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****       data counter, expressing the number of transfers, is relative to the number of 
+ 586:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****       transfers from the Peripheral point of view.
+ 587:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****       ie. If Memory data size is Word, Peripheral data size is Half-Words, then the value
+ 588:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****       to be configured in the data counter is the number of Half-Words to be transferred
+ 589:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****       from/to the peripheral.
+ 590:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 591:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   The DMA data counter can be read to indicate the number of remaining transfers for
+ 592:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   the relative DMA Stream. This counter is decremented at the end of each data 
+ 593:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   transfer and when the transfer is complete: 
+ 594:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****    - If Normal mode is selected: the counter is set to 0.
+ 595:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****    - If Circular mode is selected: the counter is reloaded with the initial value
+ 596:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****      (configured before enabling the DMA Stream)
+ 597:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****    
+ 598:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   The following function can be used to read the Stream data counter value:
+ 599:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****      - uint16_t DMA_GetCurrDataCounter(DMA_Stream_TypeDef* DMAy_Streamx);
+ 600:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 601:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** @endverbatim
+ 602:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @{
+ 603:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   */
+ 604:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 605:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /**
+ 606:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @brief  Writes the number of data units to be transferred on the DMAy Streamx.
+ 607:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+ 608:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          to 7 to select the DMA Stream.
+ 609:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  Counter: Number of data units to be transferred (from 0 to 65535) 
+ 610:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          Number of data items depends only on the Peripheral data format.
+ 611:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            
+ 612:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @note   If Peripheral data format is Bytes: number of data units is equal 
+ 613:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         to total number of bytes to be transferred.
+ 614:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *           
+ 615:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @note   If Peripheral data format is Half-Word: number of data units is  
+ 616:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         equal to total number of bytes to be transferred / 2.
+ 617:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *           
+ 618:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @note   If Peripheral data format is Word: number of data units is equal 
+ 619:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         to total  number of bytes to be transferred / 4.
+ 620:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *      
+ 621:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @note   In Memory-to-Memory transfer mode, the memory buffer pointed by 
+ 622:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         DMAy_SxPAR register is considered as Peripheral.
+ 623:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *      
+ 624:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @retval The number of remaining data units in the current DMAy Streamx transfer.
+ 625:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   */
+ 626:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** void DMA_SetCurrDataCounter(DMA_Stream_TypeDef* DMAy_Streamx, uint16_t Counter)
+ 627:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** {
+ 679              		.loc 1 627 0
+ 680              		.cfi_startproc
+ 681              		@ args = 0, pretend = 0, frame = 8
+ 682              		@ frame_needed = 1, uses_anonymous_args = 0
+ 683              		@ link register save eliminated.
+ 684 0000 80B4     		push	{r7}
+ 685              	.LCFI18:
+ 686              		.cfi_def_cfa_offset 4
+ 687              		.cfi_offset 7, -4
+ 688 0002 83B0     		sub	sp, sp, #12
+ 689              	.LCFI19:
+ 690              		.cfi_def_cfa_offset 16
+ 691 0004 00AF     		add	r7, sp, #0
+ 692              	.LCFI20:
+ 693              		.cfi_def_cfa_register 7
+ 694 0006 7860     		str	r0, [r7, #4]
+ 695 0008 0B46     		mov	r3, r1
+ 696 000a 7B80     		strh	r3, [r7, #2]	@ movhi
+ 628:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Check the parameters */
+ 629:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+ 630:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 631:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Write the number of data units to be transferred */
+ 632:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMAy_Streamx->NDTR = (uint16_t)Counter;
+ 697              		.loc 1 632 0
+ 698 000c 7A88     		ldrh	r2, [r7, #2]
+ 699 000e 7B68     		ldr	r3, [r7, #4]
+ 700 0010 5A60     		str	r2, [r3, #4]
+ 633:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** }
+ 701              		.loc 1 633 0
+ 702 0012 0C37     		adds	r7, r7, #12
+ 703 0014 BD46     		mov	sp, r7
+ 704              		@ sp needed
+ 705 0016 5DF8047B 		ldr	r7, [sp], #4
+ 706 001a 7047     		bx	lr
+ 707              		.cfi_endproc
+ 708              	.LFE116:
+ 710              		.section	.text.DMA_GetCurrDataCounter,"ax",%progbits
+ 711              		.align	2
+ 712              		.global	DMA_GetCurrDataCounter
+ 713              		.thumb
+ 714              		.thumb_func
+ 716              	DMA_GetCurrDataCounter:
+ 717              	.LFB117:
+ 634:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 635:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /**
+ 636:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @brief  Returns the number of remaining data units in the current DMAy Streamx transfer.
+ 637:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+ 638:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          to 7 to select the DMA Stream.
+ 639:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @retval The number of remaining data units in the current DMAy Streamx transfer.
+ 640:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   */
+ 641:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** uint16_t DMA_GetCurrDataCounter(DMA_Stream_TypeDef* DMAy_Streamx)
+ 642:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** {
+ 718              		.loc 1 642 0
+ 719              		.cfi_startproc
+ 720              		@ args = 0, pretend = 0, frame = 8
+ 721              		@ frame_needed = 1, uses_anonymous_args = 0
+ 722              		@ link register save eliminated.
+ 723 0000 80B4     		push	{r7}
+ 724              	.LCFI21:
+ 725              		.cfi_def_cfa_offset 4
+ 726              		.cfi_offset 7, -4
+ 727 0002 83B0     		sub	sp, sp, #12
+ 728              	.LCFI22:
+ 729              		.cfi_def_cfa_offset 16
+ 730 0004 00AF     		add	r7, sp, #0
+ 731              	.LCFI23:
+ 732              		.cfi_def_cfa_register 7
+ 733 0006 7860     		str	r0, [r7, #4]
+ 643:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Check the parameters */
+ 644:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+ 645:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 646:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Return the number of remaining data units for DMAy Streamx */
+ 647:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   return ((uint16_t)(DMAy_Streamx->NDTR));
+ 734              		.loc 1 647 0
+ 735 0008 7B68     		ldr	r3, [r7, #4]
+ 736 000a 5B68     		ldr	r3, [r3, #4]
+ 737 000c 9BB2     		uxth	r3, r3
+ 648:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** }
+ 738              		.loc 1 648 0
+ 739 000e 1846     		mov	r0, r3
+ 740 0010 0C37     		adds	r7, r7, #12
+ 741 0012 BD46     		mov	sp, r7
+ 742              		@ sp needed
+ 743 0014 5DF8047B 		ldr	r7, [sp], #4
+ 744 0018 7047     		bx	lr
+ 745              		.cfi_endproc
+ 746              	.LFE117:
+ 748 001a 00BF     		.section	.text.DMA_DoubleBufferModeConfig,"ax",%progbits
+ 749              		.align	2
+ 750              		.global	DMA_DoubleBufferModeConfig
+ 751              		.thumb
+ 752              		.thumb_func
+ 754              	DMA_DoubleBufferModeConfig:
+ 755              	.LFB118:
+ 649:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /**
+ 650:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @}
+ 651:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   */
+ 652:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 653:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /** @defgroup DMA_Group3 Double Buffer mode functions
+ 654:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****  *  @brief   Double Buffer mode functions 
+ 655:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****  *
+ 656:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** @verbatim   
+ 657:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****  ===============================================================================
+ 658:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****                          Double Buffer mode functions
+ 659:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****  ===============================================================================  
+ 660:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 661:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   This subsection provides function allowing to configure and control the double 
+ 662:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   buffer mode parameters.
+ 663:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   
+ 664:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   The Double Buffer mode can be used only when Circular mode is enabled.
+ 665:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   The Double Buffer mode cannot be used when transferring data from Memory to Memory.
+ 666:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   
+ 667:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   The Double Buffer mode allows to set two different Memory addresses from/to which
+ 668:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   the DMA controller will access alternatively (after completing transfer to/from target
+ 669:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   memory 0, it will start transfer to/from target memory 1).
+ 670:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   This allows to reduce software overhead for double buffering and reduce the CPU
+ 671:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   access time.
+ 672:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 673:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   Two functions must be called before calling the DMA_Init() function:
+ 674:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****    - void DMA_DoubleBufferModeConfig(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t Memory1BaseAddr,
+ 675:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****                                 uint32_t DMA_CurrentMemory);
+ 676:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****    - void DMA_DoubleBufferModeCmd(DMA_Stream_TypeDef* DMAy_Streamx, FunctionalState NewState);
+ 677:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****    
+ 678:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMA_DoubleBufferModeConfig() is called to configure the Memory 1 base address and the first
+ 679:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   Memory target from/to which the transfer will start after enabling the DMA Stream.
+ 680:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   Then DMA_DoubleBufferModeCmd() must be called to enable the Double Buffer mode (or disable 
+ 681:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   it when it should not be used).
+ 682:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   
+ 683:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****    
+ 684:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   Two functions can be called dynamically when the transfer is ongoing (or when the DMA Stream is 
+ 685:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   stopped) to modify on of the target Memories addresses or to check wich Memory target is currentl
+ 686:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****    used:
+ 687:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     - void DMA_MemoryTargetConfig(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t MemoryBaseAddr,
+ 688:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****                             uint32_t DMA_MemoryTarget);
+ 689:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     - uint32_t DMA_GetCurrentMemoryTarget(DMA_Stream_TypeDef* DMAy_Streamx);
+ 690:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 691:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMA_MemoryTargetConfig() can be called to modify the base address of one of the two target Memori
+ 692:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   The Memory of which the base address will be modified must not be currently be used by the DMA St
+ 693:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   (ie. if the DMA Stream is currently transferring from Memory 1 then you can only modify base addr
+ 694:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   of target Memory 0 and vice versa).
+ 695:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   To check this condition, it is recommended to use the function DMA_GetCurrentMemoryTarget() which
+ 696:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   returns the index of the Memory target currently in use by the DMA Stream.
+ 697:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 698:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** @endverbatim
+ 699:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @{
+ 700:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   */
+ 701:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   
+ 702:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /**
+ 703:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @brief  Configures, when the DMAy Streamx is disabled, the double buffer mode 
+ 704:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         and the current memory target.
+ 705:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+ 706:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          to 7 to select the DMA Stream.
+ 707:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  Memory1BaseAddr: the base address of the second buffer (Memory 1)  
+ 708:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  DMA_CurrentMemory: specifies which memory will be first buffer for
+ 709:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         the transactions when the Stream will be enabled. 
+ 710:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          This parameter can be one of the following values:
+ 711:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_Memory_0: Memory 0 is the current buffer.
+ 712:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_Memory_1: Memory 1 is the current buffer.  
+ 713:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *       
+ 714:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @note   Memory0BaseAddr is set by the DMA structure configuration in DMA_Init().
+ 715:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *   
+ 716:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @retval None
+ 717:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   */
+ 718:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** void DMA_DoubleBufferModeConfig(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t Memory1BaseAddr,
+ 719:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****                                 uint32_t DMA_CurrentMemory)
+ 720:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** {  
+ 756              		.loc 1 720 0
+ 757              		.cfi_startproc
+ 758              		@ args = 0, pretend = 0, frame = 16
+ 759              		@ frame_needed = 1, uses_anonymous_args = 0
+ 760              		@ link register save eliminated.
+ 761 0000 80B4     		push	{r7}
+ 762              	.LCFI24:
+ 763              		.cfi_def_cfa_offset 4
+ 764              		.cfi_offset 7, -4
+ 765 0002 85B0     		sub	sp, sp, #20
+ 766              	.LCFI25:
+ 767              		.cfi_def_cfa_offset 24
+ 768 0004 00AF     		add	r7, sp, #0
+ 769              	.LCFI26:
+ 770              		.cfi_def_cfa_register 7
+ 771 0006 F860     		str	r0, [r7, #12]
+ 772 0008 B960     		str	r1, [r7, #8]
+ 773 000a 7A60     		str	r2, [r7, #4]
+ 721:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Check the parameters */
+ 722:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+ 723:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_CURRENT_MEM(DMA_CurrentMemory));
+ 724:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 725:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   if (DMA_CurrentMemory != DMA_Memory_0)
+ 774              		.loc 1 725 0
+ 775 000c 7B68     		ldr	r3, [r7, #4]
+ 776 000e 002B     		cmp	r3, #0
+ 777 0010 06D0     		beq	.L37
+ 726:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 727:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Set Memory 1 as current memory address */
+ 728:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMAy_Streamx->CR |= (uint32_t)(DMA_SxCR_CT);    
+ 778              		.loc 1 728 0
+ 779 0012 FB68     		ldr	r3, [r7, #12]
+ 780 0014 1B68     		ldr	r3, [r3]
+ 781 0016 43F40022 		orr	r2, r3, #524288
+ 782 001a FB68     		ldr	r3, [r7, #12]
+ 783 001c 1A60     		str	r2, [r3]
+ 784 001e 05E0     		b	.L38
+ 785              	.L37:
+ 729:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+ 730:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else
+ 731:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 732:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Set Memory 0 as current memory address */
+ 733:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMAy_Streamx->CR &= ~(uint32_t)(DMA_SxCR_CT);    
+ 786              		.loc 1 733 0
+ 787 0020 FB68     		ldr	r3, [r7, #12]
+ 788 0022 1B68     		ldr	r3, [r3]
+ 789 0024 23F40022 		bic	r2, r3, #524288
+ 790 0028 FB68     		ldr	r3, [r7, #12]
+ 791 002a 1A60     		str	r2, [r3]
+ 792              	.L38:
+ 734:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+ 735:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 736:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Write to DMAy Streamx M1AR */
+ 737:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMAy_Streamx->M1AR = Memory1BaseAddr;
+ 793              		.loc 1 737 0
+ 794 002c FB68     		ldr	r3, [r7, #12]
+ 795 002e BA68     		ldr	r2, [r7, #8]
+ 796 0030 1A61     		str	r2, [r3, #16]
+ 738:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** }
+ 797              		.loc 1 738 0
+ 798 0032 1437     		adds	r7, r7, #20
+ 799 0034 BD46     		mov	sp, r7
+ 800              		@ sp needed
+ 801 0036 5DF8047B 		ldr	r7, [sp], #4
+ 802 003a 7047     		bx	lr
+ 803              		.cfi_endproc
+ 804              	.LFE118:
+ 806              		.section	.text.DMA_DoubleBufferModeCmd,"ax",%progbits
+ 807              		.align	2
+ 808              		.global	DMA_DoubleBufferModeCmd
+ 809              		.thumb
+ 810              		.thumb_func
+ 812              	DMA_DoubleBufferModeCmd:
+ 813              	.LFB119:
+ 739:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 740:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /**
+ 741:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @brief  Enables or disables the double buffer mode for the selected DMA stream.
+ 742:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @note   This function can be called only when the DMA Stream is disabled.  
+ 743:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+ 744:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          to 7 to select the DMA Stream.
+ 745:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  NewState: new state of the DMAy Streamx double buffer mode. 
+ 746:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          This parameter can be: ENABLE or DISABLE.
+ 747:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @retval None
+ 748:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   */
+ 749:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** void DMA_DoubleBufferModeCmd(DMA_Stream_TypeDef* DMAy_Streamx, FunctionalState NewState)
+ 750:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** {  
+ 814              		.loc 1 750 0
+ 815              		.cfi_startproc
+ 816              		@ args = 0, pretend = 0, frame = 8
+ 817              		@ frame_needed = 1, uses_anonymous_args = 0
+ 818              		@ link register save eliminated.
+ 819 0000 80B4     		push	{r7}
+ 820              	.LCFI27:
+ 821              		.cfi_def_cfa_offset 4
+ 822              		.cfi_offset 7, -4
+ 823 0002 83B0     		sub	sp, sp, #12
+ 824              	.LCFI28:
+ 825              		.cfi_def_cfa_offset 16
+ 826 0004 00AF     		add	r7, sp, #0
+ 827              	.LCFI29:
+ 828              		.cfi_def_cfa_register 7
+ 829 0006 7860     		str	r0, [r7, #4]
+ 830 0008 0B46     		mov	r3, r1
+ 831 000a FB70     		strb	r3, [r7, #3]
+ 751:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Check the parameters */
+ 752:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+ 753:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
+ 754:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 755:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Configure the Double Buffer mode */
+ 756:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   if (NewState != DISABLE)
+ 832              		.loc 1 756 0
+ 833 000c FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
+ 834 000e 002B     		cmp	r3, #0
+ 835 0010 06D0     		beq	.L40
+ 757:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 758:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Enable the Double buffer mode */
+ 759:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMAy_Streamx->CR |= (uint32_t)DMA_SxCR_DBM;
+ 836              		.loc 1 759 0
+ 837 0012 7B68     		ldr	r3, [r7, #4]
+ 838 0014 1B68     		ldr	r3, [r3]
+ 839 0016 43F48022 		orr	r2, r3, #262144
+ 840 001a 7B68     		ldr	r3, [r7, #4]
+ 841 001c 1A60     		str	r2, [r3]
+ 842 001e 05E0     		b	.L39
+ 843              	.L40:
+ 760:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+ 761:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else
+ 762:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 763:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Disable the Double buffer mode */
+ 764:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMAy_Streamx->CR &= ~(uint32_t)DMA_SxCR_DBM;
+ 844              		.loc 1 764 0
+ 845 0020 7B68     		ldr	r3, [r7, #4]
+ 846 0022 1B68     		ldr	r3, [r3]
+ 847 0024 23F48022 		bic	r2, r3, #262144
+ 848 0028 7B68     		ldr	r3, [r7, #4]
+ 849 002a 1A60     		str	r2, [r3]
+ 850              	.L39:
+ 765:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+ 766:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** }
+ 851              		.loc 1 766 0
+ 852 002c 0C37     		adds	r7, r7, #12
+ 853 002e BD46     		mov	sp, r7
+ 854              		@ sp needed
+ 855 0030 5DF8047B 		ldr	r7, [sp], #4
+ 856 0034 7047     		bx	lr
+ 857              		.cfi_endproc
+ 858              	.LFE119:
+ 860 0036 00BF     		.section	.text.DMA_MemoryTargetConfig,"ax",%progbits
+ 861              		.align	2
+ 862              		.global	DMA_MemoryTargetConfig
+ 863              		.thumb
+ 864              		.thumb_func
+ 866              	DMA_MemoryTargetConfig:
+ 867              	.LFB120:
+ 767:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 768:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /**
+ 769:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @brief  Configures the Memory address for the next buffer transfer in double
+ 770:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         buffer mode (for dynamic use). This function can be called when the
+ 771:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         DMA Stream is enabled and when the transfer is ongoing.  
+ 772:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+ 773:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          to 7 to select the DMA Stream.
+ 774:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  MemoryBaseAddr: The base address of the target memory buffer
+ 775:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  DMA_MemoryTarget: Next memory target to be used. 
+ 776:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         This parameter can be one of the following values:
+ 777:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_Memory_0: To use the memory address 0
+ 778:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_Memory_1: To use the memory address 1
+ 779:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * 
+ 780:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @note    It is not allowed to modify the Base Address of a target Memory when
+ 781:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          this target is involved in the current transfer. ie. If the DMA Stream
+ 782:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          is currently transferring to/from Memory 1, then it not possible to
+ 783:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          modify Base address of Memory 1, but it is possible to modify Base
+ 784:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          address of Memory 0.
+ 785:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          To know which Memory is currently used, you can use the function
+ 786:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          DMA_GetCurrentMemoryTarget().             
+ 787:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *  
+ 788:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @retval None
+ 789:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   */
+ 790:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** void DMA_MemoryTargetConfig(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t MemoryBaseAddr,
+ 791:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****                            uint32_t DMA_MemoryTarget)
+ 792:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** {
+ 868              		.loc 1 792 0
+ 869              		.cfi_startproc
+ 870              		@ args = 0, pretend = 0, frame = 16
+ 871              		@ frame_needed = 1, uses_anonymous_args = 0
+ 872              		@ link register save eliminated.
+ 873 0000 80B4     		push	{r7}
+ 874              	.LCFI30:
+ 875              		.cfi_def_cfa_offset 4
+ 876              		.cfi_offset 7, -4
+ 877 0002 85B0     		sub	sp, sp, #20
+ 878              	.LCFI31:
+ 879              		.cfi_def_cfa_offset 24
+ 880 0004 00AF     		add	r7, sp, #0
+ 881              	.LCFI32:
+ 882              		.cfi_def_cfa_register 7
+ 883 0006 F860     		str	r0, [r7, #12]
+ 884 0008 B960     		str	r1, [r7, #8]
+ 885 000a 7A60     		str	r2, [r7, #4]
+ 793:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Check the parameters */
+ 794:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+ 795:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_CURRENT_MEM(DMA_MemoryTarget));
+ 796:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     
+ 797:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Check the Memory target to be configured */
+ 798:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   if (DMA_MemoryTarget != DMA_Memory_0)
+ 886              		.loc 1 798 0
+ 887 000c 7B68     		ldr	r3, [r7, #4]
+ 888 000e 002B     		cmp	r3, #0
+ 889 0010 03D0     		beq	.L43
+ 799:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 800:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Write to DMAy Streamx M1AR */
+ 801:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMAy_Streamx->M1AR = MemoryBaseAddr;    
+ 890              		.loc 1 801 0
+ 891 0012 FB68     		ldr	r3, [r7, #12]
+ 892 0014 BA68     		ldr	r2, [r7, #8]
+ 893 0016 1A61     		str	r2, [r3, #16]
+ 894 0018 02E0     		b	.L42
+ 895              	.L43:
+ 802:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }  
+ 803:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else
+ 804:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 805:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Write to DMAy Streamx M0AR */
+ 806:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMAy_Streamx->M0AR = MemoryBaseAddr;  
+ 896              		.loc 1 806 0
+ 897 001a FB68     		ldr	r3, [r7, #12]
+ 898 001c BA68     		ldr	r2, [r7, #8]
+ 899 001e DA60     		str	r2, [r3, #12]
+ 900              	.L42:
+ 807:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+ 808:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** }
+ 901              		.loc 1 808 0
+ 902 0020 1437     		adds	r7, r7, #20
+ 903 0022 BD46     		mov	sp, r7
+ 904              		@ sp needed
+ 905 0024 5DF8047B 		ldr	r7, [sp], #4
+ 906 0028 7047     		bx	lr
+ 907              		.cfi_endproc
+ 908              	.LFE120:
+ 910 002a 00BF     		.section	.text.DMA_GetCurrentMemoryTarget,"ax",%progbits
+ 911              		.align	2
+ 912              		.global	DMA_GetCurrentMemoryTarget
+ 913              		.thumb
+ 914              		.thumb_func
+ 916              	DMA_GetCurrentMemoryTarget:
+ 917              	.LFB121:
+ 809:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 810:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /**
+ 811:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @brief  Returns the current memory target used by double buffer transfer.
+ 812:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+ 813:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          to 7 to select the DMA Stream.
+ 814:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @retval The memory target number: 0 for Memory0 or 1 for Memory1. 
+ 815:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   */
+ 816:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** uint32_t DMA_GetCurrentMemoryTarget(DMA_Stream_TypeDef* DMAy_Streamx)
+ 817:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** {
+ 918              		.loc 1 817 0
+ 919              		.cfi_startproc
+ 920              		@ args = 0, pretend = 0, frame = 16
+ 921              		@ frame_needed = 1, uses_anonymous_args = 0
+ 922              		@ link register save eliminated.
+ 923 0000 80B4     		push	{r7}
+ 924              	.LCFI33:
+ 925              		.cfi_def_cfa_offset 4
+ 926              		.cfi_offset 7, -4
+ 927 0002 85B0     		sub	sp, sp, #20
+ 928              	.LCFI34:
+ 929              		.cfi_def_cfa_offset 24
+ 930 0004 00AF     		add	r7, sp, #0
+ 931              	.LCFI35:
+ 932              		.cfi_def_cfa_register 7
+ 933 0006 7860     		str	r0, [r7, #4]
+ 818:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   uint32_t tmp = 0;
+ 934              		.loc 1 818 0
+ 935 0008 0023     		movs	r3, #0
+ 936 000a FB60     		str	r3, [r7, #12]
+ 819:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   
+ 820:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Check the parameters */
+ 821:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+ 822:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 823:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Get the current memory target */
+ 824:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   if ((DMAy_Streamx->CR & DMA_SxCR_CT) != 0)
+ 937              		.loc 1 824 0
+ 938 000c 7B68     		ldr	r3, [r7, #4]
+ 939 000e 1B68     		ldr	r3, [r3]
+ 940 0010 03F40023 		and	r3, r3, #524288
+ 941 0014 002B     		cmp	r3, #0
+ 942 0016 02D0     		beq	.L46
+ 825:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 826:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Current memory buffer used is Memory 1 */
+ 827:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     tmp = 1;
+ 943              		.loc 1 827 0
+ 944 0018 0123     		movs	r3, #1
+ 945 001a FB60     		str	r3, [r7, #12]
+ 946 001c 01E0     		b	.L47
+ 947              	.L46:
+ 828:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }  
+ 829:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else
+ 830:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 831:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Current memory buffer used is Memory 0 */
+ 832:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     tmp = 0;    
+ 948              		.loc 1 832 0
+ 949 001e 0023     		movs	r3, #0
+ 950 0020 FB60     		str	r3, [r7, #12]
+ 951              	.L47:
+ 833:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+ 834:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   return tmp;
+ 952              		.loc 1 834 0
+ 953 0022 FB68     		ldr	r3, [r7, #12]
+ 835:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** }
+ 954              		.loc 1 835 0
+ 955 0024 1846     		mov	r0, r3
+ 956 0026 1437     		adds	r7, r7, #20
+ 957 0028 BD46     		mov	sp, r7
+ 958              		@ sp needed
+ 959 002a 5DF8047B 		ldr	r7, [sp], #4
+ 960 002e 7047     		bx	lr
+ 961              		.cfi_endproc
+ 962              	.LFE121:
+ 964              		.section	.text.DMA_GetCmdStatus,"ax",%progbits
+ 965              		.align	2
+ 966              		.global	DMA_GetCmdStatus
+ 967              		.thumb
+ 968              		.thumb_func
+ 970              	DMA_GetCmdStatus:
+ 971              	.LFB122:
+ 836:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /**
+ 837:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @}
+ 838:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   */
+ 839:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 840:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /** @defgroup DMA_Group4 Interrupts and flags management functions
+ 841:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****  *  @brief   Interrupts and flags management functions 
+ 842:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****  *
+ 843:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** @verbatim   
+ 844:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****  ===============================================================================
+ 845:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****                   Interrupts and flags management functions
+ 846:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****  ===============================================================================  
+ 847:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 848:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   This subsection provides functions allowing to
+ 849:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****    - Check the DMA enable status
+ 850:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****    - Check the FIFO status 
+ 851:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****    - Configure the DMA Interrupts sources and check or clear the flags or pending bits status.   
+ 852:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****    
+ 853:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****  1. DMA Enable status:
+ 854:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****    After configuring the DMA Stream (DMA_Init() function) and enabling the stream,
+ 855:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****    it is recommended to check (or wait until) the DMA Stream is effectively enabled.
+ 856:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****    A Stream may remain disabled if a configuration parameter is wrong.
+ 857:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****    After disabling a DMA Stream, it is also recommended to check (or wait until) the DMA
+ 858:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****    Stream is effectively disabled. If a Stream is disabled while a data transfer is ongoing, 
+ 859:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****    the current data will be transferred and the Stream will be effectively disabled only after
+ 860:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****    this data transfer completion.
+ 861:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****    To monitor this state it is possible to use the following function:
+ 862:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****      - FunctionalState DMA_GetCmdStatus(DMA_Stream_TypeDef* DMAy_Streamx); 
+ 863:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****  
+ 864:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****  2. FIFO Status:
+ 865:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****    It is possible to monitor the FIFO status when a transfer is ongoing using the following 
+ 866:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****    function:
+ 867:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****      - uint32_t DMA_GetFIFOStatus(DMA_Stream_TypeDef* DMAy_Streamx); 
+ 868:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****  
+ 869:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****  3. DMA Interrupts and Flags:
+ 870:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   The user should identify which mode will be used in his application to manage the
+ 871:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMA controller events: Polling mode or Interrupt mode. 
+ 872:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     
+ 873:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   Polling Mode
+ 874:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   =============
+ 875:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     Each DMA stream can be managed through 4 event Flags:
+ 876:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     (x : DMA Stream number )
+ 877:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****        1. DMA_FLAG_FEIFx  : to indicate that a FIFO Mode Transfer Error event occurred.
+ 878:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****        2. DMA_FLAG_DMEIFx : to indicate that a Direct Mode Transfer Error event occurred.
+ 879:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****        3. DMA_FLAG_TEIFx  : to indicate that a Transfer Error event occurred.
+ 880:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****        4. DMA_FLAG_HTIFx  : to indicate that a Half-Transfer Complete event occurred.
+ 881:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****        5. DMA_FLAG_TCIFx  : to indicate that a Transfer Complete event occurred .       
+ 882:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 883:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****    In this Mode it is advised to use the following functions:
+ 884:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****       - FlagStatus DMA_GetFlagStatus(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_FLAG);
+ 885:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****       - void DMA_ClearFlag(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_FLAG);
+ 886:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 887:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   Interrupt Mode
+ 888:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   ===============
+ 889:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     Each DMA Stream can be managed through 4 Interrupts:
+ 890:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 891:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     Interrupt Source
+ 892:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     ----------------
+ 893:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****        1. DMA_IT_FEIFx  : specifies the interrupt source for the  FIFO Mode Transfer Error event.
+ 894:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****        2. DMA_IT_DMEIFx : specifies the interrupt source for the Direct Mode Transfer Error event.
+ 895:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****        3. DMA_IT_TEIFx  : specifies the interrupt source for the Transfer Error event.
+ 896:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****        4. DMA_IT_HTIFx  : specifies the interrupt source for the Half-Transfer Complete event.
+ 897:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****        5. DMA_IT_TCIFx  : specifies the interrupt source for the a Transfer Complete event. 
+ 898:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****      
+ 899:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   In this Mode it is advised to use the following functions:
+ 900:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****      - void DMA_ITConfig(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_IT, FunctionalState NewStat
+ 901:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****      - ITStatus DMA_GetITStatus(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_IT);
+ 902:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****      - void DMA_ClearITPendingBit(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_IT);
+ 903:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 904:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** @endverbatim
+ 905:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @{
+ 906:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   */
+ 907:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 908:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /**
+ 909:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @brief  Returns the status of EN bit for the specified DMAy Streamx.
+ 910:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+ 911:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          to 7 to select the DMA Stream.
+ 912:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *   
+ 913:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @note    After configuring the DMA Stream (DMA_Init() function) and enabling
+ 914:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          the stream, it is recommended to check (or wait until) the DMA Stream
+ 915:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          is effectively enabled. A Stream may remain disabled if a configuration
+ 916:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          parameter is wrong.
+ 917:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          After disabling a DMA Stream, it is also recommended to check (or wait 
+ 918:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          until) the DMA Stream is effectively disabled. If a Stream is disabled
+ 919:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          while a data transfer is ongoing, the current data will be transferred
+ 920:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          and the Stream will be effectively disabled only after the transfer
+ 921:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          of this single data is finished.  
+ 922:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *      
+ 923:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @retval Current state of the DMAy Streamx (ENABLE or DISABLE).
+ 924:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   */
+ 925:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** FunctionalState DMA_GetCmdStatus(DMA_Stream_TypeDef* DMAy_Streamx)
+ 926:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** {
+ 972              		.loc 1 926 0
+ 973              		.cfi_startproc
+ 974              		@ args = 0, pretend = 0, frame = 16
+ 975              		@ frame_needed = 1, uses_anonymous_args = 0
+ 976              		@ link register save eliminated.
+ 977 0000 80B4     		push	{r7}
+ 978              	.LCFI36:
+ 979              		.cfi_def_cfa_offset 4
+ 980              		.cfi_offset 7, -4
+ 981 0002 85B0     		sub	sp, sp, #20
+ 982              	.LCFI37:
+ 983              		.cfi_def_cfa_offset 24
+ 984 0004 00AF     		add	r7, sp, #0
+ 985              	.LCFI38:
+ 986              		.cfi_def_cfa_register 7
+ 987 0006 7860     		str	r0, [r7, #4]
+ 927:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   FunctionalState state = DISABLE;
+ 988              		.loc 1 927 0
+ 989 0008 0023     		movs	r3, #0
+ 990 000a FB73     		strb	r3, [r7, #15]
+ 928:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 929:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Check the parameters */
+ 930:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+ 931:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 932:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   if ((DMAy_Streamx->CR & (uint32_t)DMA_SxCR_EN) != 0)
+ 991              		.loc 1 932 0
+ 992 000c 7B68     		ldr	r3, [r7, #4]
+ 993 000e 1B68     		ldr	r3, [r3]
+ 994 0010 03F00103 		and	r3, r3, #1
+ 995 0014 002B     		cmp	r3, #0
+ 996 0016 02D0     		beq	.L50
+ 933:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 934:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* The selected DMAy Streamx EN bit is set (DMA is still transferring) */
+ 935:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     state = ENABLE;
+ 997              		.loc 1 935 0
+ 998 0018 0123     		movs	r3, #1
+ 999 001a FB73     		strb	r3, [r7, #15]
+ 1000 001c 01E0     		b	.L51
+ 1001              	.L50:
+ 936:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+ 937:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else
+ 938:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 939:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* The selected DMAy Streamx EN bit is cleared (DMA is disabled and 
+ 940:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****         all transfers are complete) */
+ 941:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     state = DISABLE;
+ 1002              		.loc 1 941 0
+ 1003 001e 0023     		movs	r3, #0
+ 1004 0020 FB73     		strb	r3, [r7, #15]
+ 1005              	.L51:
+ 942:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+ 943:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   return state;
+ 1006              		.loc 1 943 0
+ 1007 0022 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 944:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** }
+ 1008              		.loc 1 944 0
+ 1009 0024 1846     		mov	r0, r3
+ 1010 0026 1437     		adds	r7, r7, #20
+ 1011 0028 BD46     		mov	sp, r7
+ 1012              		@ sp needed
+ 1013 002a 5DF8047B 		ldr	r7, [sp], #4
+ 1014 002e 7047     		bx	lr
+ 1015              		.cfi_endproc
+ 1016              	.LFE122:
+ 1018              		.section	.text.DMA_GetFIFOStatus,"ax",%progbits
+ 1019              		.align	2
+ 1020              		.global	DMA_GetFIFOStatus
+ 1021              		.thumb
+ 1022              		.thumb_func
+ 1024              	DMA_GetFIFOStatus:
+ 1025              	.LFB123:
+ 945:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 946:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /**
+ 947:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @brief  Returns the current DMAy Streamx FIFO filled level.
+ 948:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0 
+ 949:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         to 7 to select the DMA Stream.
+ 950:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @retval The FIFO filling state.
+ 951:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *           - DMA_FIFOStatus_Less1QuarterFull: when FIFO is less than 1 quarter-full 
+ 952:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *                                               and not empty.
+ 953:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *           - DMA_FIFOStatus_1QuarterFull: if more than 1 quarter-full.
+ 954:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *           - DMA_FIFOStatus_HalfFull: if more than 1 half-full.
+ 955:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *           - DMA_FIFOStatus_3QuartersFull: if more than 3 quarters-full.
+ 956:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *           - DMA_FIFOStatus_Empty: when FIFO is empty
+ 957:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *           - DMA_FIFOStatus_Full: when FIFO is full
+ 958:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   */
+ 959:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** uint32_t DMA_GetFIFOStatus(DMA_Stream_TypeDef* DMAy_Streamx)
+ 960:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** {
+ 1026              		.loc 1 960 0
+ 1027              		.cfi_startproc
+ 1028              		@ args = 0, pretend = 0, frame = 16
+ 1029              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1030              		@ link register save eliminated.
+ 1031 0000 80B4     		push	{r7}
+ 1032              	.LCFI39:
+ 1033              		.cfi_def_cfa_offset 4
+ 1034              		.cfi_offset 7, -4
+ 1035 0002 85B0     		sub	sp, sp, #20
+ 1036              	.LCFI40:
+ 1037              		.cfi_def_cfa_offset 24
+ 1038 0004 00AF     		add	r7, sp, #0
+ 1039              	.LCFI41:
+ 1040              		.cfi_def_cfa_register 7
+ 1041 0006 7860     		str	r0, [r7, #4]
+ 961:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   uint32_t tmpreg = 0;
+ 1042              		.loc 1 961 0
+ 1043 0008 0023     		movs	r3, #0
+ 1044 000a FB60     		str	r3, [r7, #12]
+ 962:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****  
+ 963:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Check the parameters */
+ 964:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+ 965:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   
+ 966:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Get the FIFO level bits */
+ 967:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   tmpreg = (uint32_t)((DMAy_Streamx->FCR & DMA_SxFCR_FS));
+ 1045              		.loc 1 967 0
+ 1046 000c 7B68     		ldr	r3, [r7, #4]
+ 1047 000e 5B69     		ldr	r3, [r3, #20]
+ 1048 0010 03F03803 		and	r3, r3, #56
+ 1049 0014 FB60     		str	r3, [r7, #12]
+ 968:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   
+ 969:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   return tmpreg;
+ 1050              		.loc 1 969 0
+ 1051 0016 FB68     		ldr	r3, [r7, #12]
+ 970:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** }
+ 1052              		.loc 1 970 0
+ 1053 0018 1846     		mov	r0, r3
+ 1054 001a 1437     		adds	r7, r7, #20
+ 1055 001c BD46     		mov	sp, r7
+ 1056              		@ sp needed
+ 1057 001e 5DF8047B 		ldr	r7, [sp], #4
+ 1058 0022 7047     		bx	lr
+ 1059              		.cfi_endproc
+ 1060              	.LFE123:
+ 1062              		.section	.text.DMA_GetFlagStatus,"ax",%progbits
+ 1063              		.align	2
+ 1064              		.global	DMA_GetFlagStatus
+ 1065              		.thumb
+ 1066              		.thumb_func
+ 1068              	DMA_GetFlagStatus:
+ 1069              	.LFB124:
+ 971:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 972:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /**
+ 973:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @brief  Checks whether the specified DMAy Streamx flag is set or not.
+ 974:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+ 975:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          to 7 to select the DMA Stream.
+ 976:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  DMA_FLAG: specifies the flag to check.
+ 977:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          This parameter can be one of the following values:
+ 978:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_FLAG_TCIFx:  Streamx transfer complete flag
+ 979:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_FLAG_HTIFx:  Streamx half transfer complete flag
+ 980:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_FLAG_TEIFx:  Streamx transfer error flag
+ 981:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_FLAG_DMEIFx: Streamx direct mode error flag
+ 982:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_FLAG_FEIFx:  Streamx FIFO error flag
+ 983:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         Where x can be 0 to 7 to select the DMA Stream.
+ 984:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @retval The new state of DMA_FLAG (SET or RESET).
+ 985:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   */
+ 986:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** FlagStatus DMA_GetFlagStatus(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_FLAG)
+ 987:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** {
+ 1070              		.loc 1 987 0
+ 1071              		.cfi_startproc
+ 1072              		@ args = 0, pretend = 0, frame = 24
+ 1073              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1074              		@ link register save eliminated.
+ 1075 0000 80B4     		push	{r7}
+ 1076              	.LCFI42:
+ 1077              		.cfi_def_cfa_offset 4
+ 1078              		.cfi_offset 7, -4
+ 1079 0002 87B0     		sub	sp, sp, #28
+ 1080              	.LCFI43:
+ 1081              		.cfi_def_cfa_offset 32
+ 1082 0004 00AF     		add	r7, sp, #0
+ 1083              	.LCFI44:
+ 1084              		.cfi_def_cfa_register 7
+ 1085 0006 7860     		str	r0, [r7, #4]
+ 1086 0008 3960     		str	r1, [r7]
+ 988:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   FlagStatus bitstatus = RESET;
+ 1087              		.loc 1 988 0
+ 1088 000a 0023     		movs	r3, #0
+ 1089 000c FB75     		strb	r3, [r7, #23]
+ 989:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMA_TypeDef* DMAy;
+ 990:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   uint32_t tmpreg = 0;
+ 1090              		.loc 1 990 0
+ 1091 000e 0023     		movs	r3, #0
+ 1092 0010 FB60     		str	r3, [r7, #12]
+ 991:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 992:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Check the parameters */
+ 993:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+ 994:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_GET_FLAG(DMA_FLAG));
+ 995:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+ 996:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Determine the DMA to which belongs the stream */
+ 997:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   if (DMAy_Streamx < DMA2_Stream0)
+ 1093              		.loc 1 997 0
+ 1094 0012 7A68     		ldr	r2, [r7, #4]
+ 1095 0014 154B     		ldr	r3, .L63
+ 1096 0016 9A42     		cmp	r2, r3
+ 1097 0018 02D8     		bhi	.L56
+ 998:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+ 999:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* DMAy_Streamx belongs to DMA1 */
+1000:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMAy = DMA1; 
+ 1098              		.loc 1 1000 0
+ 1099 001a 154B     		ldr	r3, .L63+4
+ 1100 001c 3B61     		str	r3, [r7, #16]
+ 1101 001e 01E0     		b	.L57
+ 1102              	.L56:
+1001:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   } 
+1002:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else 
+1003:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+1004:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* DMAy_Streamx belongs to DMA2 */
+1005:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMAy = DMA2; 
+ 1103              		.loc 1 1005 0
+ 1104 0020 144B     		ldr	r3, .L63+8
+ 1105 0022 3B61     		str	r3, [r7, #16]
+ 1106              	.L57:
+1006:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+1007:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+1008:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Check if the flag is in HISR or LISR */
+1009:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   if ((DMA_FLAG & HIGH_ISR_MASK) != (uint32_t)RESET)
+ 1107              		.loc 1 1009 0
+ 1108 0024 3B68     		ldr	r3, [r7]
+ 1109 0026 03F00053 		and	r3, r3, #536870912
+ 1110 002a 002B     		cmp	r3, #0
+ 1111 002c 03D0     		beq	.L58
+1010:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+1011:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Get DMAy HISR register value */
+1012:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     tmpreg = DMAy->HISR;
+ 1112              		.loc 1 1012 0
+ 1113 002e 3B69     		ldr	r3, [r7, #16]
+ 1114 0030 5B68     		ldr	r3, [r3, #4]
+ 1115 0032 FB60     		str	r3, [r7, #12]
+ 1116 0034 02E0     		b	.L59
+ 1117              	.L58:
+1013:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+1014:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else
+1015:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+1016:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Get DMAy LISR register value */
+1017:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     tmpreg = DMAy->LISR;
+ 1118              		.loc 1 1017 0
+ 1119 0036 3B69     		ldr	r3, [r7, #16]
+ 1120 0038 1B68     		ldr	r3, [r3]
+ 1121 003a FB60     		str	r3, [r7, #12]
+ 1122              	.L59:
+1018:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }   
+1019:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****  
+1020:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Mask the reserved bits */
+1021:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   tmpreg &= (uint32_t)RESERVED_MASK;
+ 1123              		.loc 1 1021 0
+ 1124 003c FB68     		ldr	r3, [r7, #12]
+ 1125 003e 23F0F023 		bic	r3, r3, #-268374016
+ 1126 0042 23F08213 		bic	r3, r3, #8519810
+ 1127 0046 FB60     		str	r3, [r7, #12]
+1022:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+1023:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Check the status of the specified DMA flag */
+1024:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   if ((tmpreg & DMA_FLAG) != (uint32_t)RESET)
+ 1128              		.loc 1 1024 0
+ 1129 0048 FA68     		ldr	r2, [r7, #12]
+ 1130 004a 3B68     		ldr	r3, [r7]
+ 1131 004c 1340     		ands	r3, r3, r2
+ 1132 004e 002B     		cmp	r3, #0
+ 1133 0050 02D0     		beq	.L60
+1025:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+1026:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* DMA_FLAG is set */
+1027:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     bitstatus = SET;
+ 1134              		.loc 1 1027 0
+ 1135 0052 0123     		movs	r3, #1
+ 1136 0054 FB75     		strb	r3, [r7, #23]
+ 1137 0056 01E0     		b	.L61
+ 1138              	.L60:
+1028:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+1029:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else
+1030:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+1031:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* DMA_FLAG is reset */
+1032:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     bitstatus = RESET;
+ 1139              		.loc 1 1032 0
+ 1140 0058 0023     		movs	r3, #0
+ 1141 005a FB75     		strb	r3, [r7, #23]
+ 1142              	.L61:
+1033:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+1034:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+1035:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Return the DMA_FLAG status */
+1036:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   return  bitstatus;
+ 1143              		.loc 1 1036 0
+ 1144 005c FB7D     		ldrb	r3, [r7, #23]	@ zero_extendqisi2
+1037:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** }
+ 1145              		.loc 1 1037 0
+ 1146 005e 1846     		mov	r0, r3
+ 1147 0060 1C37     		adds	r7, r7, #28
+ 1148 0062 BD46     		mov	sp, r7
+ 1149              		@ sp needed
+ 1150 0064 5DF8047B 		ldr	r7, [sp], #4
+ 1151 0068 7047     		bx	lr
+ 1152              	.L64:
+ 1153 006a 00BF     		.align	2
+ 1154              	.L63:
+ 1155 006c 0F640240 		.word	1073898511
+ 1156 0070 00600240 		.word	1073897472
+ 1157 0074 00640240 		.word	1073898496
+ 1158              		.cfi_endproc
+ 1159              	.LFE124:
+ 1161              		.section	.text.DMA_ClearFlag,"ax",%progbits
+ 1162              		.align	2
+ 1163              		.global	DMA_ClearFlag
+ 1164              		.thumb
+ 1165              		.thumb_func
+ 1167              	DMA_ClearFlag:
+ 1168              	.LFB125:
+1038:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+1039:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /**
+1040:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @brief  Clears the DMAy Streamx's pending flags.
+1041:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+1042:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          to 7 to select the DMA Stream.
+1043:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  DMA_FLAG: specifies the flag to clear.
+1044:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          This parameter can be any combination of the following values:
+1045:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_FLAG_TCIFx:  Streamx transfer complete flag
+1046:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_FLAG_HTIFx:  Streamx half transfer complete flag
+1047:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_FLAG_TEIFx:  Streamx transfer error flag
+1048:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_FLAG_DMEIFx: Streamx direct mode error flag
+1049:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_FLAG_FEIFx:  Streamx FIFO error flag
+1050:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         Where x can be 0 to 7 to select the DMA Stream.   
+1051:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @retval None
+1052:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   */
+1053:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** void DMA_ClearFlag(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_FLAG)
+1054:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** {
+ 1169              		.loc 1 1054 0
+ 1170              		.cfi_startproc
+ 1171              		@ args = 0, pretend = 0, frame = 16
+ 1172              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1173              		@ link register save eliminated.
+ 1174 0000 80B4     		push	{r7}
+ 1175              	.LCFI45:
+ 1176              		.cfi_def_cfa_offset 4
+ 1177              		.cfi_offset 7, -4
+ 1178 0002 85B0     		sub	sp, sp, #20
+ 1179              	.LCFI46:
+ 1180              		.cfi_def_cfa_offset 24
+ 1181 0004 00AF     		add	r7, sp, #0
+ 1182              	.LCFI47:
+ 1183              		.cfi_def_cfa_register 7
+ 1184 0006 7860     		str	r0, [r7, #4]
+ 1185 0008 3960     		str	r1, [r7]
+1055:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMA_TypeDef* DMAy;
+1056:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+1057:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Check the parameters */
+1058:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+1059:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_CLEAR_FLAG(DMA_FLAG));
+1060:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+1061:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Determine the DMA to which belongs the stream */
+1062:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   if (DMAy_Streamx < DMA2_Stream0)
+ 1186              		.loc 1 1062 0
+ 1187 000a 7A68     		ldr	r2, [r7, #4]
+ 1188 000c 104B     		ldr	r3, .L70
+ 1189 000e 9A42     		cmp	r2, r3
+ 1190 0010 02D8     		bhi	.L66
+1063:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+1064:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* DMAy_Streamx belongs to DMA1 */
+1065:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMAy = DMA1; 
+ 1191              		.loc 1 1065 0
+ 1192 0012 104B     		ldr	r3, .L70+4
+ 1193 0014 FB60     		str	r3, [r7, #12]
+ 1194 0016 01E0     		b	.L67
+ 1195              	.L66:
+1066:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   } 
+1067:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else 
+1068:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+1069:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* DMAy_Streamx belongs to DMA2 */
+1070:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMAy = DMA2; 
+ 1196              		.loc 1 1070 0
+ 1197 0018 0F4B     		ldr	r3, .L70+8
+ 1198 001a FB60     		str	r3, [r7, #12]
+ 1199              	.L67:
+1071:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+1072:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+1073:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Check if LIFCR or HIFCR register is targeted */
+1074:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   if ((DMA_FLAG & HIGH_ISR_MASK) != (uint32_t)RESET)
+ 1200              		.loc 1 1074 0
+ 1201 001c 3B68     		ldr	r3, [r7]
+ 1202 001e 03F00053 		and	r3, r3, #536870912
+ 1203 0022 002B     		cmp	r3, #0
+ 1204 0024 07D0     		beq	.L68
+1075:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+1076:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Set DMAy HIFCR register clear flag bits */
+1077:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMAy->HIFCR = (uint32_t)(DMA_FLAG & RESERVED_MASK);
+ 1205              		.loc 1 1077 0
+ 1206 0026 3B68     		ldr	r3, [r7]
+ 1207 0028 23F0F023 		bic	r3, r3, #-268374016
+ 1208 002c 23F08213 		bic	r3, r3, #8519810
+ 1209 0030 FA68     		ldr	r2, [r7, #12]
+ 1210 0032 D360     		str	r3, [r2, #12]
+ 1211 0034 06E0     		b	.L65
+ 1212              	.L68:
+1078:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+1079:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else 
+1080:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+1081:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Set DMAy LIFCR register clear flag bits */
+1082:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMAy->LIFCR = (uint32_t)(DMA_FLAG & RESERVED_MASK);
+ 1213              		.loc 1 1082 0
+ 1214 0036 3B68     		ldr	r3, [r7]
+ 1215 0038 23F0F023 		bic	r3, r3, #-268374016
+ 1216 003c 23F08213 		bic	r3, r3, #8519810
+ 1217 0040 FA68     		ldr	r2, [r7, #12]
+ 1218 0042 9360     		str	r3, [r2, #8]
+ 1219              	.L65:
+1083:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }    
+1084:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** }
+ 1220              		.loc 1 1084 0
+ 1221 0044 1437     		adds	r7, r7, #20
+ 1222 0046 BD46     		mov	sp, r7
+ 1223              		@ sp needed
+ 1224 0048 5DF8047B 		ldr	r7, [sp], #4
+ 1225 004c 7047     		bx	lr
+ 1226              	.L71:
+ 1227 004e 00BF     		.align	2
+ 1228              	.L70:
+ 1229 0050 0F640240 		.word	1073898511
+ 1230 0054 00600240 		.word	1073897472
+ 1231 0058 00640240 		.word	1073898496
+ 1232              		.cfi_endproc
+ 1233              	.LFE125:
+ 1235              		.section	.text.DMA_ITConfig,"ax",%progbits
+ 1236              		.align	2
+ 1237              		.global	DMA_ITConfig
+ 1238              		.thumb
+ 1239              		.thumb_func
+ 1241              	DMA_ITConfig:
+ 1242              	.LFB126:
+1085:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+1086:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /**
+1087:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @brief  Enables or disables the specified DMAy Streamx interrupts.
+1088:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+1089:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          to 7 to select the DMA Stream.
+1090:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param DMA_IT: specifies the DMA interrupt sources to be enabled or disabled. 
+1091:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          This parameter can be any combination of the following values:
+1092:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_IT_TC:  Transfer complete interrupt mask
+1093:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_IT_HT:  Half transfer complete interrupt mask
+1094:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_IT_TE:  Transfer error interrupt mask
+1095:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_IT_FE:  FIFO error interrupt mask
+1096:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  NewState: new state of the specified DMA interrupts.
+1097:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          This parameter can be: ENABLE or DISABLE.
+1098:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @retval None
+1099:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   */
+1100:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** void DMA_ITConfig(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_IT, FunctionalState NewState)
+1101:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** {
+ 1243              		.loc 1 1101 0
+ 1244              		.cfi_startproc
+ 1245              		@ args = 0, pretend = 0, frame = 16
+ 1246              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1247              		@ link register save eliminated.
+ 1248 0000 80B4     		push	{r7}
+ 1249              	.LCFI48:
+ 1250              		.cfi_def_cfa_offset 4
+ 1251              		.cfi_offset 7, -4
+ 1252 0002 85B0     		sub	sp, sp, #20
+ 1253              	.LCFI49:
+ 1254              		.cfi_def_cfa_offset 24
+ 1255 0004 00AF     		add	r7, sp, #0
+ 1256              	.LCFI50:
+ 1257              		.cfi_def_cfa_register 7
+ 1258 0006 F860     		str	r0, [r7, #12]
+ 1259 0008 B960     		str	r1, [r7, #8]
+ 1260 000a 1346     		mov	r3, r2
+ 1261 000c FB71     		strb	r3, [r7, #7]
+1102:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Check the parameters */
+1103:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+1104:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_CONFIG_IT(DMA_IT));
+1105:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
+1106:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+1107:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Check if the DMA_IT parameter contains a FIFO interrupt */
+1108:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   if ((DMA_IT & DMA_IT_FE) != 0)
+ 1262              		.loc 1 1108 0
+ 1263 000e BB68     		ldr	r3, [r7, #8]
+ 1264 0010 03F08003 		and	r3, r3, #128
+ 1265 0014 002B     		cmp	r3, #0
+ 1266 0016 0FD0     		beq	.L73
+1109:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+1110:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     if (NewState != DISABLE)
+ 1267              		.loc 1 1110 0
+ 1268 0018 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 1269 001a 002B     		cmp	r3, #0
+ 1270 001c 06D0     		beq	.L74
+1111:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     {
+1112:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****       /* Enable the selected DMA FIFO interrupts */
+1113:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****       DMAy_Streamx->FCR |= (uint32_t)DMA_IT_FE;
+ 1271              		.loc 1 1113 0
+ 1272 001e FB68     		ldr	r3, [r7, #12]
+ 1273 0020 5B69     		ldr	r3, [r3, #20]
+ 1274 0022 43F08002 		orr	r2, r3, #128
+ 1275 0026 FB68     		ldr	r3, [r7, #12]
+ 1276 0028 5A61     		str	r2, [r3, #20]
+ 1277 002a 05E0     		b	.L73
+ 1278              	.L74:
+1114:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     }    
+1115:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     else 
+1116:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     {
+1117:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****       /* Disable the selected DMA FIFO interrupts */
+1118:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****       DMAy_Streamx->FCR &= ~(uint32_t)DMA_IT_FE;  
+ 1279              		.loc 1 1118 0
+ 1280 002c FB68     		ldr	r3, [r7, #12]
+ 1281 002e 5B69     		ldr	r3, [r3, #20]
+ 1282 0030 23F08002 		bic	r2, r3, #128
+ 1283 0034 FB68     		ldr	r3, [r7, #12]
+ 1284 0036 5A61     		str	r2, [r3, #20]
+ 1285              	.L73:
+1119:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     }
+1120:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+1121:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+1122:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Check if the DMA_IT parameter contains a Transfer interrupt */
+1123:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   if (DMA_IT != DMA_IT_FE)
+ 1286              		.loc 1 1123 0
+ 1287 0038 BB68     		ldr	r3, [r7, #8]
+ 1288 003a 802B     		cmp	r3, #128
+ 1289 003c 14D0     		beq	.L72
+1124:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+1125:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     if (NewState != DISABLE)
+ 1290              		.loc 1 1125 0
+ 1291 003e FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 1292 0040 002B     		cmp	r3, #0
+ 1293 0042 08D0     		beq	.L76
+1126:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     {
+1127:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****       /* Enable the selected DMA transfer interrupts */
+1128:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****       DMAy_Streamx->CR |= (uint32_t)(DMA_IT  & TRANSFER_IT_ENABLE_MASK);
+ 1294              		.loc 1 1128 0
+ 1295 0044 FB68     		ldr	r3, [r7, #12]
+ 1296 0046 1A68     		ldr	r2, [r3]
+ 1297 0048 BB68     		ldr	r3, [r7, #8]
+ 1298 004a 03F01E03 		and	r3, r3, #30
+ 1299 004e 1A43     		orrs	r2, r2, r3
+ 1300 0050 FB68     		ldr	r3, [r7, #12]
+ 1301 0052 1A60     		str	r2, [r3]
+ 1302 0054 08E0     		b	.L72
+ 1303              	.L76:
+1129:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     }
+1130:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     else
+1131:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     {
+1132:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****       /* Disable the selected DMA transfer interrupts */
+1133:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****       DMAy_Streamx->CR &= ~(uint32_t)(DMA_IT & TRANSFER_IT_ENABLE_MASK);
+ 1304              		.loc 1 1133 0
+ 1305 0056 FB68     		ldr	r3, [r7, #12]
+ 1306 0058 1A68     		ldr	r2, [r3]
+ 1307 005a BB68     		ldr	r3, [r7, #8]
+ 1308 005c 03F01E03 		and	r3, r3, #30
+ 1309 0060 DB43     		mvns	r3, r3
+ 1310 0062 1A40     		ands	r2, r2, r3
+ 1311 0064 FB68     		ldr	r3, [r7, #12]
+ 1312 0066 1A60     		str	r2, [r3]
+ 1313              	.L72:
+1134:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     }    
+1135:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+1136:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** }
+ 1314              		.loc 1 1136 0
+ 1315 0068 1437     		adds	r7, r7, #20
+ 1316 006a BD46     		mov	sp, r7
+ 1317              		@ sp needed
+ 1318 006c 5DF8047B 		ldr	r7, [sp], #4
+ 1319 0070 7047     		bx	lr
+ 1320              		.cfi_endproc
+ 1321              	.LFE126:
+ 1323 0072 00BF     		.section	.text.DMA_GetITStatus,"ax",%progbits
+ 1324              		.align	2
+ 1325              		.global	DMA_GetITStatus
+ 1326              		.thumb
+ 1327              		.thumb_func
+ 1329              	DMA_GetITStatus:
+ 1330              	.LFB127:
+1137:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+1138:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /**
+1139:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @brief  Checks whether the specified DMAy Streamx interrupt has occurred or not.
+1140:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+1141:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          to 7 to select the DMA Stream.
+1142:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  DMA_IT: specifies the DMA interrupt source to check.
+1143:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          This parameter can be one of the following values:
+1144:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_IT_TCIFx:  Streamx transfer complete interrupt
+1145:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_IT_HTIFx:  Streamx half transfer complete interrupt
+1146:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_IT_TEIFx:  Streamx transfer error interrupt
+1147:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_IT_DMEIFx: Streamx direct mode error interrupt
+1148:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_IT_FEIFx:  Streamx FIFO error interrupt
+1149:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         Where x can be 0 to 7 to select the DMA Stream.
+1150:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @retval The new state of DMA_IT (SET or RESET).
+1151:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   */
+1152:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** ITStatus DMA_GetITStatus(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_IT)
+1153:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** {
+ 1331              		.loc 1 1153 0
+ 1332              		.cfi_startproc
+ 1333              		@ args = 0, pretend = 0, frame = 24
+ 1334              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1335              		@ link register save eliminated.
+ 1336 0000 80B4     		push	{r7}
+ 1337              	.LCFI51:
+ 1338              		.cfi_def_cfa_offset 4
+ 1339              		.cfi_offset 7, -4
+ 1340 0002 87B0     		sub	sp, sp, #28
+ 1341              	.LCFI52:
+ 1342              		.cfi_def_cfa_offset 32
+ 1343 0004 00AF     		add	r7, sp, #0
+ 1344              	.LCFI53:
+ 1345              		.cfi_def_cfa_register 7
+ 1346 0006 7860     		str	r0, [r7, #4]
+ 1347 0008 3960     		str	r1, [r7]
+1154:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   ITStatus bitstatus = RESET;
+ 1348              		.loc 1 1154 0
+ 1349 000a 0023     		movs	r3, #0
+ 1350 000c FB75     		strb	r3, [r7, #23]
+1155:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMA_TypeDef* DMAy;
+1156:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   uint32_t tmpreg = 0, enablestatus = 0;
+ 1351              		.loc 1 1156 0
+ 1352 000e 0023     		movs	r3, #0
+ 1353 0010 FB60     		str	r3, [r7, #12]
+ 1354 0012 0023     		movs	r3, #0
+ 1355 0014 BB60     		str	r3, [r7, #8]
+1157:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+1158:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Check the parameters */
+1159:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+1160:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_GET_IT(DMA_IT));
+1161:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****  
+1162:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Determine the DMA to which belongs the stream */
+1163:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   if (DMAy_Streamx < DMA2_Stream0)
+ 1356              		.loc 1 1163 0
+ 1357 0016 7A68     		ldr	r2, [r7, #4]
+ 1358 0018 224B     		ldr	r3, .L87
+ 1359 001a 9A42     		cmp	r2, r3
+ 1360 001c 02D8     		bhi	.L78
+1164:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+1165:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* DMAy_Streamx belongs to DMA1 */
+1166:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMAy = DMA1; 
+ 1361              		.loc 1 1166 0
+ 1362 001e 224B     		ldr	r3, .L87+4
+ 1363 0020 3B61     		str	r3, [r7, #16]
+ 1364 0022 01E0     		b	.L79
+ 1365              	.L78:
+1167:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   } 
+1168:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else 
+1169:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+1170:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* DMAy_Streamx belongs to DMA2 */
+1171:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMAy = DMA2; 
+ 1366              		.loc 1 1171 0
+ 1367 0024 214B     		ldr	r3, .L87+8
+ 1368 0026 3B61     		str	r3, [r7, #16]
+ 1369              	.L79:
+1172:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+1173:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+1174:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Check if the interrupt enable bit is in the CR or FCR register */
+1175:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   if ((DMA_IT & TRANSFER_IT_MASK) != (uint32_t)RESET)
+ 1370              		.loc 1 1175 0
+ 1371 0028 3B68     		ldr	r3, [r7]
+ 1372 002a 23F0F023 		bic	r3, r3, #-268374016
+ 1373 002e 23F0C313 		bic	r3, r3, #12779715
+ 1374 0032 002B     		cmp	r3, #0
+ 1375 0034 0AD0     		beq	.L80
+1176:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+1177:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Get the interrupt enable position mask in CR register */
+1178:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     tmpreg = (uint32_t)((DMA_IT >> 11) & TRANSFER_IT_ENABLE_MASK);   
+ 1376              		.loc 1 1178 0
+ 1377 0036 3B68     		ldr	r3, [r7]
+ 1378 0038 DB0A     		lsrs	r3, r3, #11
+ 1379 003a 03F01E03 		and	r3, r3, #30
+ 1380 003e FB60     		str	r3, [r7, #12]
+1179:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     
+1180:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Check the enable bit in CR register */
+1181:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     enablestatus = (uint32_t)(DMAy_Streamx->CR & tmpreg);
+ 1381              		.loc 1 1181 0
+ 1382 0040 7B68     		ldr	r3, [r7, #4]
+ 1383 0042 1A68     		ldr	r2, [r3]
+ 1384 0044 FB68     		ldr	r3, [r7, #12]
+ 1385 0046 1340     		ands	r3, r3, r2
+ 1386 0048 BB60     		str	r3, [r7, #8]
+ 1387 004a 04E0     		b	.L81
+ 1388              	.L80:
+1182:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+1183:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else 
+1184:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+1185:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Check the enable bit in FCR register */
+1186:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     enablestatus = (uint32_t)(DMAy_Streamx->FCR & DMA_IT_FE); 
+ 1389              		.loc 1 1186 0
+ 1390 004c 7B68     		ldr	r3, [r7, #4]
+ 1391 004e 5B69     		ldr	r3, [r3, #20]
+ 1392 0050 03F08003 		and	r3, r3, #128
+ 1393 0054 BB60     		str	r3, [r7, #8]
+ 1394              	.L81:
+1187:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+1188:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****  
+1189:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Check if the interrupt pending flag is in LISR or HISR */
+1190:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   if ((DMA_IT & HIGH_ISR_MASK) != (uint32_t)RESET)
+ 1395              		.loc 1 1190 0
+ 1396 0056 3B68     		ldr	r3, [r7]
+ 1397 0058 03F00053 		and	r3, r3, #536870912
+ 1398 005c 002B     		cmp	r3, #0
+ 1399 005e 03D0     		beq	.L82
+1191:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+1192:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Get DMAy HISR register value */
+1193:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     tmpreg = DMAy->HISR ;
+ 1400              		.loc 1 1193 0
+ 1401 0060 3B69     		ldr	r3, [r7, #16]
+ 1402 0062 5B68     		ldr	r3, [r3, #4]
+ 1403 0064 FB60     		str	r3, [r7, #12]
+ 1404 0066 02E0     		b	.L83
+ 1405              	.L82:
+1194:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+1195:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else
+1196:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+1197:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Get DMAy LISR register value */
+1198:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     tmpreg = DMAy->LISR ;
+ 1406              		.loc 1 1198 0
+ 1407 0068 3B69     		ldr	r3, [r7, #16]
+ 1408 006a 1B68     		ldr	r3, [r3]
+ 1409 006c FB60     		str	r3, [r7, #12]
+ 1410              	.L83:
+1199:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   } 
+1200:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+1201:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* mask all reserved bits */
+1202:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   tmpreg &= (uint32_t)RESERVED_MASK;
+ 1411              		.loc 1 1202 0
+ 1412 006e FB68     		ldr	r3, [r7, #12]
+ 1413 0070 23F0F023 		bic	r3, r3, #-268374016
+ 1414 0074 23F08213 		bic	r3, r3, #8519810
+ 1415 0078 FB60     		str	r3, [r7, #12]
+1203:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+1204:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Check the status of the specified DMA interrupt */
+1205:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   if (((tmpreg & DMA_IT) != (uint32_t)RESET) && (enablestatus != (uint32_t)RESET))
+ 1416              		.loc 1 1205 0
+ 1417 007a FA68     		ldr	r2, [r7, #12]
+ 1418 007c 3B68     		ldr	r3, [r7]
+ 1419 007e 1340     		ands	r3, r3, r2
+ 1420 0080 002B     		cmp	r3, #0
+ 1421 0082 05D0     		beq	.L84
+ 1422              		.loc 1 1205 0 is_stmt 0 discriminator 1
+ 1423 0084 BB68     		ldr	r3, [r7, #8]
+ 1424 0086 002B     		cmp	r3, #0
+ 1425 0088 02D0     		beq	.L84
+1206:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+1207:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* DMA_IT is set */
+1208:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     bitstatus = SET;
+ 1426              		.loc 1 1208 0 is_stmt 1
+ 1427 008a 0123     		movs	r3, #1
+ 1428 008c FB75     		strb	r3, [r7, #23]
+ 1429 008e 01E0     		b	.L85
+ 1430              	.L84:
+1209:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+1210:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else
+1211:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+1212:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* DMA_IT is reset */
+1213:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     bitstatus = RESET;
+ 1431              		.loc 1 1213 0
+ 1432 0090 0023     		movs	r3, #0
+ 1433 0092 FB75     		strb	r3, [r7, #23]
+ 1434              	.L85:
+1214:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+1215:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+1216:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Return the DMA_IT status */
+1217:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   return  bitstatus;
+ 1435              		.loc 1 1217 0
+ 1436 0094 FB7D     		ldrb	r3, [r7, #23]	@ zero_extendqisi2
+1218:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** }
+ 1437              		.loc 1 1218 0
+ 1438 0096 1846     		mov	r0, r3
+ 1439 0098 1C37     		adds	r7, r7, #28
+ 1440 009a BD46     		mov	sp, r7
+ 1441              		@ sp needed
+ 1442 009c 5DF8047B 		ldr	r7, [sp], #4
+ 1443 00a0 7047     		bx	lr
+ 1444              	.L88:
+ 1445 00a2 00BF     		.align	2
+ 1446              	.L87:
+ 1447 00a4 0F640240 		.word	1073898511
+ 1448 00a8 00600240 		.word	1073897472
+ 1449 00ac 00640240 		.word	1073898496
+ 1450              		.cfi_endproc
+ 1451              	.LFE127:
+ 1453              		.section	.text.DMA_ClearITPendingBit,"ax",%progbits
+ 1454              		.align	2
+ 1455              		.global	DMA_ClearITPendingBit
+ 1456              		.thumb
+ 1457              		.thumb_func
+ 1459              	DMA_ClearITPendingBit:
+ 1460              	.LFB128:
+1219:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+1220:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** /**
+1221:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @brief  Clears the DMAy Streamx's interrupt pending bits.
+1222:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  DMAy_Streamx: where y can be 1 or 2 to select the DMA and x can be 0
+1223:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          to 7 to select the DMA Stream.
+1224:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @param  DMA_IT: specifies the DMA interrupt pending bit to clear.
+1225:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *          This parameter can be any combination of the following values:
+1226:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_IT_TCIFx:  Streamx transfer complete interrupt
+1227:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_IT_HTIFx:  Streamx half transfer complete interrupt
+1228:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_IT_TEIFx:  Streamx transfer error interrupt
+1229:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_IT_DMEIFx: Streamx direct mode error interrupt
+1230:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *            @arg DMA_IT_FEIFx:  Streamx FIFO error interrupt
+1231:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   *         Where x can be 0 to 7 to select the DMA Stream.
+1232:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   * @retval None
+1233:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   */
+1234:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** void DMA_ClearITPendingBit(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_IT)
+1235:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** {
+ 1461              		.loc 1 1235 0
+ 1462              		.cfi_startproc
+ 1463              		@ args = 0, pretend = 0, frame = 16
+ 1464              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1465              		@ link register save eliminated.
+ 1466 0000 80B4     		push	{r7}
+ 1467              	.LCFI54:
+ 1468              		.cfi_def_cfa_offset 4
+ 1469              		.cfi_offset 7, -4
+ 1470 0002 85B0     		sub	sp, sp, #20
+ 1471              	.LCFI55:
+ 1472              		.cfi_def_cfa_offset 24
+ 1473 0004 00AF     		add	r7, sp, #0
+ 1474              	.LCFI56:
+ 1475              		.cfi_def_cfa_register 7
+ 1476 0006 7860     		str	r0, [r7, #4]
+ 1477 0008 3960     		str	r1, [r7]
+1236:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   DMA_TypeDef* DMAy;
+1237:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+1238:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Check the parameters */
+1239:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_ALL_PERIPH(DMAy_Streamx));
+1240:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   assert_param(IS_DMA_CLEAR_IT(DMA_IT));
+1241:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+1242:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Determine the DMA to which belongs the stream */
+1243:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   if (DMAy_Streamx < DMA2_Stream0)
+ 1478              		.loc 1 1243 0
+ 1479 000a 7A68     		ldr	r2, [r7, #4]
+ 1480 000c 104B     		ldr	r3, .L94
+ 1481 000e 9A42     		cmp	r2, r3
+ 1482 0010 02D8     		bhi	.L90
+1244:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+1245:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* DMAy_Streamx belongs to DMA1 */
+1246:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMAy = DMA1; 
+ 1483              		.loc 1 1246 0
+ 1484 0012 104B     		ldr	r3, .L94+4
+ 1485 0014 FB60     		str	r3, [r7, #12]
+ 1486 0016 01E0     		b	.L91
+ 1487              	.L90:
+1247:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   } 
+1248:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else 
+1249:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+1250:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* DMAy_Streamx belongs to DMA2 */
+1251:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMAy = DMA2; 
+ 1488              		.loc 1 1251 0
+ 1489 0018 0F4B     		ldr	r3, .L94+8
+ 1490 001a FB60     		str	r3, [r7, #12]
+ 1491              	.L91:
+1252:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+1253:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** 
+1254:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   /* Check if LIFCR or HIFCR register is targeted */
+1255:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   if ((DMA_IT & HIGH_ISR_MASK) != (uint32_t)RESET)
+ 1492              		.loc 1 1255 0
+ 1493 001c 3B68     		ldr	r3, [r7]
+ 1494 001e 03F00053 		and	r3, r3, #536870912
+ 1495 0022 002B     		cmp	r3, #0
+ 1496 0024 07D0     		beq	.L92
+1256:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+1257:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Set DMAy HIFCR register clear interrupt bits */
+1258:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMAy->HIFCR = (uint32_t)(DMA_IT & RESERVED_MASK);
+ 1497              		.loc 1 1258 0
+ 1498 0026 3B68     		ldr	r3, [r7]
+ 1499 0028 23F0F023 		bic	r3, r3, #-268374016
+ 1500 002c 23F08213 		bic	r3, r3, #8519810
+ 1501 0030 FA68     		ldr	r2, [r7, #12]
+ 1502 0032 D360     		str	r3, [r2, #12]
+ 1503 0034 06E0     		b	.L89
+ 1504              	.L92:
+1259:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }
+1260:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   else 
+1261:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   {
+1262:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     /* Set DMAy LIFCR register clear interrupt bits */
+1263:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****     DMAy->LIFCR = (uint32_t)(DMA_IT & RESERVED_MASK);
+ 1505              		.loc 1 1263 0
+ 1506 0036 3B68     		ldr	r3, [r7]
+ 1507 0038 23F0F023 		bic	r3, r3, #-268374016
+ 1508 003c 23F08213 		bic	r3, r3, #8519810
+ 1509 0040 FA68     		ldr	r2, [r7, #12]
+ 1510 0042 9360     		str	r3, [r2, #8]
+ 1511              	.L89:
+1264:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c ****   }   
+1265:libs/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c **** }
+ 1512              		.loc 1 1265 0
+ 1513 0044 1437     		adds	r7, r7, #20
+ 1514 0046 BD46     		mov	sp, r7
+ 1515              		@ sp needed
+ 1516 0048 5DF8047B 		ldr	r7, [sp], #4
+ 1517 004c 7047     		bx	lr
+ 1518              	.L95:
+ 1519 004e 00BF     		.align	2
+ 1520              	.L94:
+ 1521 0050 0F640240 		.word	1073898511
+ 1522 0054 00600240 		.word	1073897472
+ 1523 0058 00640240 		.word	1073898496
+ 1524              		.cfi_endproc
+ 1525              	.LFE128:
+ 1527              		.text
+ 1528              	.Letext0:
+ 1529              		.file 2 "/home/shihyu/data/STM32F4/gcc-arm-none-eabi-4_8-2013q4/arm-none-eabi/include/stdint.h"
+ 1530              		.file 3 "libs/Device/STM32F4xx/Include/stm32f4xx.h"
+ 1531              		.file 4 "libs/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_dma.h"
+ 1532              		.file 5 "libs/CMSIS/Include/core_cm4.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 stm32f4xx_dma.c
+     /tmp/cckMnG9O.s:20     .text.DMA_DeInit:00000000 $t
+     /tmp/cckMnG9O.s:25     .text.DMA_DeInit:00000000 DMA_DeInit
+     /tmp/cckMnG9O.s:258    .text.DMA_DeInit:00000150 $d
+     /tmp/cckMnG9O.s:283    .text.DMA_Init:00000000 $t
+     /tmp/cckMnG9O.s:288    .text.DMA_Init:00000000 DMA_Init
+     /tmp/cckMnG9O.s:414    .text.DMA_Init:000000a8 $d
+     /tmp/cckMnG9O.s:419    .text.DMA_StructInit:00000000 $t
+     /tmp/cckMnG9O.s:424    .text.DMA_StructInit:00000000 DMA_StructInit
+     /tmp/cckMnG9O.s:512    .text.DMA_Cmd:00000000 $t
+     /tmp/cckMnG9O.s:517    .text.DMA_Cmd:00000000 DMA_Cmd
+     /tmp/cckMnG9O.s:566    .text.DMA_PeriphIncOffsetSizeConfig:00000000 $t
+     /tmp/cckMnG9O.s:571    .text.DMA_PeriphIncOffsetSizeConfig:00000000 DMA_PeriphIncOffsetSizeConfig
+     /tmp/cckMnG9O.s:619    .text.DMA_FlowControllerConfig:00000000 $t
+     /tmp/cckMnG9O.s:624    .text.DMA_FlowControllerConfig:00000000 DMA_FlowControllerConfig
+     /tmp/cckMnG9O.s:672    .text.DMA_SetCurrDataCounter:00000000 $t
+     /tmp/cckMnG9O.s:677    .text.DMA_SetCurrDataCounter:00000000 DMA_SetCurrDataCounter
+     /tmp/cckMnG9O.s:711    .text.DMA_GetCurrDataCounter:00000000 $t
+     /tmp/cckMnG9O.s:716    .text.DMA_GetCurrDataCounter:00000000 DMA_GetCurrDataCounter
+     /tmp/cckMnG9O.s:749    .text.DMA_DoubleBufferModeConfig:00000000 $t
+     /tmp/cckMnG9O.s:754    .text.DMA_DoubleBufferModeConfig:00000000 DMA_DoubleBufferModeConfig
+     /tmp/cckMnG9O.s:807    .text.DMA_DoubleBufferModeCmd:00000000 $t
+     /tmp/cckMnG9O.s:812    .text.DMA_DoubleBufferModeCmd:00000000 DMA_DoubleBufferModeCmd
+     /tmp/cckMnG9O.s:861    .text.DMA_MemoryTargetConfig:00000000 $t
+     /tmp/cckMnG9O.s:866    .text.DMA_MemoryTargetConfig:00000000 DMA_MemoryTargetConfig
+     /tmp/cckMnG9O.s:911    .text.DMA_GetCurrentMemoryTarget:00000000 $t
+     /tmp/cckMnG9O.s:916    .text.DMA_GetCurrentMemoryTarget:00000000 DMA_GetCurrentMemoryTarget
+     /tmp/cckMnG9O.s:965    .text.DMA_GetCmdStatus:00000000 $t
+     /tmp/cckMnG9O.s:970    .text.DMA_GetCmdStatus:00000000 DMA_GetCmdStatus
+     /tmp/cckMnG9O.s:1019   .text.DMA_GetFIFOStatus:00000000 $t
+     /tmp/cckMnG9O.s:1024   .text.DMA_GetFIFOStatus:00000000 DMA_GetFIFOStatus
+     /tmp/cckMnG9O.s:1063   .text.DMA_GetFlagStatus:00000000 $t
+     /tmp/cckMnG9O.s:1068   .text.DMA_GetFlagStatus:00000000 DMA_GetFlagStatus
+     /tmp/cckMnG9O.s:1155   .text.DMA_GetFlagStatus:0000006c $d
+     /tmp/cckMnG9O.s:1162   .text.DMA_ClearFlag:00000000 $t
+     /tmp/cckMnG9O.s:1167   .text.DMA_ClearFlag:00000000 DMA_ClearFlag
+     /tmp/cckMnG9O.s:1229   .text.DMA_ClearFlag:00000050 $d
+     /tmp/cckMnG9O.s:1236   .text.DMA_ITConfig:00000000 $t
+     /tmp/cckMnG9O.s:1241   .text.DMA_ITConfig:00000000 DMA_ITConfig
+     /tmp/cckMnG9O.s:1324   .text.DMA_GetITStatus:00000000 $t
+     /tmp/cckMnG9O.s:1329   .text.DMA_GetITStatus:00000000 DMA_GetITStatus
+     /tmp/cckMnG9O.s:1447   .text.DMA_GetITStatus:000000a4 $d
+     /tmp/cckMnG9O.s:1454   .text.DMA_ClearITPendingBit:00000000 $t
+     /tmp/cckMnG9O.s:1459   .text.DMA_ClearITPendingBit:00000000 DMA_ClearITPendingBit
+     /tmp/cckMnG9O.s:1521   .text.DMA_ClearITPendingBit:00000050 $d
+                     .debug_frame:00000010 $d
+
+NO UNDEFINED SYMBOLS

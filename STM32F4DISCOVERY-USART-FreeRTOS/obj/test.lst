@@ -1,0 +1,1347 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.eabi_attribute 27, 3
+   4              		.fpu fpv4-sp-d16
+   5              		.eabi_attribute 20, 1
+   6              		.eabi_attribute 21, 1
+   7              		.eabi_attribute 23, 3
+   8              		.eabi_attribute 24, 1
+   9              		.eabi_attribute 25, 1
+  10              		.eabi_attribute 26, 1
+  11              		.eabi_attribute 30, 6
+  12              		.eabi_attribute 34, 1
+  13              		.eabi_attribute 18, 4
+  14              		.thumb
+  15              		.file	"test.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.rodata.crcHi,"a",%progbits
+  20              		.align	2
+  23              	crcHi:
+  24 0000 00000000 		.word	0
+  25 0004 C1000000 		.word	193
+  26 0008 81000000 		.word	129
+  27 000c 40000000 		.word	64
+  28 0010 01000000 		.word	1
+  29 0014 C0000000 		.word	192
+  30 0018 80000000 		.word	128
+  31 001c 41000000 		.word	65
+  32 0020 01000000 		.word	1
+  33 0024 C0000000 		.word	192
+  34 0028 80000000 		.word	128
+  35 002c 41000000 		.word	65
+  36 0030 00000000 		.word	0
+  37 0034 C1000000 		.word	193
+  38 0038 81000000 		.word	129
+  39 003c 40000000 		.word	64
+  40 0040 01000000 		.word	1
+  41 0044 C0000000 		.word	192
+  42 0048 80000000 		.word	128
+  43 004c 41000000 		.word	65
+  44 0050 00000000 		.word	0
+  45 0054 C1000000 		.word	193
+  46 0058 81000000 		.word	129
+  47 005c 40000000 		.word	64
+  48 0060 00000000 		.word	0
+  49 0064 C1000000 		.word	193
+  50 0068 81000000 		.word	129
+  51 006c 40000000 		.word	64
+  52 0070 01000000 		.word	1
+  53 0074 C0000000 		.word	192
+  54 0078 80000000 		.word	128
+  55 007c 41000000 		.word	65
+  56 0080 01000000 		.word	1
+  57 0084 C0000000 		.word	192
+  58 0088 80000000 		.word	128
+  59 008c 41000000 		.word	65
+  60 0090 00000000 		.word	0
+  61 0094 C1000000 		.word	193
+  62 0098 81000000 		.word	129
+  63 009c 40000000 		.word	64
+  64 00a0 00000000 		.word	0
+  65 00a4 C1000000 		.word	193
+  66 00a8 81000000 		.word	129
+  67 00ac 40000000 		.word	64
+  68 00b0 01000000 		.word	1
+  69 00b4 C0000000 		.word	192
+  70 00b8 80000000 		.word	128
+  71 00bc 41000000 		.word	65
+  72 00c0 00000000 		.word	0
+  73 00c4 C1000000 		.word	193
+  74 00c8 81000000 		.word	129
+  75 00cc 40000000 		.word	64
+  76 00d0 01000000 		.word	1
+  77 00d4 C0000000 		.word	192
+  78 00d8 80000000 		.word	128
+  79 00dc 41000000 		.word	65
+  80 00e0 01000000 		.word	1
+  81 00e4 C0000000 		.word	192
+  82 00e8 80000000 		.word	128
+  83 00ec 41000000 		.word	65
+  84 00f0 00000000 		.word	0
+  85 00f4 C1000000 		.word	193
+  86 00f8 81000000 		.word	129
+  87 00fc 40000000 		.word	64
+  88 0100 01000000 		.word	1
+  89 0104 C0000000 		.word	192
+  90 0108 80000000 		.word	128
+  91 010c 41000000 		.word	65
+  92 0110 00000000 		.word	0
+  93 0114 C1000000 		.word	193
+  94 0118 81000000 		.word	129
+  95 011c 40000000 		.word	64
+  96 0120 00000000 		.word	0
+  97 0124 C1000000 		.word	193
+  98 0128 81000000 		.word	129
+  99 012c 40000000 		.word	64
+ 100 0130 01000000 		.word	1
+ 101 0134 C0000000 		.word	192
+ 102 0138 80000000 		.word	128
+ 103 013c 41000000 		.word	65
+ 104 0140 00000000 		.word	0
+ 105 0144 C1000000 		.word	193
+ 106 0148 81000000 		.word	129
+ 107 014c 40000000 		.word	64
+ 108 0150 01000000 		.word	1
+ 109 0154 C0000000 		.word	192
+ 110 0158 80000000 		.word	128
+ 111 015c 41000000 		.word	65
+ 112 0160 01000000 		.word	1
+ 113 0164 C0000000 		.word	192
+ 114 0168 80000000 		.word	128
+ 115 016c 41000000 		.word	65
+ 116 0170 00000000 		.word	0
+ 117 0174 C1000000 		.word	193
+ 118 0178 81000000 		.word	129
+ 119 017c 40000000 		.word	64
+ 120 0180 00000000 		.word	0
+ 121 0184 C1000000 		.word	193
+ 122 0188 81000000 		.word	129
+ 123 018c 40000000 		.word	64
+ 124 0190 01000000 		.word	1
+ 125 0194 C0000000 		.word	192
+ 126 0198 80000000 		.word	128
+ 127 019c 41000000 		.word	65
+ 128 01a0 01000000 		.word	1
+ 129 01a4 C0000000 		.word	192
+ 130 01a8 80000000 		.word	128
+ 131 01ac 41000000 		.word	65
+ 132 01b0 00000000 		.word	0
+ 133 01b4 C1000000 		.word	193
+ 134 01b8 81000000 		.word	129
+ 135 01bc 40000000 		.word	64
+ 136 01c0 01000000 		.word	1
+ 137 01c4 C0000000 		.word	192
+ 138 01c8 80000000 		.word	128
+ 139 01cc 41000000 		.word	65
+ 140 01d0 00000000 		.word	0
+ 141 01d4 C1000000 		.word	193
+ 142 01d8 81000000 		.word	129
+ 143 01dc 40000000 		.word	64
+ 144 01e0 00000000 		.word	0
+ 145 01e4 C1000000 		.word	193
+ 146 01e8 81000000 		.word	129
+ 147 01ec 40000000 		.word	64
+ 148 01f0 01000000 		.word	1
+ 149 01f4 C0000000 		.word	192
+ 150 01f8 80000000 		.word	128
+ 151 01fc 41000000 		.word	65
+ 152 0200 01000000 		.word	1
+ 153 0204 C0000000 		.word	192
+ 154 0208 80000000 		.word	128
+ 155 020c 41000000 		.word	65
+ 156 0210 00000000 		.word	0
+ 157 0214 C1000000 		.word	193
+ 158 0218 81000000 		.word	129
+ 159 021c 40000000 		.word	64
+ 160 0220 00000000 		.word	0
+ 161 0224 C1000000 		.word	193
+ 162 0228 81000000 		.word	129
+ 163 022c 40000000 		.word	64
+ 164 0230 01000000 		.word	1
+ 165 0234 C0000000 		.word	192
+ 166 0238 80000000 		.word	128
+ 167 023c 41000000 		.word	65
+ 168 0240 00000000 		.word	0
+ 169 0244 C1000000 		.word	193
+ 170 0248 81000000 		.word	129
+ 171 024c 40000000 		.word	64
+ 172 0250 01000000 		.word	1
+ 173 0254 C0000000 		.word	192
+ 174 0258 80000000 		.word	128
+ 175 025c 41000000 		.word	65
+ 176 0260 01000000 		.word	1
+ 177 0264 C0000000 		.word	192
+ 178 0268 80000000 		.word	128
+ 179 026c 41000000 		.word	65
+ 180 0270 00000000 		.word	0
+ 181 0274 C1000000 		.word	193
+ 182 0278 81000000 		.word	129
+ 183 027c 40000000 		.word	64
+ 184 0280 00000000 		.word	0
+ 185 0284 C1000000 		.word	193
+ 186 0288 81000000 		.word	129
+ 187 028c 40000000 		.word	64
+ 188 0290 01000000 		.word	1
+ 189 0294 C0000000 		.word	192
+ 190 0298 80000000 		.word	128
+ 191 029c 41000000 		.word	65
+ 192 02a0 01000000 		.word	1
+ 193 02a4 C0000000 		.word	192
+ 194 02a8 80000000 		.word	128
+ 195 02ac 41000000 		.word	65
+ 196 02b0 00000000 		.word	0
+ 197 02b4 C1000000 		.word	193
+ 198 02b8 81000000 		.word	129
+ 199 02bc 40000000 		.word	64
+ 200 02c0 01000000 		.word	1
+ 201 02c4 C0000000 		.word	192
+ 202 02c8 80000000 		.word	128
+ 203 02cc 41000000 		.word	65
+ 204 02d0 00000000 		.word	0
+ 205 02d4 C1000000 		.word	193
+ 206 02d8 81000000 		.word	129
+ 207 02dc 40000000 		.word	64
+ 208 02e0 00000000 		.word	0
+ 209 02e4 C1000000 		.word	193
+ 210 02e8 81000000 		.word	129
+ 211 02ec 40000000 		.word	64
+ 212 02f0 01000000 		.word	1
+ 213 02f4 C0000000 		.word	192
+ 214 02f8 80000000 		.word	128
+ 215 02fc 41000000 		.word	65
+ 216 0300 00000000 		.word	0
+ 217 0304 C1000000 		.word	193
+ 218 0308 81000000 		.word	129
+ 219 030c 40000000 		.word	64
+ 220 0310 01000000 		.word	1
+ 221 0314 C0000000 		.word	192
+ 222 0318 80000000 		.word	128
+ 223 031c 41000000 		.word	65
+ 224 0320 01000000 		.word	1
+ 225 0324 C0000000 		.word	192
+ 226 0328 80000000 		.word	128
+ 227 032c 41000000 		.word	65
+ 228 0330 00000000 		.word	0
+ 229 0334 C1000000 		.word	193
+ 230 0338 81000000 		.word	129
+ 231 033c 40000000 		.word	64
+ 232 0340 01000000 		.word	1
+ 233 0344 C0000000 		.word	192
+ 234 0348 80000000 		.word	128
+ 235 034c 41000000 		.word	65
+ 236 0350 00000000 		.word	0
+ 237 0354 C1000000 		.word	193
+ 238 0358 81000000 		.word	129
+ 239 035c 40000000 		.word	64
+ 240 0360 00000000 		.word	0
+ 241 0364 C1000000 		.word	193
+ 242 0368 81000000 		.word	129
+ 243 036c 40000000 		.word	64
+ 244 0370 01000000 		.word	1
+ 245 0374 C0000000 		.word	192
+ 246 0378 80000000 		.word	128
+ 247 037c 41000000 		.word	65
+ 248 0380 01000000 		.word	1
+ 249 0384 C0000000 		.word	192
+ 250 0388 80000000 		.word	128
+ 251 038c 41000000 		.word	65
+ 252 0390 00000000 		.word	0
+ 253 0394 C1000000 		.word	193
+ 254 0398 81000000 		.word	129
+ 255 039c 40000000 		.word	64
+ 256 03a0 00000000 		.word	0
+ 257 03a4 C1000000 		.word	193
+ 258 03a8 81000000 		.word	129
+ 259 03ac 40000000 		.word	64
+ 260 03b0 01000000 		.word	1
+ 261 03b4 C0000000 		.word	192
+ 262 03b8 80000000 		.word	128
+ 263 03bc 41000000 		.word	65
+ 264 03c0 00000000 		.word	0
+ 265 03c4 C1000000 		.word	193
+ 266 03c8 81000000 		.word	129
+ 267 03cc 40000000 		.word	64
+ 268 03d0 01000000 		.word	1
+ 269 03d4 C0000000 		.word	192
+ 270 03d8 80000000 		.word	128
+ 271 03dc 41000000 		.word	65
+ 272 03e0 01000000 		.word	1
+ 273 03e4 C0000000 		.word	192
+ 274 03e8 80000000 		.word	128
+ 275 03ec 41000000 		.word	65
+ 276 03f0 00000000 		.word	0
+ 277 03f4 C1000000 		.word	193
+ 278 03f8 81000000 		.word	129
+ 279 03fc 40000000 		.word	64
+ 280              		.section	.rodata.crcLo,"a",%progbits
+ 281              		.align	2
+ 284              	crcLo:
+ 285 0000 00000000 		.word	0
+ 286 0004 C0000000 		.word	192
+ 287 0008 C1000000 		.word	193
+ 288 000c 01000000 		.word	1
+ 289 0010 C3000000 		.word	195
+ 290 0014 03000000 		.word	3
+ 291 0018 02000000 		.word	2
+ 292 001c C2000000 		.word	194
+ 293 0020 C6000000 		.word	198
+ 294 0024 06000000 		.word	6
+ 295 0028 07000000 		.word	7
+ 296 002c C7000000 		.word	199
+ 297 0030 05000000 		.word	5
+ 298 0034 C5000000 		.word	197
+ 299 0038 C4000000 		.word	196
+ 300 003c 04000000 		.word	4
+ 301 0040 CC000000 		.word	204
+ 302 0044 0C000000 		.word	12
+ 303 0048 0D000000 		.word	13
+ 304 004c CD000000 		.word	205
+ 305 0050 0F000000 		.word	15
+ 306 0054 CF000000 		.word	207
+ 307 0058 CE000000 		.word	206
+ 308 005c 0E000000 		.word	14
+ 309 0060 0A000000 		.word	10
+ 310 0064 CA000000 		.word	202
+ 311 0068 CB000000 		.word	203
+ 312 006c 0B000000 		.word	11
+ 313 0070 C9000000 		.word	201
+ 314 0074 09000000 		.word	9
+ 315 0078 08000000 		.word	8
+ 316 007c C8000000 		.word	200
+ 317 0080 D8000000 		.word	216
+ 318 0084 18000000 		.word	24
+ 319 0088 19000000 		.word	25
+ 320 008c D9000000 		.word	217
+ 321 0090 1B000000 		.word	27
+ 322 0094 DB000000 		.word	219
+ 323 0098 DA000000 		.word	218
+ 324 009c 1A000000 		.word	26
+ 325 00a0 1E000000 		.word	30
+ 326 00a4 DE000000 		.word	222
+ 327 00a8 DF000000 		.word	223
+ 328 00ac 1F000000 		.word	31
+ 329 00b0 DD000000 		.word	221
+ 330 00b4 1D000000 		.word	29
+ 331 00b8 1C000000 		.word	28
+ 332 00bc DC000000 		.word	220
+ 333 00c0 14000000 		.word	20
+ 334 00c4 D4000000 		.word	212
+ 335 00c8 D5000000 		.word	213
+ 336 00cc 15000000 		.word	21
+ 337 00d0 D7000000 		.word	215
+ 338 00d4 17000000 		.word	23
+ 339 00d8 16000000 		.word	22
+ 340 00dc D6000000 		.word	214
+ 341 00e0 D2000000 		.word	210
+ 342 00e4 12000000 		.word	18
+ 343 00e8 13000000 		.word	19
+ 344 00ec D3000000 		.word	211
+ 345 00f0 11000000 		.word	17
+ 346 00f4 D1000000 		.word	209
+ 347 00f8 D0000000 		.word	208
+ 348 00fc 10000000 		.word	16
+ 349 0100 F0000000 		.word	240
+ 350 0104 30000000 		.word	48
+ 351 0108 31000000 		.word	49
+ 352 010c F1000000 		.word	241
+ 353 0110 33000000 		.word	51
+ 354 0114 F3000000 		.word	243
+ 355 0118 F2000000 		.word	242
+ 356 011c 32000000 		.word	50
+ 357 0120 36000000 		.word	54
+ 358 0124 F6000000 		.word	246
+ 359 0128 F7000000 		.word	247
+ 360 012c 37000000 		.word	55
+ 361 0130 F5000000 		.word	245
+ 362 0134 35000000 		.word	53
+ 363 0138 34000000 		.word	52
+ 364 013c F4000000 		.word	244
+ 365 0140 3C000000 		.word	60
+ 366 0144 FC000000 		.word	252
+ 367 0148 FD000000 		.word	253
+ 368 014c 3D000000 		.word	61
+ 369 0150 FF000000 		.word	255
+ 370 0154 3F000000 		.word	63
+ 371 0158 3E000000 		.word	62
+ 372 015c FE000000 		.word	254
+ 373 0160 FA000000 		.word	250
+ 374 0164 3A000000 		.word	58
+ 375 0168 3B000000 		.word	59
+ 376 016c FB000000 		.word	251
+ 377 0170 39000000 		.word	57
+ 378 0174 F9000000 		.word	249
+ 379 0178 F8000000 		.word	248
+ 380 017c 38000000 		.word	56
+ 381 0180 28000000 		.word	40
+ 382 0184 E8000000 		.word	232
+ 383 0188 E9000000 		.word	233
+ 384 018c 29000000 		.word	41
+ 385 0190 EB000000 		.word	235
+ 386 0194 2B000000 		.word	43
+ 387 0198 2A000000 		.word	42
+ 388 019c EA000000 		.word	234
+ 389 01a0 EE000000 		.word	238
+ 390 01a4 2E000000 		.word	46
+ 391 01a8 2F000000 		.word	47
+ 392 01ac EF000000 		.word	239
+ 393 01b0 2D000000 		.word	45
+ 394 01b4 ED000000 		.word	237
+ 395 01b8 EC000000 		.word	236
+ 396 01bc 2C000000 		.word	44
+ 397 01c0 E4000000 		.word	228
+ 398 01c4 24000000 		.word	36
+ 399 01c8 25000000 		.word	37
+ 400 01cc E5000000 		.word	229
+ 401 01d0 27000000 		.word	39
+ 402 01d4 E7000000 		.word	231
+ 403 01d8 E6000000 		.word	230
+ 404 01dc 26000000 		.word	38
+ 405 01e0 22000000 		.word	34
+ 406 01e4 E2000000 		.word	226
+ 407 01e8 E3000000 		.word	227
+ 408 01ec 23000000 		.word	35
+ 409 01f0 E1000000 		.word	225
+ 410 01f4 21000000 		.word	33
+ 411 01f8 20000000 		.word	32
+ 412 01fc E0000000 		.word	224
+ 413 0200 A0000000 		.word	160
+ 414 0204 60000000 		.word	96
+ 415 0208 61000000 		.word	97
+ 416 020c A1000000 		.word	161
+ 417 0210 63000000 		.word	99
+ 418 0214 A3000000 		.word	163
+ 419 0218 A2000000 		.word	162
+ 420 021c 62000000 		.word	98
+ 421 0220 66000000 		.word	102
+ 422 0224 A6000000 		.word	166
+ 423 0228 A7000000 		.word	167
+ 424 022c 67000000 		.word	103
+ 425 0230 A5000000 		.word	165
+ 426 0234 65000000 		.word	101
+ 427 0238 64000000 		.word	100
+ 428 023c A4000000 		.word	164
+ 429 0240 6C000000 		.word	108
+ 430 0244 AC000000 		.word	172
+ 431 0248 AD000000 		.word	173
+ 432 024c 6D000000 		.word	109
+ 433 0250 AF000000 		.word	175
+ 434 0254 6F000000 		.word	111
+ 435 0258 6E000000 		.word	110
+ 436 025c AE000000 		.word	174
+ 437 0260 AA000000 		.word	170
+ 438 0264 6A000000 		.word	106
+ 439 0268 6B000000 		.word	107
+ 440 026c AB000000 		.word	171
+ 441 0270 69000000 		.word	105
+ 442 0274 A9000000 		.word	169
+ 443 0278 A8000000 		.word	168
+ 444 027c 68000000 		.word	104
+ 445 0280 78000000 		.word	120
+ 446 0284 B8000000 		.word	184
+ 447 0288 B9000000 		.word	185
+ 448 028c 79000000 		.word	121
+ 449 0290 BB000000 		.word	187
+ 450 0294 7B000000 		.word	123
+ 451 0298 7A000000 		.word	122
+ 452 029c BA000000 		.word	186
+ 453 02a0 BE000000 		.word	190
+ 454 02a4 7E000000 		.word	126
+ 455 02a8 7F000000 		.word	127
+ 456 02ac BF000000 		.word	191
+ 457 02b0 7D000000 		.word	125
+ 458 02b4 BD000000 		.word	189
+ 459 02b8 BC000000 		.word	188
+ 460 02bc 7C000000 		.word	124
+ 461 02c0 B4000000 		.word	180
+ 462 02c4 74000000 		.word	116
+ 463 02c8 75000000 		.word	117
+ 464 02cc B5000000 		.word	181
+ 465 02d0 77000000 		.word	119
+ 466 02d4 B7000000 		.word	183
+ 467 02d8 B6000000 		.word	182
+ 468 02dc 76000000 		.word	118
+ 469 02e0 72000000 		.word	114
+ 470 02e4 B2000000 		.word	178
+ 471 02e8 B3000000 		.word	179
+ 472 02ec 73000000 		.word	115
+ 473 02f0 B1000000 		.word	177
+ 474 02f4 71000000 		.word	113
+ 475 02f8 70000000 		.word	112
+ 476 02fc B0000000 		.word	176
+ 477 0300 50000000 		.word	80
+ 478 0304 90000000 		.word	144
+ 479 0308 91000000 		.word	145
+ 480 030c 51000000 		.word	81
+ 481 0310 93000000 		.word	147
+ 482 0314 53000000 		.word	83
+ 483 0318 52000000 		.word	82
+ 484 031c 92000000 		.word	146
+ 485 0320 96000000 		.word	150
+ 486 0324 56000000 		.word	86
+ 487 0328 57000000 		.word	87
+ 488 032c 97000000 		.word	151
+ 489 0330 55000000 		.word	85
+ 490 0334 95000000 		.word	149
+ 491 0338 94000000 		.word	148
+ 492 033c 54000000 		.word	84
+ 493 0340 9C000000 		.word	156
+ 494 0344 5C000000 		.word	92
+ 495 0348 5D000000 		.word	93
+ 496 034c 9D000000 		.word	157
+ 497 0350 5F000000 		.word	95
+ 498 0354 9F000000 		.word	159
+ 499 0358 9E000000 		.word	158
+ 500 035c 5E000000 		.word	94
+ 501 0360 5A000000 		.word	90
+ 502 0364 9A000000 		.word	154
+ 503 0368 9B000000 		.word	155
+ 504 036c 5B000000 		.word	91
+ 505 0370 99000000 		.word	153
+ 506 0374 59000000 		.word	89
+ 507 0378 58000000 		.word	88
+ 508 037c 98000000 		.word	152
+ 509 0380 88000000 		.word	136
+ 510 0384 48000000 		.word	72
+ 511 0388 49000000 		.word	73
+ 512 038c 89000000 		.word	137
+ 513 0390 4B000000 		.word	75
+ 514 0394 8B000000 		.word	139
+ 515 0398 8A000000 		.word	138
+ 516 039c 4A000000 		.word	74
+ 517 03a0 4E000000 		.word	78
+ 518 03a4 8E000000 		.word	142
+ 519 03a8 8F000000 		.word	143
+ 520 03ac 4F000000 		.word	79
+ 521 03b0 8D000000 		.word	141
+ 522 03b4 4D000000 		.word	77
+ 523 03b8 4C000000 		.word	76
+ 524 03bc 8C000000 		.word	140
+ 525 03c0 44000000 		.word	68
+ 526 03c4 84000000 		.word	132
+ 527 03c8 85000000 		.word	133
+ 528 03cc 45000000 		.word	69
+ 529 03d0 87000000 		.word	135
+ 530 03d4 47000000 		.word	71
+ 531 03d8 46000000 		.word	70
+ 532 03dc 86000000 		.word	134
+ 533 03e0 82000000 		.word	130
+ 534 03e4 42000000 		.word	66
+ 535 03e8 43000000 		.word	67
+ 536 03ec 83000000 		.word	131
+ 537 03f0 41000000 		.word	65
+ 538 03f4 81000000 		.word	129
+ 539 03f8 80000000 		.word	128
+ 540 03fc 40000000 		.word	64
+ 541              		.section	.text.storeReadCoilData,"ax",%progbits
+ 542              		.align	2
+ 543              		.global	storeReadCoilData
+ 544              		.thumb
+ 545              		.thumb_func
+ 547              	storeReadCoilData:
+ 548              	.LFB0:
+ 549              		.file 1 "src/test.c"
+   1:src/test.c    **** /*
+   2:src/test.c    ****  * test.c : To push data on Hash Table as per the function as of now. More intuitive way  is requir
+   3:src/test.c    ****  *
+   4:src/test.c    ****  *  Created on: 16-Dec-2012
+   5:src/test.c    ****  *      Author: chetanpatil
+   6:src/test.c    ****  */
+   7:src/test.c    **** 
+   8:src/test.c    **** #include "modbus.h"
+   9:src/test.c    **** 
+  10:src/test.c    **** void storeReadCoilData(uint32_t *ptr){
+ 550              		.loc 1 10 0
+ 551              		.cfi_startproc
+ 552              		@ args = 0, pretend = 0, frame = 24
+ 553              		@ frame_needed = 1, uses_anonymous_args = 0
+ 554 0000 80B5     		push	{r7, lr}
+ 555              	.LCFI0:
+ 556              		.cfi_def_cfa_offset 8
+ 557              		.cfi_offset 7, -8
+ 558              		.cfi_offset 14, -4
+ 559 0002 86B0     		sub	sp, sp, #24
+ 560              	.LCFI1:
+ 561              		.cfi_def_cfa_offset 32
+ 562 0004 00AF     		add	r7, sp, #0
+ 563              	.LCFI2:
+ 564              		.cfi_def_cfa_register 7
+ 565 0006 7860     		str	r0, [r7, #4]
+  11:src/test.c    **** 
+  12:src/test.c    **** 	int i;
+  13:src/test.c    **** 	uint32_t id= 0x0000 | *ptr;
+ 566              		.loc 1 13 0
+ 567 0008 7B68     		ldr	r3, [r7, #4]
+ 568 000a 1B68     		ldr	r3, [r3]
+ 569 000c 3B61     		str	r3, [r7, #16]
+  14:src/test.c    **** 
+  15:src/test.c    **** 	// 32 Bit data is stored
+  16:src/test.c    **** 	uint32_t d=0x21117778;
+ 570              		.loc 1 16 0
+ 571 000e 0C4B     		ldr	r3, .L5
+ 572 0010 FB60     		str	r3, [r7, #12]
+  17:src/test.c    **** 
+  18:src/test.c    **** 	for (i=0;i<10;i++){
+ 573              		.loc 1 18 0
+ 574 0012 0023     		movs	r3, #0
+ 575 0014 7B61     		str	r3, [r7, #20]
+ 576 0016 0CE0     		b	.L2
+ 577              	.L3:
+  19:src/test.c    **** 		addData(id++,d++);
+ 578              		.loc 1 19 0 discriminator 2
+ 579 0018 3B69     		ldr	r3, [r7, #16]
+ 580 001a 5A1C     		adds	r2, r3, #1
+ 581 001c 3A61     		str	r2, [r7, #16]
+ 582 001e FA68     		ldr	r2, [r7, #12]
+ 583 0020 511C     		adds	r1, r2, #1
+ 584 0022 F960     		str	r1, [r7, #12]
+ 585 0024 1846     		mov	r0, r3
+ 586 0026 1146     		mov	r1, r2
+ 587 0028 FFF7FEFF 		bl	addData
+  18:src/test.c    **** 	for (i=0;i<10;i++){
+ 588              		.loc 1 18 0 discriminator 2
+ 589 002c 7B69     		ldr	r3, [r7, #20]
+ 590 002e 0133     		adds	r3, r3, #1
+ 591 0030 7B61     		str	r3, [r7, #20]
+ 592              	.L2:
+  18:src/test.c    **** 	for (i=0;i<10;i++){
+ 593              		.loc 1 18 0 is_stmt 0 discriminator 1
+ 594 0032 7B69     		ldr	r3, [r7, #20]
+ 595 0034 092B     		cmp	r3, #9
+ 596 0036 EFDD     		ble	.L3
+  20:src/test.c    **** 	}
+  21:src/test.c    **** 	
+  22:src/test.c    **** 	//Print the data stored in HASH MAP
+  23:src/test.c    **** //	putData();
+  24:src/test.c    **** 	return;
+ 597              		.loc 1 24 0 is_stmt 1
+ 598 0038 00BF     		nop
+  25:src/test.c    **** }
+ 599              		.loc 1 25 0
+ 600 003a 1837     		adds	r7, r7, #24
+ 601 003c BD46     		mov	sp, r7
+ 602              		@ sp needed
+ 603 003e 80BD     		pop	{r7, pc}
+ 604              	.L6:
+ 605              		.align	2
+ 606              	.L5:
+ 607 0040 78771121 		.word	554792824
+ 608              		.cfi_endproc
+ 609              	.LFE0:
+ 611              		.section	.text.storeReadDiscreteInputsData,"ax",%progbits
+ 612              		.align	2
+ 613              		.global	storeReadDiscreteInputsData
+ 614              		.thumb
+ 615              		.thumb_func
+ 617              	storeReadDiscreteInputsData:
+ 618              	.LFB1:
+  26:src/test.c    **** 
+  27:src/test.c    **** void storeReadDiscreteInputsData(uint32_t *ptr){
+ 619              		.loc 1 27 0
+ 620              		.cfi_startproc
+ 621              		@ args = 0, pretend = 0, frame = 24
+ 622              		@ frame_needed = 1, uses_anonymous_args = 0
+ 623 0000 80B5     		push	{r7, lr}
+ 624              	.LCFI3:
+ 625              		.cfi_def_cfa_offset 8
+ 626              		.cfi_offset 7, -8
+ 627              		.cfi_offset 14, -4
+ 628 0002 86B0     		sub	sp, sp, #24
+ 629              	.LCFI4:
+ 630              		.cfi_def_cfa_offset 32
+ 631 0004 00AF     		add	r7, sp, #0
+ 632              	.LCFI5:
+ 633              		.cfi_def_cfa_register 7
+ 634 0006 7860     		str	r0, [r7, #4]
+  28:src/test.c    **** 
+  29:src/test.c    **** 	int i;
+  30:src/test.c    **** 	uint32_t id= 0x2710 | *ptr;
+ 635              		.loc 1 30 0
+ 636 0008 7B68     		ldr	r3, [r7, #4]
+ 637 000a 1B68     		ldr	r3, [r3]
+ 638 000c 43F41C53 		orr	r3, r3, #9984
+ 639 0010 43F01003 		orr	r3, r3, #16
+ 640 0014 3B61     		str	r3, [r7, #16]
+  31:src/test.c    **** 
+  32:src/test.c    **** 	// 32 Bit data is stored
+  33:src/test.c    **** 	uint32_t d=0x26767678;
+ 641              		.loc 1 33 0
+ 642 0016 0C4B     		ldr	r3, .L10
+ 643 0018 FB60     		str	r3, [r7, #12]
+  34:src/test.c    **** 
+  35:src/test.c    **** 	for (i=0;i<10;i++){
+ 644              		.loc 1 35 0
+ 645 001a 0023     		movs	r3, #0
+ 646 001c 7B61     		str	r3, [r7, #20]
+ 647 001e 0CE0     		b	.L8
+ 648              	.L9:
+  36:src/test.c    **** 		addData(id++,d++);
+ 649              		.loc 1 36 0 discriminator 2
+ 650 0020 3B69     		ldr	r3, [r7, #16]
+ 651 0022 5A1C     		adds	r2, r3, #1
+ 652 0024 3A61     		str	r2, [r7, #16]
+ 653 0026 FA68     		ldr	r2, [r7, #12]
+ 654 0028 511C     		adds	r1, r2, #1
+ 655 002a F960     		str	r1, [r7, #12]
+ 656 002c 1846     		mov	r0, r3
+ 657 002e 1146     		mov	r1, r2
+ 658 0030 FFF7FEFF 		bl	addData
+  35:src/test.c    **** 	for (i=0;i<10;i++){
+ 659              		.loc 1 35 0 discriminator 2
+ 660 0034 7B69     		ldr	r3, [r7, #20]
+ 661 0036 0133     		adds	r3, r3, #1
+ 662 0038 7B61     		str	r3, [r7, #20]
+ 663              	.L8:
+  35:src/test.c    **** 	for (i=0;i<10;i++){
+ 664              		.loc 1 35 0 is_stmt 0 discriminator 1
+ 665 003a 7B69     		ldr	r3, [r7, #20]
+ 666 003c 092B     		cmp	r3, #9
+ 667 003e EFDD     		ble	.L9
+  37:src/test.c    **** 	}
+  38:src/test.c    **** 
+  39:src/test.c    **** 	//Print the data stored in HASH MAP
+  40:src/test.c    **** //	putData();
+  41:src/test.c    **** }
+ 668              		.loc 1 41 0 is_stmt 1
+ 669 0040 1837     		adds	r7, r7, #24
+ 670 0042 BD46     		mov	sp, r7
+ 671              		@ sp needed
+ 672 0044 80BD     		pop	{r7, pc}
+ 673              	.L11:
+ 674 0046 00BF     		.align	2
+ 675              	.L10:
+ 676 0048 78767626 		.word	645297784
+ 677              		.cfi_endproc
+ 678              	.LFE1:
+ 680              		.section	.text.storeReadHoldingRegistersData,"ax",%progbits
+ 681              		.align	2
+ 682              		.global	storeReadHoldingRegistersData
+ 683              		.thumb
+ 684              		.thumb_func
+ 686              	storeReadHoldingRegistersData:
+ 687              	.LFB2:
+  42:src/test.c    **** 
+  43:src/test.c    **** void storeReadHoldingRegistersData(uint32_t *ptr){
+ 688              		.loc 1 43 0
+ 689              		.cfi_startproc
+ 690              		@ args = 0, pretend = 0, frame = 24
+ 691              		@ frame_needed = 1, uses_anonymous_args = 0
+ 692 0000 80B5     		push	{r7, lr}
+ 693              	.LCFI6:
+ 694              		.cfi_def_cfa_offset 8
+ 695              		.cfi_offset 7, -8
+ 696              		.cfi_offset 14, -4
+ 697 0002 86B0     		sub	sp, sp, #24
+ 698              	.LCFI7:
+ 699              		.cfi_def_cfa_offset 32
+ 700 0004 00AF     		add	r7, sp, #0
+ 701              	.LCFI8:
+ 702              		.cfi_def_cfa_register 7
+ 703 0006 7860     		str	r0, [r7, #4]
+  44:src/test.c    **** 
+  45:src/test.c    **** 	int i;
+  46:src/test.c    **** 	uint32_t id = (0x9C40 | *ptr);
+ 704              		.loc 1 46 0
+ 705 0008 7B68     		ldr	r3, [r7, #4]
+ 706 000a 1B68     		ldr	r3, [r3]
+ 707 000c 43F41C43 		orr	r3, r3, #39936
+ 708 0010 43F04003 		orr	r3, r3, #64
+ 709 0014 3B61     		str	r3, [r7, #16]
+  47:src/test.c    **** 
+  48:src/test.c    **** 	// 32 Bit data is stored
+  49:src/test.c    **** 	uint32_t d=0x26767677;
+ 710              		.loc 1 49 0
+ 711 0016 0C4B     		ldr	r3, .L15
+ 712 0018 FB60     		str	r3, [r7, #12]
+  50:src/test.c    **** 
+  51:src/test.c    **** 	for (i=0;i<10;i++){
+ 713              		.loc 1 51 0
+ 714 001a 0023     		movs	r3, #0
+ 715 001c 7B61     		str	r3, [r7, #20]
+ 716 001e 0CE0     		b	.L13
+ 717              	.L14:
+  52:src/test.c    **** 		addData(id++,d++);
+ 718              		.loc 1 52 0 discriminator 2
+ 719 0020 3B69     		ldr	r3, [r7, #16]
+ 720 0022 5A1C     		adds	r2, r3, #1
+ 721 0024 3A61     		str	r2, [r7, #16]
+ 722 0026 FA68     		ldr	r2, [r7, #12]
+ 723 0028 511C     		adds	r1, r2, #1
+ 724 002a F960     		str	r1, [r7, #12]
+ 725 002c 1846     		mov	r0, r3
+ 726 002e 1146     		mov	r1, r2
+ 727 0030 FFF7FEFF 		bl	addData
+  51:src/test.c    **** 	for (i=0;i<10;i++){
+ 728              		.loc 1 51 0 discriminator 2
+ 729 0034 7B69     		ldr	r3, [r7, #20]
+ 730 0036 0133     		adds	r3, r3, #1
+ 731 0038 7B61     		str	r3, [r7, #20]
+ 732              	.L13:
+  51:src/test.c    **** 	for (i=0;i<10;i++){
+ 733              		.loc 1 51 0 is_stmt 0 discriminator 1
+ 734 003a 7B69     		ldr	r3, [r7, #20]
+ 735 003c 092B     		cmp	r3, #9
+ 736 003e EFDD     		ble	.L14
+  53:src/test.c    **** 	}
+  54:src/test.c    **** 
+  55:src/test.c    **** 	//Print the data stored in HASH MAP
+  56:src/test.c    **** //	putData();
+  57:src/test.c    **** }
+ 737              		.loc 1 57 0 is_stmt 1
+ 738 0040 1837     		adds	r7, r7, #24
+ 739 0042 BD46     		mov	sp, r7
+ 740              		@ sp needed
+ 741 0044 80BD     		pop	{r7, pc}
+ 742              	.L16:
+ 743 0046 00BF     		.align	2
+ 744              	.L15:
+ 745 0048 77767626 		.word	645297783
+ 746              		.cfi_endproc
+ 747              	.LFE2:
+ 749              		.section	.text.storeReadInputRegistersData,"ax",%progbits
+ 750              		.align	2
+ 751              		.global	storeReadInputRegistersData
+ 752              		.thumb
+ 753              		.thumb_func
+ 755              	storeReadInputRegistersData:
+ 756              	.LFB3:
+  58:src/test.c    **** 
+  59:src/test.c    **** void storeReadInputRegistersData(uint32_t *ptr){
+ 757              		.loc 1 59 0
+ 758              		.cfi_startproc
+ 759              		@ args = 0, pretend = 0, frame = 24
+ 760              		@ frame_needed = 1, uses_anonymous_args = 0
+ 761 0000 80B5     		push	{r7, lr}
+ 762              	.LCFI9:
+ 763              		.cfi_def_cfa_offset 8
+ 764              		.cfi_offset 7, -8
+ 765              		.cfi_offset 14, -4
+ 766 0002 86B0     		sub	sp, sp, #24
+ 767              	.LCFI10:
+ 768              		.cfi_def_cfa_offset 32
+ 769 0004 00AF     		add	r7, sp, #0
+ 770              	.LCFI11:
+ 771              		.cfi_def_cfa_register 7
+ 772 0006 7860     		str	r0, [r7, #4]
+  60:src/test.c    **** 
+  61:src/test.c    **** 	int i;
+  62:src/test.c    **** 	uint32_t id = (0x7530 | *ptr);
+ 773              		.loc 1 62 0
+ 774 0008 7B68     		ldr	r3, [r7, #4]
+ 775 000a 1B68     		ldr	r3, [r3]
+ 776 000c 43F4EA43 		orr	r3, r3, #29952
+ 777 0010 43F03003 		orr	r3, r3, #48
+ 778 0014 3B61     		str	r3, [r7, #16]
+  63:src/test.c    **** 
+  64:src/test.c    **** 	// 32 Bit data is stored
+  65:src/test.c    **** 	uint32_t d=0x26767677;
+ 779              		.loc 1 65 0
+ 780 0016 0C4B     		ldr	r3, .L20
+ 781 0018 FB60     		str	r3, [r7, #12]
+  66:src/test.c    **** 
+  67:src/test.c    **** 	for (i=0;i<10;i++){
+ 782              		.loc 1 67 0
+ 783 001a 0023     		movs	r3, #0
+ 784 001c 7B61     		str	r3, [r7, #20]
+ 785 001e 0CE0     		b	.L18
+ 786              	.L19:
+  68:src/test.c    **** 		addData(id++,d++);
+ 787              		.loc 1 68 0 discriminator 2
+ 788 0020 3B69     		ldr	r3, [r7, #16]
+ 789 0022 5A1C     		adds	r2, r3, #1
+ 790 0024 3A61     		str	r2, [r7, #16]
+ 791 0026 FA68     		ldr	r2, [r7, #12]
+ 792 0028 511C     		adds	r1, r2, #1
+ 793 002a F960     		str	r1, [r7, #12]
+ 794 002c 1846     		mov	r0, r3
+ 795 002e 1146     		mov	r1, r2
+ 796 0030 FFF7FEFF 		bl	addData
+  67:src/test.c    **** 	for (i=0;i<10;i++){
+ 797              		.loc 1 67 0 discriminator 2
+ 798 0034 7B69     		ldr	r3, [r7, #20]
+ 799 0036 0133     		adds	r3, r3, #1
+ 800 0038 7B61     		str	r3, [r7, #20]
+ 801              	.L18:
+  67:src/test.c    **** 	for (i=0;i<10;i++){
+ 802              		.loc 1 67 0 is_stmt 0 discriminator 1
+ 803 003a 7B69     		ldr	r3, [r7, #20]
+ 804 003c 092B     		cmp	r3, #9
+ 805 003e EFDD     		ble	.L19
+  69:src/test.c    **** 	}
+  70:src/test.c    **** 	
+  71:src/test.c    **** 	//Print the data stored in HASH MAP
+  72:src/test.c    **** //	putData();
+  73:src/test.c    **** }
+ 806              		.loc 1 73 0 is_stmt 1
+ 807 0040 1837     		adds	r7, r7, #24
+ 808 0042 BD46     		mov	sp, r7
+ 809              		@ sp needed
+ 810 0044 80BD     		pop	{r7, pc}
+ 811              	.L21:
+ 812 0046 00BF     		.align	2
+ 813              	.L20:
+ 814 0048 77767626 		.word	645297783
+ 815              		.cfi_endproc
+ 816              	.LFE3:
+ 818              		.section	.text.storeWriteSingleCoilData,"ax",%progbits
+ 819              		.align	2
+ 820              		.global	storeWriteSingleCoilData
+ 821              		.thumb
+ 822              		.thumb_func
+ 824              	storeWriteSingleCoilData:
+ 825              	.LFB4:
+  74:src/test.c    **** 
+  75:src/test.c    **** void storeWriteSingleCoilData(uint32_t *ptr){
+ 826              		.loc 1 75 0
+ 827              		.cfi_startproc
+ 828              		@ args = 0, pretend = 0, frame = 24
+ 829              		@ frame_needed = 1, uses_anonymous_args = 0
+ 830 0000 80B5     		push	{r7, lr}
+ 831              	.LCFI12:
+ 832              		.cfi_def_cfa_offset 8
+ 833              		.cfi_offset 7, -8
+ 834              		.cfi_offset 14, -4
+ 835 0002 86B0     		sub	sp, sp, #24
+ 836              	.LCFI13:
+ 837              		.cfi_def_cfa_offset 32
+ 838 0004 00AF     		add	r7, sp, #0
+ 839              	.LCFI14:
+ 840              		.cfi_def_cfa_register 7
+ 841 0006 7860     		str	r0, [r7, #4]
+  76:src/test.c    **** 
+  77:src/test.c    **** 	int i;
+  78:src/test.c    **** 	uint32_t id= 0x0000 | *ptr;
+ 842              		.loc 1 78 0
+ 843 0008 7B68     		ldr	r3, [r7, #4]
+ 844 000a 1B68     		ldr	r3, [r3]
+ 845 000c 3B61     		str	r3, [r7, #16]
+  79:src/test.c    **** 
+  80:src/test.c    **** 	// 32 Bit data is stored
+  81:src/test.c    **** 	uint32_t d=0x21117778;
+ 846              		.loc 1 81 0
+ 847 000e 0C4B     		ldr	r3, .L25
+ 848 0010 FB60     		str	r3, [r7, #12]
+  82:src/test.c    **** 
+  83:src/test.c    **** 	for (i=0;i<10;i++){
+ 849              		.loc 1 83 0
+ 850 0012 0023     		movs	r3, #0
+ 851 0014 7B61     		str	r3, [r7, #20]
+ 852 0016 0CE0     		b	.L23
+ 853              	.L24:
+  84:src/test.c    **** 		addData(id++,d++);
+ 854              		.loc 1 84 0 discriminator 2
+ 855 0018 3B69     		ldr	r3, [r7, #16]
+ 856 001a 5A1C     		adds	r2, r3, #1
+ 857 001c 3A61     		str	r2, [r7, #16]
+ 858 001e FA68     		ldr	r2, [r7, #12]
+ 859 0020 511C     		adds	r1, r2, #1
+ 860 0022 F960     		str	r1, [r7, #12]
+ 861 0024 1846     		mov	r0, r3
+ 862 0026 1146     		mov	r1, r2
+ 863 0028 FFF7FEFF 		bl	addData
+  83:src/test.c    **** 	for (i=0;i<10;i++){
+ 864              		.loc 1 83 0 discriminator 2
+ 865 002c 7B69     		ldr	r3, [r7, #20]
+ 866 002e 0133     		adds	r3, r3, #1
+ 867 0030 7B61     		str	r3, [r7, #20]
+ 868              	.L23:
+  83:src/test.c    **** 	for (i=0;i<10;i++){
+ 869              		.loc 1 83 0 is_stmt 0 discriminator 1
+ 870 0032 7B69     		ldr	r3, [r7, #20]
+ 871 0034 092B     		cmp	r3, #9
+ 872 0036 EFDD     		ble	.L24
+  85:src/test.c    **** 	}
+  86:src/test.c    **** 	
+  87:src/test.c    **** 	//Print the data stored in HASH MAP
+  88:src/test.c    **** //	putData();
+  89:src/test.c    **** }
+ 873              		.loc 1 89 0 is_stmt 1
+ 874 0038 1837     		adds	r7, r7, #24
+ 875 003a BD46     		mov	sp, r7
+ 876              		@ sp needed
+ 877 003c 80BD     		pop	{r7, pc}
+ 878              	.L26:
+ 879 003e 00BF     		.align	2
+ 880              	.L25:
+ 881 0040 78771121 		.word	554792824
+ 882              		.cfi_endproc
+ 883              	.LFE4:
+ 885              		.section	.text.storeWriteSingleRegisterData,"ax",%progbits
+ 886              		.align	2
+ 887              		.global	storeWriteSingleRegisterData
+ 888              		.thumb
+ 889              		.thumb_func
+ 891              	storeWriteSingleRegisterData:
+ 892              	.LFB5:
+  90:src/test.c    **** 
+  91:src/test.c    **** void storeWriteSingleRegisterData(uint32_t *ptr){
+ 893              		.loc 1 91 0
+ 894              		.cfi_startproc
+ 895              		@ args = 0, pretend = 0, frame = 24
+ 896              		@ frame_needed = 1, uses_anonymous_args = 0
+ 897 0000 80B5     		push	{r7, lr}
+ 898              	.LCFI15:
+ 899              		.cfi_def_cfa_offset 8
+ 900              		.cfi_offset 7, -8
+ 901              		.cfi_offset 14, -4
+ 902 0002 86B0     		sub	sp, sp, #24
+ 903              	.LCFI16:
+ 904              		.cfi_def_cfa_offset 32
+ 905 0004 00AF     		add	r7, sp, #0
+ 906              	.LCFI17:
+ 907              		.cfi_def_cfa_register 7
+ 908 0006 7860     		str	r0, [r7, #4]
+  92:src/test.c    **** 
+  93:src/test.c    **** 	int i;
+  94:src/test.c    **** 	uint32_t id= 0x9c40 | *ptr;
+ 909              		.loc 1 94 0
+ 910 0008 7B68     		ldr	r3, [r7, #4]
+ 911 000a 1B68     		ldr	r3, [r3]
+ 912 000c 43F41C43 		orr	r3, r3, #39936
+ 913 0010 43F04003 		orr	r3, r3, #64
+ 914 0014 3B61     		str	r3, [r7, #16]
+  95:src/test.c    **** 
+  96:src/test.c    **** 	// 32 Bit data is stored
+  97:src/test.c    **** 	uint32_t d=0x21117778;
+ 915              		.loc 1 97 0
+ 916 0016 0C4B     		ldr	r3, .L30
+ 917 0018 FB60     		str	r3, [r7, #12]
+  98:src/test.c    **** 
+  99:src/test.c    **** 	for (i=0;i<10;i++){
+ 918              		.loc 1 99 0
+ 919 001a 0023     		movs	r3, #0
+ 920 001c 7B61     		str	r3, [r7, #20]
+ 921 001e 0CE0     		b	.L28
+ 922              	.L29:
+ 100:src/test.c    **** 		addData(id++,d++);
+ 923              		.loc 1 100 0 discriminator 2
+ 924 0020 3B69     		ldr	r3, [r7, #16]
+ 925 0022 5A1C     		adds	r2, r3, #1
+ 926 0024 3A61     		str	r2, [r7, #16]
+ 927 0026 FA68     		ldr	r2, [r7, #12]
+ 928 0028 511C     		adds	r1, r2, #1
+ 929 002a F960     		str	r1, [r7, #12]
+ 930 002c 1846     		mov	r0, r3
+ 931 002e 1146     		mov	r1, r2
+ 932 0030 FFF7FEFF 		bl	addData
+  99:src/test.c    **** 	for (i=0;i<10;i++){
+ 933              		.loc 1 99 0 discriminator 2
+ 934 0034 7B69     		ldr	r3, [r7, #20]
+ 935 0036 0133     		adds	r3, r3, #1
+ 936 0038 7B61     		str	r3, [r7, #20]
+ 937              	.L28:
+  99:src/test.c    **** 	for (i=0;i<10;i++){
+ 938              		.loc 1 99 0 is_stmt 0 discriminator 1
+ 939 003a 7B69     		ldr	r3, [r7, #20]
+ 940 003c 092B     		cmp	r3, #9
+ 941 003e EFDD     		ble	.L29
+ 101:src/test.c    **** 	}
+ 102:src/test.c    **** 
+ 103:src/test.c    **** 	//Print the data stored in HASH MAP
+ 104:src/test.c    **** //	putData();
+ 105:src/test.c    **** 
+ 106:src/test.c    **** }
+ 942              		.loc 1 106 0 is_stmt 1
+ 943 0040 1837     		adds	r7, r7, #24
+ 944 0042 BD46     		mov	sp, r7
+ 945              		@ sp needed
+ 946 0044 80BD     		pop	{r7, pc}
+ 947              	.L31:
+ 948 0046 00BF     		.align	2
+ 949              	.L30:
+ 950 0048 78771121 		.word	554792824
+ 951              		.cfi_endproc
+ 952              	.LFE5:
+ 954              		.section	.text.storeReadExceptionStatusData,"ax",%progbits
+ 955              		.align	2
+ 956              		.global	storeReadExceptionStatusData
+ 957              		.thumb
+ 958              		.thumb_func
+ 960              	storeReadExceptionStatusData:
+ 961              	.LFB6:
+ 107:src/test.c    **** 
+ 108:src/test.c    **** void storeReadExceptionStatusData(uint32_t *ptr){
+ 962              		.loc 1 108 0
+ 963              		.cfi_startproc
+ 964              		@ args = 0, pretend = 0, frame = 24
+ 965              		@ frame_needed = 1, uses_anonymous_args = 0
+ 966 0000 80B5     		push	{r7, lr}
+ 967              	.LCFI18:
+ 968              		.cfi_def_cfa_offset 8
+ 969              		.cfi_offset 7, -8
+ 970              		.cfi_offset 14, -4
+ 971 0002 86B0     		sub	sp, sp, #24
+ 972              	.LCFI19:
+ 973              		.cfi_def_cfa_offset 32
+ 974 0004 00AF     		add	r7, sp, #0
+ 975              	.LCFI20:
+ 976              		.cfi_def_cfa_register 7
+ 977 0006 7860     		str	r0, [r7, #4]
+ 109:src/test.c    **** 
+ 110:src/test.c    **** 	int i;
+ 111:src/test.c    **** 	uint32_t id= 0x0000 | *ptr;
+ 978              		.loc 1 111 0
+ 979 0008 7B68     		ldr	r3, [r7, #4]
+ 980 000a 1B68     		ldr	r3, [r3]
+ 981 000c 3B61     		str	r3, [r7, #16]
+ 112:src/test.c    **** 
+ 113:src/test.c    **** 	// 32 Bit data is stored
+ 114:src/test.c    **** 	uint32_t d=0x21117778;
+ 982              		.loc 1 114 0
+ 983 000e 0C4B     		ldr	r3, .L35
+ 984 0010 FB60     		str	r3, [r7, #12]
+ 115:src/test.c    **** 
+ 116:src/test.c    **** 	for (i=0;i<10;i++){
+ 985              		.loc 1 116 0
+ 986 0012 0023     		movs	r3, #0
+ 987 0014 7B61     		str	r3, [r7, #20]
+ 988 0016 0CE0     		b	.L33
+ 989              	.L34:
+ 117:src/test.c    **** 		addData(id++,d++);
+ 990              		.loc 1 117 0 discriminator 2
+ 991 0018 3B69     		ldr	r3, [r7, #16]
+ 992 001a 5A1C     		adds	r2, r3, #1
+ 993 001c 3A61     		str	r2, [r7, #16]
+ 994 001e FA68     		ldr	r2, [r7, #12]
+ 995 0020 511C     		adds	r1, r2, #1
+ 996 0022 F960     		str	r1, [r7, #12]
+ 997 0024 1846     		mov	r0, r3
+ 998 0026 1146     		mov	r1, r2
+ 999 0028 FFF7FEFF 		bl	addData
+ 116:src/test.c    **** 	for (i=0;i<10;i++){
+ 1000              		.loc 1 116 0 discriminator 2
+ 1001 002c 7B69     		ldr	r3, [r7, #20]
+ 1002 002e 0133     		adds	r3, r3, #1
+ 1003 0030 7B61     		str	r3, [r7, #20]
+ 1004              	.L33:
+ 116:src/test.c    **** 	for (i=0;i<10;i++){
+ 1005              		.loc 1 116 0 is_stmt 0 discriminator 1
+ 1006 0032 7B69     		ldr	r3, [r7, #20]
+ 1007 0034 092B     		cmp	r3, #9
+ 1008 0036 EFDD     		ble	.L34
+ 118:src/test.c    **** 	}
+ 119:src/test.c    **** 
+ 120:src/test.c    **** 	//putData();
+ 121:src/test.c    **** 
+ 122:src/test.c    **** }
+ 1009              		.loc 1 122 0 is_stmt 1
+ 1010 0038 1837     		adds	r7, r7, #24
+ 1011 003a BD46     		mov	sp, r7
+ 1012              		@ sp needed
+ 1013 003c 80BD     		pop	{r7, pc}
+ 1014              	.L36:
+ 1015 003e 00BF     		.align	2
+ 1016              	.L35:
+ 1017 0040 78771121 		.word	554792824
+ 1018              		.cfi_endproc
+ 1019              	.LFE6:
+ 1021              		.section	.text.storeWriteMultipleCoilsData,"ax",%progbits
+ 1022              		.align	2
+ 1023              		.global	storeWriteMultipleCoilsData
+ 1024              		.thumb
+ 1025              		.thumb_func
+ 1027              	storeWriteMultipleCoilsData:
+ 1028              	.LFB7:
+ 123:src/test.c    **** 
+ 124:src/test.c    **** void storeWriteMultipleCoilsData(uint32_t *ptr){
+ 1029              		.loc 1 124 0
+ 1030              		.cfi_startproc
+ 1031              		@ args = 0, pretend = 0, frame = 24
+ 1032              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1033 0000 80B5     		push	{r7, lr}
+ 1034              	.LCFI21:
+ 1035              		.cfi_def_cfa_offset 8
+ 1036              		.cfi_offset 7, -8
+ 1037              		.cfi_offset 14, -4
+ 1038 0002 86B0     		sub	sp, sp, #24
+ 1039              	.LCFI22:
+ 1040              		.cfi_def_cfa_offset 32
+ 1041 0004 00AF     		add	r7, sp, #0
+ 1042              	.LCFI23:
+ 1043              		.cfi_def_cfa_register 7
+ 1044 0006 7860     		str	r0, [r7, #4]
+ 125:src/test.c    **** 
+ 126:src/test.c    **** 	int i;
+ 127:src/test.c    **** 	uint32_t id= 0x0000 | *ptr;
+ 1045              		.loc 1 127 0
+ 1046 0008 7B68     		ldr	r3, [r7, #4]
+ 1047 000a 1B68     		ldr	r3, [r3]
+ 1048 000c 3B61     		str	r3, [r7, #16]
+ 128:src/test.c    **** 
+ 129:src/test.c    **** 	// 32 Bit data is stored
+ 130:src/test.c    **** 	uint32_t d=0x21117778;
+ 1049              		.loc 1 130 0
+ 1050 000e 0C4B     		ldr	r3, .L40
+ 1051 0010 FB60     		str	r3, [r7, #12]
+ 131:src/test.c    **** 
+ 132:src/test.c    **** 	for (i=0;i<10;i++){
+ 1052              		.loc 1 132 0
+ 1053 0012 0023     		movs	r3, #0
+ 1054 0014 7B61     		str	r3, [r7, #20]
+ 1055 0016 0CE0     		b	.L38
+ 1056              	.L39:
+ 133:src/test.c    **** 		addData(id++,d++);
+ 1057              		.loc 1 133 0 discriminator 2
+ 1058 0018 3B69     		ldr	r3, [r7, #16]
+ 1059 001a 5A1C     		adds	r2, r3, #1
+ 1060 001c 3A61     		str	r2, [r7, #16]
+ 1061 001e FA68     		ldr	r2, [r7, #12]
+ 1062 0020 511C     		adds	r1, r2, #1
+ 1063 0022 F960     		str	r1, [r7, #12]
+ 1064 0024 1846     		mov	r0, r3
+ 1065 0026 1146     		mov	r1, r2
+ 1066 0028 FFF7FEFF 		bl	addData
+ 132:src/test.c    **** 	for (i=0;i<10;i++){
+ 1067              		.loc 1 132 0 discriminator 2
+ 1068 002c 7B69     		ldr	r3, [r7, #20]
+ 1069 002e 0133     		adds	r3, r3, #1
+ 1070 0030 7B61     		str	r3, [r7, #20]
+ 1071              	.L38:
+ 132:src/test.c    **** 	for (i=0;i<10;i++){
+ 1072              		.loc 1 132 0 is_stmt 0 discriminator 1
+ 1073 0032 7B69     		ldr	r3, [r7, #20]
+ 1074 0034 092B     		cmp	r3, #9
+ 1075 0036 EFDD     		ble	.L39
+ 134:src/test.c    **** 	}
+ 135:src/test.c    **** 
+ 136:src/test.c    **** //	putData();
+ 137:src/test.c    **** 
+ 138:src/test.c    **** }
+ 1076              		.loc 1 138 0 is_stmt 1
+ 1077 0038 1837     		adds	r7, r7, #24
+ 1078 003a BD46     		mov	sp, r7
+ 1079              		@ sp needed
+ 1080 003c 80BD     		pop	{r7, pc}
+ 1081              	.L41:
+ 1082 003e 00BF     		.align	2
+ 1083              	.L40:
+ 1084 0040 78771121 		.word	554792824
+ 1085              		.cfi_endproc
+ 1086              	.LFE7:
+ 1088              		.section	.text.storeWriteMultipleRegistersData,"ax",%progbits
+ 1089              		.align	2
+ 1090              		.global	storeWriteMultipleRegistersData
+ 1091              		.thumb
+ 1092              		.thumb_func
+ 1094              	storeWriteMultipleRegistersData:
+ 1095              	.LFB8:
+ 139:src/test.c    **** 
+ 140:src/test.c    **** void storeWriteMultipleRegistersData(uint32_t *ptr){
+ 1096              		.loc 1 140 0
+ 1097              		.cfi_startproc
+ 1098              		@ args = 0, pretend = 0, frame = 24
+ 1099              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1100 0000 80B5     		push	{r7, lr}
+ 1101              	.LCFI24:
+ 1102              		.cfi_def_cfa_offset 8
+ 1103              		.cfi_offset 7, -8
+ 1104              		.cfi_offset 14, -4
+ 1105 0002 86B0     		sub	sp, sp, #24
+ 1106              	.LCFI25:
+ 1107              		.cfi_def_cfa_offset 32
+ 1108 0004 00AF     		add	r7, sp, #0
+ 1109              	.LCFI26:
+ 1110              		.cfi_def_cfa_register 7
+ 1111 0006 7860     		str	r0, [r7, #4]
+ 141:src/test.c    **** 
+ 142:src/test.c    **** 	int i;
+ 143:src/test.c    **** 	uint32_t id= 0x9c40 | *ptr;
+ 1112              		.loc 1 143 0
+ 1113 0008 7B68     		ldr	r3, [r7, #4]
+ 1114 000a 1B68     		ldr	r3, [r3]
+ 1115 000c 43F41C43 		orr	r3, r3, #39936
+ 1116 0010 43F04003 		orr	r3, r3, #64
+ 1117 0014 3B61     		str	r3, [r7, #16]
+ 144:src/test.c    **** 
+ 145:src/test.c    **** 	// 32 Bit data is stored
+ 146:src/test.c    **** 	uint32_t d=0x21117778;
+ 1118              		.loc 1 146 0
+ 1119 0016 0C4B     		ldr	r3, .L45
+ 1120 0018 FB60     		str	r3, [r7, #12]
+ 147:src/test.c    **** 
+ 148:src/test.c    **** 	for (i=0;i<10;i++){
+ 1121              		.loc 1 148 0
+ 1122 001a 0023     		movs	r3, #0
+ 1123 001c 7B61     		str	r3, [r7, #20]
+ 1124 001e 0CE0     		b	.L43
+ 1125              	.L44:
+ 149:src/test.c    **** 		addData(id++,d++);
+ 1126              		.loc 1 149 0 discriminator 2
+ 1127 0020 3B69     		ldr	r3, [r7, #16]
+ 1128 0022 5A1C     		adds	r2, r3, #1
+ 1129 0024 3A61     		str	r2, [r7, #16]
+ 1130 0026 FA68     		ldr	r2, [r7, #12]
+ 1131 0028 511C     		adds	r1, r2, #1
+ 1132 002a F960     		str	r1, [r7, #12]
+ 1133 002c 1846     		mov	r0, r3
+ 1134 002e 1146     		mov	r1, r2
+ 1135 0030 FFF7FEFF 		bl	addData
+ 148:src/test.c    **** 	for (i=0;i<10;i++){
+ 1136              		.loc 1 148 0 discriminator 2
+ 1137 0034 7B69     		ldr	r3, [r7, #20]
+ 1138 0036 0133     		adds	r3, r3, #1
+ 1139 0038 7B61     		str	r3, [r7, #20]
+ 1140              	.L43:
+ 148:src/test.c    **** 	for (i=0;i<10;i++){
+ 1141              		.loc 1 148 0 is_stmt 0 discriminator 1
+ 1142 003a 7B69     		ldr	r3, [r7, #20]
+ 1143 003c 092B     		cmp	r3, #9
+ 1144 003e EFDD     		ble	.L44
+ 150:src/test.c    **** 	}
+ 151:src/test.c    **** 
+ 152:src/test.c    **** //	putData();
+ 153:src/test.c    **** 
+ 154:src/test.c    **** }
+ 1145              		.loc 1 154 0 is_stmt 1
+ 1146 0040 1837     		adds	r7, r7, #24
+ 1147 0042 BD46     		mov	sp, r7
+ 1148              		@ sp needed
+ 1149 0044 80BD     		pop	{r7, pc}
+ 1150              	.L46:
+ 1151 0046 00BF     		.align	2
+ 1152              	.L45:
+ 1153 0048 78771121 		.word	554792824
+ 1154              		.cfi_endproc
+ 1155              	.LFE8:
+ 1157              		.text
+ 1158              	.Letext0:
+ 1159              		.file 2 "src/modbus.h"
+ 1160              		.file 3 "/home/shihyu/data/STM32F4/gcc-arm-none-eabi-4_8-2013q4/arm-none-eabi/include/stdint.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 test.c
+     /tmp/ccoiSnly.s:20     .rodata.crcHi:00000000 $d
+     /tmp/ccoiSnly.s:23     .rodata.crcHi:00000000 crcHi
+     /tmp/ccoiSnly.s:281    .rodata.crcLo:00000000 $d
+     /tmp/ccoiSnly.s:284    .rodata.crcLo:00000000 crcLo
+     /tmp/ccoiSnly.s:542    .text.storeReadCoilData:00000000 $t
+     /tmp/ccoiSnly.s:547    .text.storeReadCoilData:00000000 storeReadCoilData
+     /tmp/ccoiSnly.s:607    .text.storeReadCoilData:00000040 $d
+     /tmp/ccoiSnly.s:612    .text.storeReadDiscreteInputsData:00000000 $t
+     /tmp/ccoiSnly.s:617    .text.storeReadDiscreteInputsData:00000000 storeReadDiscreteInputsData
+     /tmp/ccoiSnly.s:676    .text.storeReadDiscreteInputsData:00000048 $d
+     /tmp/ccoiSnly.s:681    .text.storeReadHoldingRegistersData:00000000 $t
+     /tmp/ccoiSnly.s:686    .text.storeReadHoldingRegistersData:00000000 storeReadHoldingRegistersData
+     /tmp/ccoiSnly.s:745    .text.storeReadHoldingRegistersData:00000048 $d
+     /tmp/ccoiSnly.s:750    .text.storeReadInputRegistersData:00000000 $t
+     /tmp/ccoiSnly.s:755    .text.storeReadInputRegistersData:00000000 storeReadInputRegistersData
+     /tmp/ccoiSnly.s:814    .text.storeReadInputRegistersData:00000048 $d
+     /tmp/ccoiSnly.s:819    .text.storeWriteSingleCoilData:00000000 $t
+     /tmp/ccoiSnly.s:824    .text.storeWriteSingleCoilData:00000000 storeWriteSingleCoilData
+     /tmp/ccoiSnly.s:881    .text.storeWriteSingleCoilData:00000040 $d
+     /tmp/ccoiSnly.s:886    .text.storeWriteSingleRegisterData:00000000 $t
+     /tmp/ccoiSnly.s:891    .text.storeWriteSingleRegisterData:00000000 storeWriteSingleRegisterData
+     /tmp/ccoiSnly.s:950    .text.storeWriteSingleRegisterData:00000048 $d
+     /tmp/ccoiSnly.s:955    .text.storeReadExceptionStatusData:00000000 $t
+     /tmp/ccoiSnly.s:960    .text.storeReadExceptionStatusData:00000000 storeReadExceptionStatusData
+     /tmp/ccoiSnly.s:1017   .text.storeReadExceptionStatusData:00000040 $d
+     /tmp/ccoiSnly.s:1022   .text.storeWriteMultipleCoilsData:00000000 $t
+     /tmp/ccoiSnly.s:1027   .text.storeWriteMultipleCoilsData:00000000 storeWriteMultipleCoilsData
+     /tmp/ccoiSnly.s:1084   .text.storeWriteMultipleCoilsData:00000040 $d
+     /tmp/ccoiSnly.s:1089   .text.storeWriteMultipleRegistersData:00000000 $t
+     /tmp/ccoiSnly.s:1094   .text.storeWriteMultipleRegistersData:00000000 storeWriteMultipleRegistersData
+     /tmp/ccoiSnly.s:1153   .text.storeWriteMultipleRegistersData:00000048 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+addData
