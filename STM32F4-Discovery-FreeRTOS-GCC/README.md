@@ -16,3 +16,9 @@ Porting FreeRTOS on STM32F4-Discovery using GCC on linux
 8. (gdb) load STM32F4_Test.elf
 9. (gdb) continue
 
+// 目前看起來要下面這樣才可以work
+target remote localhost:4242
+file main.elf
+load
+thbreak main
+continue
