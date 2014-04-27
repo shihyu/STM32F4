@@ -105,3 +105,28 @@ summon-arm-toolchain
 https://github.com/esden/summon-arm-toolchain
 stlink
 https://github.com/texane/stlink
+
+
+
+燒錄 & use GDB
+
+
+1. git clone https://github.com/vagabondtt1503/STM32F4-Discovery-FreeRTOS-GCC
+2. . ../build.env 
+3. make  // 產生 obj資料夾 STM32F4_Test.bin
+4. st-flash write STM32F4_Test.bin 0x8000000  // 把image燒錄到板子
+
+// 使用gdb
+5. st-util   // Run gdbserver by st-link utility
+6. arm-none-eabi-gdb
+7. (gdb) target remote localhost:4242
+8. (gdb) load STM32F4_Test.elf
+9. (gdb) continue
+
+// 目前看起來要下面這樣才可以work
+target remote localhost:4242
+file main.elf
+load
+thbreak main
+continue
+

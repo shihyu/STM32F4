@@ -1,0 +1,1 @@
+1 . stm32f4xx.h中HSE_VALUE修改为((uint32_t)8000000) 後來正常沒亂碼
